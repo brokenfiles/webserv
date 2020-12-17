@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <iostream>
+#include <fstream>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -18,7 +19,7 @@
 
 void	usage(char *str)
 {
-	std::cout << "usage: " << str << " <port>" << std::endl;
+	std::cout << "usage: " << str << " <port> <query file>" << std::endl;
 	exit(-1);
 }
 
@@ -42,20 +43,25 @@ int		main(int ac, char **av)
 	int						sock;
 	int						cs;
 	int						r = 0;
+
+
+	std::string newStr;
+	std::ifstream ifs(av[2], std::ios::in);
+
+	if (ifs.is_open())
+		std::getline(ifs, newStr, '\0');
+	else {
+		std::cerr << "cannot open the file" << std::endl;
+		return (1);
+	}
+	ifs.close();
+
+
 	char					buff[1024];
-	std::string 			headers = "content-type: text/html;charset=UTF-8\nDate: Thu, 17 Dec 2020 14:27:36 GMT\nserver: timlecou\ncontent-encoding: gzip\n";
-	std::string 			body = "<html>\n"
-								  "<head>\n"
-								  "<title>Bonjour Tim</title>\n"
-								  "</head>\n"
-								  "<body>\n"
-								  "<h1>Comment va tim</h1>\n"
-								  "</body>\n"
-								  "</html>";
 	unsigned int			cslen;
 	struct sockaddr_in		csin;
 
-	if (ac != 2)
+	if (ac != 3)
 		usage(av[0]);
 	sock = create_server(atoi(av[1]));
 	cs = accept(sock, (struct sockaddr*)&csin, &cslen);
@@ -65,7 +71,7 @@ int		main(int ac, char **av)
 		std::cout << buff;
 		break ;
 	}
-	int ret = write(cs, body.c_str(), body.length());
+	int ret = write(cs, newStr.c_str(), newStr.length());
 	if (ret == 0)
 		std::cout << "error" << std::endl;
 	std::cout << "end of program" << std::endl;

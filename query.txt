@@ -1,0 +1,28 @@
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Content-Length: 55743
+Connection: keep-alive
+Cache-Control: s-maxage=300, public, max-age=0
+Content-Language: en-US
+Date: Thu, 06 Dec 2018 17:37:18 GMT
+ETag: "2e77ad1dc6ab0b53a2996dfd4653c1c3"
+Server: Webserv
+Strict-Transport-Security: max-age=63072000
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Vary: Accept-Encoding,Cookie
+Age: 7
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>WEBSERV</title>
+</head>
+<body>
+  <h1>Salut on est sur webserv</h1>
+  <p>Tout fonctionne</p>
+</body>
+</html>
