@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Werror -std=c++98 -g   CMakeFiles/webserv.dir/server.cpp.o CMakeFiles/webserv.dir/client.cpp.o  -o webserv 
