@@ -13,6 +13,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/in.h>
 
 void	usage(char *str)
@@ -42,6 +43,15 @@ int		main(int ac, char **av)
 	int						cs;
 	int						r = 0;
 	char					buff[1024];
+	std::string 			headers = "content-type: text/html;charset=UTF-8\nDate: Thu, 17 Dec 2020 14:27:36 GMT\nserver: timlecou\ncontent-encoding: gzip\n";
+	std::string 			body = "<html>\n"
+								  "<head>\n"
+								  "<title>Bonjour Tim</title>\n"
+								  "</head>\n"
+								  "<body>\n"
+								  "<h1>Comment va tim</h1>\n"
+								  "</body>\n"
+								  "</html>";
 	unsigned int			cslen;
 	struct sockaddr_in		csin;
 
@@ -53,7 +63,12 @@ int		main(int ac, char **av)
 	{
 		buff[r] = '\0';
 		std::cout << buff;
+		break ;
 	}
+	int ret = write(cs, body.c_str(), body.length());
+	if (ret == 0)
+		std::cout << "error" << std::endl;
+	std::cout << "end of program" << std::endl;
 	close(cs);
 	close(sock);
 	return (0);

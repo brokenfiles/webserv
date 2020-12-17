@@ -40,6 +40,7 @@ int		main(int ac, char **av)
 {
 	int						sock;
 	int						cs;
+	std::string 			str = "content-type: text/html;charset=UTF-8\nDate: Thu, 17 Dec 2020 14:27:36 GMT\nserver: timlecou\ncontent-encoding: gzip\n";
 	int						r = 0;
 	char					buff[1024];
 	unsigned int			cslen;
@@ -49,7 +50,7 @@ int		main(int ac, char **av)
 		usage(av[0]);
 	sock = create_client(av[1], atoi(av[2]));
 	cs = accept(sock, (struct sockaddr*)&csin, &cslen);
-	write(sock, "salut la mif\n", 13);
+	write(sock, str.c_str(), str.length());
 	close(sock);
 	return (0);
 }
