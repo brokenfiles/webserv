@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 ToolSet: 1.0 (local)Options: 
+=======
+ToolSet: w64 6.0 (local)@C:\Program Files (x86)\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32
+Options: 
+>>>>>>> f74f9500c8826d4662f17690f36db923166f4047
 
 Options:

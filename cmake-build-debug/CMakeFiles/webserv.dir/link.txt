@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 /usr/bin/c++  -Wall -Wextra -Werror -std=c++98 -g   CMakeFiles/webserv.dir/server.cpp.o CMakeFiles/webserv.dir/client.cpp.o  -o webserv 
+=======
+"C:\Program Files\JetBrains\CLion 2020.2.4\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\webserv.dir/objects.a
+C:\PROGRA~2\MINGW-~1\I686-8~1.0-P\mingw32\bin\ar.exe cr CMakeFiles\webserv.dir/objects.a @CMakeFiles\webserv.dir\objects1.rsp
+C:\PROGRA~2\MINGW-~1\I686-8~1.0-P\mingw32\bin\G__~1.EXE -Wall -Wextra -Werror -g   -Wl,--whole-archive CMakeFiles\webserv.dir/objects.a -Wl,--no-whole-archive  -o webserv.exe -Wl,--out-implib,libwebserv.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\webserv.dir\linklibs.rsp
+>>>>>>> f74f9500c8826d4662f17690f36db923166f4047
