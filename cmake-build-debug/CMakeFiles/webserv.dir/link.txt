@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2020.2.4\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\webserv.dir/objects.a
-C:\PROGRA~2\MINGW-~1\I686-8~1.0-P\mingw32\bin\ar.exe cr CMakeFiles\webserv.dir/objects.a @CMakeFiles\webserv.dir\objects1.rsp
-C:\PROGRA~2\MINGW-~1\I686-8~1.0-P\mingw32\bin\G__~1.EXE -Wall -Wextra -Werror -g   -Wl,--whole-archive CMakeFiles\webserv.dir/objects.a -Wl,--no-whole-archive  -o webserv.exe -Wl,--out-implib,libwebserv.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\webserv.dir\linklibs.rsp
+/Library/Developer/CommandLineTools/usr/bin/c++  -Wall -Wextra -Werror -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/webserv.dir/srcs/webserv.cpp.o CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o  -o webserv 
