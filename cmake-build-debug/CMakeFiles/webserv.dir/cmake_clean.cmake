@@ -1,8 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/webserv.dir/srcs/webserv.cpp.obj"
-  "libwebserv.dll.a"
-  "webserv.exe"
-  "webserv.exe.manifest"
+  "CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+  "CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
+  "webserv"
   "webserv.pdb"
 )
 
