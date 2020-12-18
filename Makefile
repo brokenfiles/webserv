@@ -3,7 +3,7 @@ GREEN_B	= \033[1;32m
 RESET	= \033[0m
 
 SRCS	=	srcs/main.cpp \
-            srcs/server.cpp
+            srcs/classes/Server.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 
@@ -15,12 +15,13 @@ NAME	= webserv
 all:		$(NAME)
 
 %.o:		%.cpp
-			@$(CC) $(CFLAGS) -c -MD $< -o $@
+			@$(CC) $(CFLAGS) -c $< -o $@
+#        	@$(CC) $(CFLAGS) -c -MD $< -o $@
 
 $(NAME):	$(OBJS)
 			@$(CC) $(CFLAGS) $^ -o $@
-			@$(RM) *.d
-			@$(RM) *.o
+#			@$(RM) *.d
+#			@$(RM) *.o
 			@printf "$(GREEN_B)$(NAME) $(GREEN)Created.$(RESET)\033[0;0m\n"
 
 
@@ -37,7 +38,7 @@ re:			fclean all
 
 .PHONY:		all clean fclean re
 
--include *.d
+#-include *.d
 
 # $^ = liste des dependance
 # $@ = cible de la règle.
