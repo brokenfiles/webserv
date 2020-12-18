@@ -2,13 +2,13 @@ GREEN	= \033[0;32m
 GREEN_B	= \033[1;32m
 RESET	= \033[0m
 
-SRCS	=	srcs/main.cpp \
-            srcs/classes/Server.cpp
+SRCS	=	srcs/webserv.cpp \
+            srcs/classes/server/Server.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 
 CC		= clang++
-CFLAGS	= -Wall -Wextra -Werror -std=c++98
+CFLAGS	= -Wall -Wextra -Werror -std=c++11
 RM		= rm -f
 NAME	= webserv
 
