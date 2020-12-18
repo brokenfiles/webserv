@@ -8,97 +8,103 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/louis/42/webserv/cmake-build-debug"/>
+				<Option working_dir="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/louis/42/webserv/cmake-build-debug"/>
+				<Option working_dir="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/louis/42/webserv/cmake-build-debug"/>
+				<Option working_dir="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="webserv">
-				<Option output="/Users/louis/42/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/louis/42/webserv/cmake-build-debug"/>
+				<Option output="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="webserv/fast">
-				<Option output="/Users/louis/42/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/louis/42/webserv/cmake-build-debug"/>
+				<Option output="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/louis/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/louis/42/webserv/includes/includes.h">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/louis/42/webserv/srcs/classes/logger/Logger.hpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/louis/42/webserv/srcs/classes/queries/Query.hpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/louis/42/webserv/srcs/classes/server/Server.cpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/louis/42/webserv/srcs/classes/server/Server.hpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/louis/42/webserv/srcs/webserv.cpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/louis/42/webserv/CMakeLists.txt">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

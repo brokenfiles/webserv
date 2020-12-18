@@ -63,10 +63,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/louis/42/webserv
+CMAKE_SOURCE_DIR = /Users/timothelecouvreur/Documents/cursus_42/github/webserv
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/louis/42/webserv/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/webserv.dir/depend.make
@@ -79,43 +79,58 @@ include CMakeFiles/webserv.dir/flags.make
 
 CMakeFiles/webserv.dir/srcs/webserv.cpp.o: CMakeFiles/webserv.dir/flags.make
 CMakeFiles/webserv.dir/srcs/webserv.cpp.o: ../srcs/webserv.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/louis/42/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/webserv.dir/srcs/webserv.cpp.o -c /Users/louis/42/webserv/srcs/webserv.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/webserv.dir/srcs/webserv.cpp.o -c /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp
 
 CMakeFiles/webserv.dir/srcs/webserv.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/webserv.dir/srcs/webserv.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/louis/42/webserv/srcs/webserv.cpp > CMakeFiles/webserv.dir/srcs/webserv.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp > CMakeFiles/webserv.dir/srcs/webserv.cpp.i
 
 CMakeFiles/webserv.dir/srcs/webserv.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webserv.dir/srcs/webserv.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/louis/42/webserv/srcs/webserv.cpp -o CMakeFiles/webserv.dir/srcs/webserv.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp -o CMakeFiles/webserv.dir/srcs/webserv.cpp.s
 
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o: CMakeFiles/webserv.dir/flags.make
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o: ../srcs/classes/server/Server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/louis/42/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o -c /Users/louis/42/webserv/srcs/classes/server/Server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o -c /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp
 
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/louis/42/webserv/srcs/classes/server/Server.cpp > CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp > CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.i
 
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/louis/42/webserv/srcs/classes/server/Server.cpp -o CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp -o CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.s
+
+CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o: CMakeFiles/webserv.dir/flags.make
+CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o: ../srcs/classes/queries/Query.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o -c /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp
+
+CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp > CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.i
+
+CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp -o CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.s
 
 # Object files for target webserv
 webserv_OBJECTS = \
 "CMakeFiles/webserv.dir/srcs/webserv.cpp.o" \
-"CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+"CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o" \
+"CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
 
 # External object files for target webserv
 webserv_EXTERNAL_OBJECTS =
 
 webserv: CMakeFiles/webserv.dir/srcs/webserv.cpp.o
 webserv: CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o
+webserv: CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o
 webserv: CMakeFiles/webserv.dir/build.make
 webserv: CMakeFiles/webserv.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/louis/42/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable webserv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable webserv"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/webserv.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -128,6 +143,6 @@ CMakeFiles/webserv.dir/clean:
 .PHONY : CMakeFiles/webserv.dir/clean
 
 CMakeFiles/webserv.dir/depend:
-	cd /Users/louis/42/webserv/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/louis/42/webserv /Users/louis/42/webserv /Users/louis/42/webserv/cmake-build-debug /Users/louis/42/webserv/cmake-build-debug /Users/louis/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/timothelecouvreur/Documents/cursus_42/github/webserv /Users/timothelecouvreur/Documents/cursus_42/github/webserv /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/webserv.dir/depend
 

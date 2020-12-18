@@ -68,10 +68,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/louis/42/webserv
+CMAKE_SOURCE_DIR = /Users/timothelecouvreur/Documents/cursus_42/github/webserv
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/louis/42/webserv/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/louis/42/webserv/cmake-build-debug/CMakeFiles /Users/louis/42/webserv/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/louis/42/webserv/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -142,6 +142,33 @@ webserv: cmake_check_build_system
 webserv/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/build
 .PHONY : webserv/fast
+
+srcs/classes/queries/Query.o: srcs/classes/queries/Query.cpp.o
+
+.PHONY : srcs/classes/queries/Query.o
+
+# target to build an object file
+srcs/classes/queries/Query.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o
+.PHONY : srcs/classes/queries/Query.cpp.o
+
+srcs/classes/queries/Query.i: srcs/classes/queries/Query.cpp.i
+
+.PHONY : srcs/classes/queries/Query.i
+
+# target to preprocess a source file
+srcs/classes/queries/Query.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.i
+.PHONY : srcs/classes/queries/Query.cpp.i
+
+srcs/classes/queries/Query.s: srcs/classes/queries/Query.cpp.s
+
+.PHONY : srcs/classes/queries/Query.s
+
+# target to generate assembly for a file
+srcs/classes/queries/Query.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.s
+.PHONY : srcs/classes/queries/Query.cpp.s
 
 srcs/classes/server/Server.o: srcs/classes/server/Server.cpp.o
 
@@ -206,6 +233,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... webserv"
+	@echo "... srcs/classes/queries/Query.o"
+	@echo "... srcs/classes/queries/Query.i"
+	@echo "... srcs/classes/queries/Query.s"
 	@echo "... srcs/classes/server/Server.o"
 	@echo "... srcs/classes/server/Server.i"
 	@echo "... srcs/classes/server/Server.s"
