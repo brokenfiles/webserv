@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <string.h>
 #include <cerrno>
 #include <fstream>
 #include "../logger/Logger.hpp"
@@ -21,10 +22,24 @@ public:
 	int setup(void);
 	void setAddress(void);
 	int accept_request(void);
+	int accept_request(int fd);
 	int read_request(void);
-	int send_request(void);
+	int read_request(int fd);
+	int send_request(std::string);
 	int close_sock(void);
+
+	int read_request_core(int fd);
+	int accept_request_core(int fd);
+
+	int server_run(void);
+
+	//getters
 	std::string get_request(void);
+	int getSocketServer(void);
+	int getSocketClient(void);
+	struct sockaddr_in getAddrServer();
+	struct sockaddr_in getAddrClient();
+
 
 private:
 	struct sockaddr_in serv_socket_in;
