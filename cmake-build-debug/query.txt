@@ -14,12 +14,7 @@ X-XSS-Protection: 1; mode=block\r
 Vary: Accept-Encoding,Cookie\r
 Age: 7\r\n\r\n
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>A simple webpage</title>
-</head>
+<html>
 <body>
   <h1>Simple HTML5 webpage</h1>
   <p>Hello, world!</p>
