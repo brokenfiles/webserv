@@ -153,7 +153,7 @@ int Server::send_request(std::string toSend)
 
 int Server::server_run()
 {
-    int higher_fd, client_curr, i = 0;;
+    int higher_fd, client_curr, i = 0;
     int master_socket = Server::getSocketServer();
     fd_set fd_pool;
 
