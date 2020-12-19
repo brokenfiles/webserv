@@ -56,8 +56,10 @@ private:
 
 	std::string 	getPath(std::string query, std::string method)
 	{
-		int 	i = query.find('\n');
-		return (query.substr(method.length(), i - method.length()));
+		query.erase(0, method.length() + 1);
+		std::cout << query << std::endl;
+		int 	i = query.find(' ');
+		return (query.substr(0, i));
 	}
 
 public:
