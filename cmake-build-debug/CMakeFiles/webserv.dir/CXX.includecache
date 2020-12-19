@@ -34,6 +34,30 @@ vector
 time.h
 /Users/louis/42/webserv/srcs/classes/logger/time.h
 
+/Users/louis/42/webserv/srcs/classes/parser/Parser.hpp
+../../../includes/includes.h
+/Users/louis/42/webserv/includes/includes.h
+../queries/Query.hpp
+/Users/louis/42/webserv/srcs/classes/queries/Query.hpp
+iostream
+-
+map
+-
+
+/Users/louis/42/webserv/srcs/classes/queries/Query.cpp
+../../../includes/includes.h
+/Users/louis/42/webserv/includes/includes.h
+Query.hpp
+/Users/louis/42/webserv/srcs/classes/queries/Query.hpp
+
+/Users/louis/42/webserv/srcs/classes/queries/Query.hpp
+../../../includes/includes.h
+/Users/louis/42/webserv/includes/includes.h
+iostream
+-
+map
+-
+
 /Users/louis/42/webserv/srcs/classes/server/Server.cpp
 Server.hpp
 /Users/louis/42/webserv/srcs/classes/server/Server.hpp
@@ -59,4 +83,16 @@ fstream
 -
 ../logger/Logger.hpp
 /Users/louis/42/webserv/srcs/classes/logger/Logger.hpp
+
+/Users/louis/42/webserv/srcs/webserv.cpp
+../includes/includes.h
+/Users/louis/42/webserv/includes/includes.h
+../srcs/classes/logger/Logger.hpp
+/Users/louis/42/webserv/srcs/classes/logger/Logger.hpp
+../srcs/classes/server/Server.hpp
+/Users/louis/42/webserv/srcs/classes/server/Server.hpp
+../srcs/classes/parser/Parser.hpp
+/Users/louis/42/webserv/srcs/classes/parser/Parser.hpp
+../srcs/classes/queries/Query.hpp
+/Users/louis/42/webserv/srcs/classes/queries/Query.hpp
 
