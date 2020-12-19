@@ -15,17 +15,15 @@ enum LogType
 	SUCCESS
 };
 
-class NoPrintClass
-{
+class NoPrintClass {
 public:
-	NoPrintClass(int i)
-	{
-		(void) i;
+	NoPrintClass(int x) {
+		(void)x;
 	}
 
 	friend std::ostream &operator<<(std::ostream &os, const NoPrintClass &aClass)
 	{
-		(void) aClass;
+		(void)aClass;
 		return os;
 	}
 };
@@ -94,7 +92,11 @@ public:
 		std::string prefix    = this->get_prefix(type);
 		std::string timestamp = this->get_current_timestamp();
 		std::cout << "\033[30m" << timestamp + " " + prefix;
-		std::cout << print_class << " ";
+		if (dynamic_cast<NoPrintClass *>(&print_class)) {
+			std::cout << " ";
+		} else {
+			std::cout << " " << print_class;
+		}
 		std::cout << message << "\033[0m" << std::endl;
 	}
 
@@ -150,7 +152,6 @@ private:
 	}
 
 };
-
 extern Logger logger;
 
 #endif

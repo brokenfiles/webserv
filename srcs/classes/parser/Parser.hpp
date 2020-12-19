@@ -54,6 +54,13 @@ private:
 		return (map);
 	}
 
+	std::string 	getPath(std::string query, std::string method)
+	{
+		query.erase(0, method.length() + 1);
+		int 	i = query.find(' ');
+		return (query.substr(0, i));
+	}
+
 public:
 	Parser() {}
 	virtual ~Parser() {}
@@ -65,6 +72,7 @@ public:
 		if (this->_checkFormat(query) == 0)
 			throw std::invalid_argument("Bad format");
 		ret->setMethod(getMethod(query));
+		ret->setPath(getPath(query, ret->getMethod()));
 		ret->setHeaders(getHeaders(query));
 		return (*ret);
 	}

@@ -61,6 +61,8 @@ map
 /Users/louis/42/webserv/srcs/classes/server/Server.cpp
 Server.hpp
 /Users/louis/42/webserv/srcs/classes/server/Server.hpp
+../parser/Parser.hpp
+/Users/louis/42/webserv/srcs/classes/parser/Parser.hpp
 
 /Users/louis/42/webserv/srcs/classes/server/Server.hpp
 ../../../includes/includes.h
