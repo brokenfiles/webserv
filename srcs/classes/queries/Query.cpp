@@ -9,13 +9,11 @@ std::ostream&	operator<<(std::ostream &o, const Query &q) {
 
 	std::map<std::string, std::string>::const_iterator	ite;
 
-	o << "----------{Contenue de la requete}------------" << std::endl;
-	o << q.getMethod() << " " << q.getPath() << std::endl;
-	for(ite = q.getHeaders().begin(); ite != q.getHeaders().end(); ite++)
-	{
-			o << ite->first << ": ";
-			o << ite->second << std::endl;
-	}
-	o << "----------------------------------------------" << std::endl;
+	o << q.getMethod() << " " << q.getPath();
+//	for(ite = q.getHeaders().begin(); ite != q.getHeaders().end(); ite++)
+//	{
+//			o << ite->first << ": ";
+//			o << ite->second << std::endl;
+//	}
 	return (o);
 }

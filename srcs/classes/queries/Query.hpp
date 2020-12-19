@@ -12,8 +12,11 @@ private:
 	std::string 						_path;
 
 public:
-	Query() {}
-	~Query() {}
+	Query() {
+
+	}
+
+	virtual ~Query() {}
 
 	Query &operator=(const Query &q) {
 		this->_method = q.getMethod();
@@ -21,7 +24,10 @@ public:
 		return (*this);
 	}
 
-	Query(const Query &);
+	Query(const Query &query) {
+		*this = query;
+	}
+
 
 	const std::string &getMethod() const {
 		return _method;
