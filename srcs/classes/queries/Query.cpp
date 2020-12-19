@@ -3,6 +3,7 @@
 //
 
 #include "../../../includes/includes.h"
+#include "Query.hpp"
 
 std::ostream&	operator<<(std::ostream &o, const Query &q) {
 
