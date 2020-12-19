@@ -133,6 +133,7 @@ int Server::read_request_core(int fd)
 	try
 	{
 		Query query = parser.parse(this->request);
+		//std::cout << query << std::endl;
 		logger.info("", query);
 	} catch (std::exception &e)
 	{

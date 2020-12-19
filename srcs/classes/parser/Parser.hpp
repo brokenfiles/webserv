@@ -34,7 +34,7 @@ private:
 
 	//renvoi une map contenant les headers de la requete
 
-	std::map<std::string, std::string>	getHeaders(std::string query)
+	std::map<std::string, std::string>	getHeaders(std::string &query)
 	{
 		std::map<std::string, std::string>	map;
 		std::size_t							r = 0;
@@ -42,10 +42,12 @@ private:
 
 
 		//tant qu'on est pas au bout de la requete
-		query.erase( query.length() - 1, 1);
+		//query.erase( query.length() - 1, 1);
 		while (query.find('\n') != std::string::npos)
 		{
 			r = query.find('\n');
+			if (query.find('\n') == 1)
+				break ;
 			if (tmp > 0)
 				map[query.substr(0, query.find(':'))] = query.substr(query.find(':') + 2, r - 2 - query.find(':'));
 			query.erase(0, r + 1);
@@ -61,6 +63,11 @@ private:
 		return (query.substr(0, i));
 	}
 
+	std::string 	getBody(std::string query)
+	{
+		return (query);
+	}
+
 public:
 	Parser() {}
 	virtual ~Parser() {}
@@ -74,6 +81,7 @@ public:
 		ret->setMethod(getMethod(query));
 		ret->setPath(getPath(query, ret->getMethod()));
 		ret->setHeaders(getHeaders(query));
+		ret->setBody(getBody(query));
 		return (*ret);
 	}
 

@@ -10,6 +10,7 @@ private:
 	std::string							_method;
 	std::map<std::string, std::string>	_headers;
 	std::string 						_path;
+	std::string 						_body;
 
 public:
 	Query() {
@@ -21,6 +22,8 @@ public:
 	Query &operator=(const Query &q) {
 		this->_method = q.getMethod();
 		this->_headers = q.getHeaders();
+		this->_body = q.getBody();
+		this->_path = q.getPath();
 		return (*this);
 	}
 
@@ -28,6 +31,13 @@ public:
 		*this = query;
 	}
 
+	const std::string &getBody() const {
+		return _body;
+	}
+
+	void setBody(const std::string &body) {
+		_body = body;
+	}
 
 	const std::string &getMethod() const {
 		return _method;
