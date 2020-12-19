@@ -9,6 +9,7 @@ class Query
 private:
 	std::string							_method;
 	std::map<std::string, std::string>	_headers;
+	std::string 						_path;
 
 public:
 	Query() {}
@@ -24,6 +25,14 @@ public:
 
 	const std::string &getMethod() const {
 		return _method;
+	}
+
+	const std::string &getPath() const {
+		return _path;
+	}
+
+	void setPath(const std::string &path) {
+		_path = path;
 	}
 
 	void setMethod(const std::string &method) {

@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "../parser/Parser.hpp"
 
 //int errno_error(const char *str, int error)
 //{
@@ -128,6 +129,8 @@ int Server::read_request_core(int fd)
         keeper += buffer;
     }
     this->request = keeper;
+    Parser	pars;
+    std::cout << pars.parse(this->request) << std::endl;
     return (0);
 }
 

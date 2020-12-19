@@ -8,6 +8,8 @@ CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o
  /Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
  /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
+ /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
+ /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
  /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp
  /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 CMakeFiles/webserv.dir/srcs/webserv.cpp.o
