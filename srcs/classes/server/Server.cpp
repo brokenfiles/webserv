@@ -9,6 +9,8 @@
 Server::Server()
 {
 	errno = 0;
+	max_clients = MAX_CLIENT_HOST,
+    memset(&client_socket, 0, sizeof(int) * max_clients);
 }
 
 Server::~Server()
@@ -32,6 +34,8 @@ Server &Server::operator=(const Server &copy)
 
 int Server::setup()
 {
+    int opt = 1;
+
 	//création du socket TCP IPv4 - retourne un file descriptor;
 	if ((server_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
     {
@@ -40,6 +44,13 @@ int Server::setup()
     }
 
 	logger.info("[SERVER]: Socket ready to use!...", NO_PRINT_CLASS);
+
+	//allow multiple connection, work without this, but idk
+	if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, 0))  == 0)
+    {
+        logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS);
+        return (-1);
+    }
 
 	Server::setAddress();
 
@@ -75,7 +86,7 @@ void Server::setAddress()
 
 int Server::accept_request_core(int fd)
 {
-    int size;
+    int size = sizeof(client_socket_in);
 
     //récupére le fd_client, contenant header + body; stock info IP:PORT dans client_socket_in;
     if ((client_sock = accept(fd, (struct sockaddr *) &client_socket_in, (socklen_t *) &size)) < 0)
@@ -142,46 +153,42 @@ int Server::send_request(std::string toSend)
 
 int Server::server_run()
 {
-    /*
-    int client_socket[30], max_clients = 30, activity, i, sd;
-    int max_sd;
-    fd_set readfds;
+    int higher_fd, client_curr, i = 0;;
+    int master_socket = Server::getSocketServer();
+    fd_set fd_pool;
 
-
-    memset(client_socket, 0, max_clients);
-
-    int master_socket = server.getSocketServer();
-
-    while (TRUE)
+    while (1)
     {
-        FD_ZERO(&readfds);
-
-        FD_SET(master_socket, &readfds);
-        max_sd = master_socket;
+        FD_ZERO(&fd_pool);
+        FD_SET(master_socket, &fd_pool);
+        higher_fd = master_socket;
 
         for (i = 0; i < max_clients; i++)
         {
-            sd = client_socket[i];
-            if (sd > 0)
-                FD_SET(sd, &readfds);
-            if (sd > max_sd)
-                max_sd = sd;
+            client_curr = client_socket[i];
+            if (client_curr > 0)
+                FD_SET(client_curr, &fd_pool);
+            if (client_curr > higher_fd)
+                higher_fd = client_curr;
         }
 
-        activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
-
-        if ((activity < 0) && (errno != EINTR))
-            std::cout << "select_error\n";
-
-        if (FD_ISSET(master_socket, &readfds))
+        if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
         {
-            server.accept_request(master_socket);
-            server.send_request("Welcome!");
+            logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS);
+            return (-1);
+        }
+
+        if (FD_ISSET(master_socket, &fd_pool))
+        {
+            if (Server::accept_request(master_socket) == -1)
+                return (-1);
+            if (Server::send_request("Welcome!") == -1)
+                return (-1);
             for (i = 0; i < max_clients; i++)
             {
                 if (client_socket[i] == 0)
                 {
-                    client_socket[i] = server.getSocketClient();
+                    client_socket[i] = Server::getSocketClient();
                     logger.success("[SERVER]: Adding to list of sockets : " + std::to_string(i), NO_PRINT_CLASS);
                     break;
                 }
@@ -190,18 +197,17 @@ int Server::server_run()
 
         for (i = 0; i < max_clients; i++)
         {
-            sd = client_socket[i];
-            if (FD_ISSET(sd, &readfds))
+            client_curr = client_socket[i];
+            if (FD_ISSET(client_curr, &fd_pool))
             {
-                //Optimisation selon type de connexion;
-                server.read_request(sd);
-                close(sd);
+                //need optimisation selon type de connexion;
+                Server::read_request(client_curr);
+                close(client_curr);
                 client_socket[i] = 0;
                 logger.info("[SERVER]: Host disconnected. Socket: " + std::to_string(i), NO_PRINT_CLASS);
             }
         }
     }
-     */
     return (0);
 }
 

@@ -19,6 +19,8 @@ public:
 	~Server();
 	Server(const Server &copy);
 	Server &operator=(const Server &copy);
+
+	//make it works
 	int setup(void);
 	void setAddress(void);
 	int accept_request(void);
@@ -47,6 +49,8 @@ private:
 	int                client_sock;
 	int                server_sock;
 	std::string        request;
+	int                client_socket[MAX_CLIENT_HOST];
+	int                max_clients;
 };
 
 #endif

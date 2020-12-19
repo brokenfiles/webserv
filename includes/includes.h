@@ -14,5 +14,6 @@
 #define PORT 8080
 #define LOCAL "127.0.0.1"
 #define BUFFER 100
+#define MAX_CLIENT_HOST 30
 
 #endif
