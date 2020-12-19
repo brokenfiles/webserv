@@ -7,7 +7,7 @@
 
 std::ostream&	operator<<(std::ostream &o, const Query &q) {
 
-	std::map<std::string, std::string>::const_iterator	ite;
+	//std::map<std::string, std::string>::const_iterator	ite;
 
 	o << q.getMethod() << " [" << q.getPath() << "]";
 //	for(ite = q.getHeaders().begin(); ite != q.getHeaders().end(); ite++)

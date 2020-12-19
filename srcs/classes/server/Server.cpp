@@ -10,8 +10,8 @@
 Server::Server()
 {
 	errno = 0;
-	max_clients = MAX_CLIENT_HOST,
-			memset(&client_socket, 0, sizeof(int) * max_clients);
+	max_clients = MAX_CLIENT_HOST;
+	memset(&client_socket, 0, sizeof(int) * max_clients);
 }
 
 Server::~Server()
@@ -134,7 +134,8 @@ int Server::read_request_core(int fd)
 	{
 		Query query = parser.parse(this->request);
 		//std::cout << query << std::endl;
-		logger.info("", query);
+		//ogger.info("", query);
+		query.stringify();
 	} catch (std::exception &e)
 	{
 		logger.error(std::string(e.what()), NO_PRINT_CLASS);

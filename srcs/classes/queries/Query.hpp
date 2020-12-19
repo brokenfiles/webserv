@@ -64,9 +64,32 @@ public:
 	}
 
 
+	//assemble les elements de la requete dans une string et la renvoi
+	std::string 	stringify(void) const
+	{
+		std::string		ret;
+		std::map<std::string, std::string>::const_iterator	ite;
+
+		ret.insert(ret.length(), getMethod());
+		ret.push_back(' ');
+		ret.insert(ret.length(), getPath());
+		ret.push_back('\r');
+		ret.push_back('\n');
+		for(ite = getHeaders().begin(); ite != getHeaders().end(); ite++)
+		{
+			ret.insert(ret.length(), ite->first);
+			ret.push_back(':');
+			ret.push_back(' ');
+			ret.insert(ret.length(), ite->second);
+			ret.push_back('\n');
+		}
+		ret.push_back('\r');
+		ret.push_back('\n');
+		ret.insert(ret.length(), getBody());
+		return (ret);
+	}
 };
 
 std::ostream&	operator<<(std::ostream &o, const Query &q);
-
 
 #endif
