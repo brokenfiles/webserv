@@ -1,0 +1,21 @@
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Content-Length: 55743
+Connection: keep-alive
+Cache-Control: s-maxage=300, public, max-age=0
+Content-Language: en-US
+Date: Thu, 06 Dec 2018 17:37:18 GMT
+Server: Webserv
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>A simple webpage</title>
+</head>
+<body>
+  <h1>Webserv</h1>
+  <p>Hello, world!</p>
+</body>
+</html>

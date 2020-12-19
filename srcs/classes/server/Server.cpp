@@ -156,7 +156,19 @@ int Server::server_run()
     int higher_fd, client_curr, i = 0;;
     int master_socket = Server::getSocketServer();
     fd_set fd_pool;
+//==============================-------------------
+	std::ifstream   ifs("query.txt", std::ios::in);
+	std::string 	newStr;
+	if (ifs.is_open())
+		std::getline(ifs, newStr, '\0');
+	else
+	{
+		std::cerr << "cannot open the file" << std::endl;
+		return (1);
+	}
+	ifs.close();
 
+//==============================--------------------
     while (1)
     {
         FD_ZERO(&fd_pool);
@@ -182,7 +194,8 @@ int Server::server_run()
         {
             if (Server::accept_request(master_socket) == -1)
                 return (-1);
-            if (Server::send_request("Welcome!") == -1)
+
+            if (Server::send_request(newStr) == -1)
                 return (-1);
             for (i = 0; i < max_clients; i++)
             {

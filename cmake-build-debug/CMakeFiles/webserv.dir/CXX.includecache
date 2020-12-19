@@ -34,30 +34,6 @@ vector
 time.h
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/time.h
 
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
-../../../includes/includes.h
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
-../queries/Query.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
-iostream
--
-map
--
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp
-../../../includes/includes.h
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
-Query.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
-../../../includes/includes.h
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
-iostream
--
-map
--
-
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp
 Server.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
@@ -83,16 +59,4 @@ fstream
 -
 ../logger/Logger.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp
-../includes/includes.h
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
-../srcs/classes/logger/Logger.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
-../srcs/classes/server/Server.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
-../srcs/classes/parser/Parser.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
-../srcs/classes/queries/Query.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
 
