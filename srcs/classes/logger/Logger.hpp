@@ -150,7 +150,7 @@ private:
 	{
 		if (type == INFO)
 		{
-			return "\033[30m[INFO]";
+			return "\033[33m[INFO]";
 		}
 		else if (type == WARNING)
 		{
