@@ -5,10 +5,11 @@ Client::Client() : socket(-1), ip(), port(-1), request_send()
     memset(&this->client_addr, 0, sizeof(client_addr));
 }
 
-Client::Client(int fd, struct sockaddr_in address) : socket(fd), client_addr(address), request_send()
+Client::Client(int fd, struct sockaddr_in address) : socket(fd), client_addr(address)
 {
     ip = std::string(inet_ntoa(client_addr.sin_addr));
     port = ntohs(client_addr.sin_port);
+    request_send = "";
 }
 
 

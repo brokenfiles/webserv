@@ -16,17 +16,19 @@ class Client
         Client(const Client &copy);
         Client &operator=(const Client &copy);
 
-        int getSocket();
+        //getters
         std::string getRequest();
         std::string getIP();
+        int getSocket();
         int getPort();
 
+        //setters
         void setRequest();
 
     private:
         int socket;
-        std::string ip;
         int port;
+        std::string ip;
         std::string request_send;
         struct sockaddr_in client_addr;
 

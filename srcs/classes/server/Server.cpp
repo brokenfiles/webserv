@@ -61,7 +61,7 @@ int Server::setup()
 		return (-1);
 	}
 
-	logger.info("[SERVER]: Binding success", NO_PRINT_CLASS);
+	logger.info("[SERVER]: Binding success.", NO_PRINT_CLASS);
 
 	//ecoute sur le socket server, queue de 20 request;
 	if (listen(server_sock, 20) < 0)
@@ -104,7 +104,7 @@ int Server::accept_request_core(int fd)
 		return (-1);
 	}
 	logger.info("[SERVER]: Connexion from <" + std::string(inet_ntoa(client_socket_in.sin_addr)) + ":" +
-				std::to_string(ntohs(client_socket_in.sin_port)) + "> accepted.", NO_PRINT_CLASS);
+				std::to_string(ntohs(client_socket_in.sin_port)) + ">.", NO_PRINT_CLASS);
 
 
     if (fcntl(client_sock, F_SETFL, O_NONBLOCK) < 0)
@@ -192,9 +192,9 @@ int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
     FD_SET(master_socket, &fd_pool);
     higher_fd = master_socket;
 
-    for (int i = 0; i < max_clients; i++)
+    for (std::list<Client*>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
     {
-        client_curr = client_socket[i];
+        client_curr = (*it)->getSocket();
         if (client_curr > 0)
             FD_SET(client_curr, &fd_pool);
         if (client_curr > higher_fd)
@@ -226,44 +226,29 @@ int Server::server_run()
 		{
 			if (Server::accept_request(master_socket) == -1)
 				return (-1);
-
-			
 			client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
-            logger.success("[SERVER]: Adding in list of pending sockets.", NO_PRINT_CLASS);
+            logger.success(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
+        }
 
-            for (i = 0; i < max_clients; i++)
-			{
-				if (client_socket[i] == 0)
-				{
-					client_socket[i] = Server::getSocketClient();
-					logger.success("[SERVER]: Adding to list of sockets : " + std::to_string(i), NO_PRINT_CLASS);
-					break;
-				}
-			}
-		}
+        //gère les requetes, receive + send
+        for (std::list<Client*>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
+        {
+            client_curr = (*it)->getSocket();
+            if (FD_ISSET(client_curr, &fd_pool))
+            {
+                if (Server::read_request(client_curr) == -1)
+                    return (-1);
 
-		//gère les requetes, read + write
-		for (i = 0; i < max_clients; i++)
-		{
-			client_curr = client_socket[i];
-			if (FD_ISSET(client_curr, &fd_pool))
-			{
-				if (Server::read_request(client_curr) == -1)
-				    return (-1);
-
-				/* ICI REQUETE ICI QUERY ICI PARSER ICI DINGUERIE */
-
-
-				std::string req = Server::get_request();
+                Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
 
                 if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
                     return (-1);
-
-				close(client_curr);
-                client_socket[i] = 0;
-                logger.info("[SERVER]: Host disconnected. Socket: " + std::to_string(i), NO_PRINT_CLASS);
+                close(client_curr);
+                logger.info(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
+                logger.info(std::string("[SERVER]: Request successfully received and send back."), NO_PRINT_CLASS);
+                it = client_settled.erase(it);
             }
-		}
+        }
 	}
 	return (0);
 }
@@ -299,4 +284,14 @@ struct sockaddr_in Server::getAddrServer()
 struct sockaddr_in Server::getAddrClient()
 {
 	return (this->client_socket_in);
+}
+
+std::string Server::getClientIP(void)
+{
+    return (std::string(inet_ntoa(client_socket_in.sin_addr)));
+}
+
+int Server::getClientPort(void)
+{
+    return (ntohs(client_socket_in.sin_port));
 }

@@ -4,6 +4,7 @@
 #include "../srcs/classes/server/Server.hpp"
 #include "../srcs/classes/parser/Parser.hpp"
 #include "../srcs/classes/queries/Query.hpp"
+#include "../srcs/classes/client/Client.hpp"
 
 #define TRUE 1
 #define FALSE 0
@@ -27,6 +28,7 @@ int main(int ac, char **av)
 	/* LOOP MULTIPLE CLIENTS */
 	if (server.server_run() == -1)
 	    return (1);
+
 
 
     return (0);

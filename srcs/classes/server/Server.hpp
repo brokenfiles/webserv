@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <cerrno>
 #include <fstream>
-#include <vector>
+#include <list>
 #include "../logger/Logger.hpp"
 #include "../parser/Parser.hpp"
 #include "../client/Client.hpp"
@@ -54,6 +54,8 @@ class Server
 	    std::string get_request(void);
 	    int getSocketServer(void);
 	    int getSocketClient(void);
+	    std::string getClientIP(void);
+	    int getClientPort(void);
 	    struct sockaddr_in getAddrServer();
 	    struct sockaddr_in getAddrClient();
 
@@ -64,7 +66,7 @@ class Server
 	    int                client_sock;
 	    int                server_sock;
 	    std::string        request;
-	    std::vector<Client*> client_settled;
+	    std::list<Client*> client_settled;
 	    int                client_socket[MAX_CLIENT_HOST];
 	    int                max_clients;
 	    Parser             parser;
