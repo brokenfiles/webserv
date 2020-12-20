@@ -212,7 +212,8 @@ int Server::server_run()
                     return (-1);
 
                 Client* toManage = (*it); //REQUETE DE CE CLIENT A GERE
-				(void)toManage;
+                toManage->setRequest(Server::get_request());
+                std::cout << toManage->getRequest() << std::endl;
 
                 if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
                     return (-1);
