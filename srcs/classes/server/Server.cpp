@@ -38,47 +38,32 @@ int Server::setup()
 
 	//création du socket TCP IPv4 - retourne un file descriptor;
 	if ((server_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-	{
-		logger.error("[SERVER]: socket: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-		return (-1);
-	}
+		return (logger.error("[SERVER]: socket: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 	logger.info("[SERVER]: TCP/IPv4 Socket ready to use!...", NO_PRINT_CLASS);
 
 	//allow multiple connection, work without this, but idk
 	if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
-	{
-		logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-		return (-1);
-	}
+		return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 	Server::setAddress();
 
 	//affectation d'un nom au socket "sock_fd", affecte <adresse> <port> specifié dans setAddress();
 	if (bind(server_sock, (const struct sockaddr *) &serv_socket_in, sizeof(serv_socket_in)) < 0)
-	{
-		logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-		return (-1);
-	}
+		return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 	logger.info("[SERVER]: Binding success.", NO_PRINT_CLASS);
 
 	//ecoute sur le socket server, queue de 20 request;
 	if (listen(server_sock, 20) < 0)
-	{
-		logger.error("[SERVER]: listen" + std::string(strerror(errno)), NO_PRINT_CLASS);
-		return (-1);
-	}
+		return (logger.error("[SERVER]: listen" + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 //	logger.info("[SERVER]: Accepting connextions on port" + , NO_PRINT_CLASS);
 	logger.info("[SERVER]: Waiting for incoming connexions...", NO_PRINT_CLASS);
 	return (0);
 
 	if (fcntl(server_sock, F_SETFL, O_NONBLOCK) < 0)
-    {
-        logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-        return (-1);
-    }
+        return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 }
 
@@ -109,17 +94,11 @@ int Server::accept_request_core(int fd)
 
 
     if (fcntl(client_sock, F_SETFL, O_NONBLOCK) < 0)
-    {
-        logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-        return (-1);
-    }
+        return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
     int opt = 1;
     if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
-    {
-        logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-        return (-1);
-    }
+        return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 	return (0);
 }
@@ -145,10 +124,7 @@ int Server::read_request_core(int fd)
 		memset(buffer, 0, 100);
 		read = recv(fd, buffer, BUFFER - 1, 0);
 		if (read == -1)
-		{
-			logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-			return (-1);
-		}
+			return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 		keeper += buffer;
 	}
 	this->request = keeper;
@@ -168,10 +144,7 @@ int Server::read_request(int fd)
 int Server::send_request_core(int fd, std::string toSend)
 {
     if (send(fd, toSend.c_str(), toSend.length(), 0) != (int) toSend.length())
-    {
-        logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-        return (-1);
-    }
+        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
     return (0);
 }
 
@@ -217,10 +190,7 @@ int Server::server_run()
 
         //ok quand un fd de la pool et ready to read/write;
 		if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
-		{
-			logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-			return (-1);
-		}
+			return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
         //fd pret ? accept + stock le socket client
         if (FD_ISSET(master_socket, &fd_pool))
@@ -247,7 +217,7 @@ int Server::server_run()
                     return (-1);
                 close(client_curr);
                 logger.success(std::string("[SERVER]: Request successfully received/sent."), NO_PRINT_CLASS);
-                logger.info(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + Logger::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
+                logger.notice(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + Logger::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
                 it = client_settled.erase(it);
             }
         }

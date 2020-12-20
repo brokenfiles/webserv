@@ -10,7 +10,7 @@ SRCS	=	srcs/webserv.cpp \
 OBJS	= $(SRCS:.cpp=.o)
 
 CC		= clang++
-CFLAGS	= -std=c++11
+CFLAGS	= -Wall -Wextra -Werror -std=c++98
 RM		= rm -f
 NAME	= webserv
 
