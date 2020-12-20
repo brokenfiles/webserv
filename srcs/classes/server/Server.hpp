@@ -66,7 +66,7 @@ class Server
 	    int                client_sock;
 	    int                server_sock;
 	    std::string        request;
-	    std::list<Client> client_settled;
+	    std::list<Client*> client_settled;
 	    int                client_socket[MAX_CLIENT_HOST];
 	    int                max_clients;
 	    Parser             parser;
