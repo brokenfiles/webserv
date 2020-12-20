@@ -1,8 +1,4 @@
 TODO : Faire webserv
 
 
-TODO : EXIT Propre dans le server : lors d'un exit inatendu bien close les fd
-TODO : Ajouter les logs de Louito
-TODO : makefile du turfu qui compile les .h eheh
-TODO : Choisir une page d'accueil pour notre bo serv =)
-TODO : Parsing de la request ?
+TODO : logger.info etc etc return un int et prend un code d'erreur pour pouvoir return et gagner des lignes ?

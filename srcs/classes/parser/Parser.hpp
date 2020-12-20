@@ -10,7 +10,7 @@
 #include <map>
 
 class Parser {
-private:
+public:
 
 	//fonction qui verifie si le format de la requete reçue est valide
 
@@ -66,15 +66,15 @@ public:
 	virtual ~Parser() {}
 
 	//methode qui renvoi une reference sur Query apres avoir effectué le parsing
-	Query&	parse(std::string query) throw(std::exception)
+	Query	parse(std::string input_query) throw(std::exception)
 	{
-		Query	*ret = new Query();
-		if (this->_checkFormat(query) == 0)
+		Query	kwery;
+		if (this->_checkFormat(input_query) == 0)
 			throw std::invalid_argument("Bad format");
-		ret->setMethod(getMethod(query));
-		ret->setPath(getPath(query, ret->getMethod()));
-		ret->setHeaders(getHeaders(query));
-		return (*ret);
+        kwery.setMethod(getMethod(input_query));
+        kwery.setPath(getPath(input_query, kwery.getMethod()));
+        kwery.setHeaders(getHeaders(input_query));
+		return (kwery);
 	}
 
 };

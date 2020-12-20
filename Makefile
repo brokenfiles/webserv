@@ -3,12 +3,14 @@ GREEN_B	= \033[1;32m
 RESET	= \033[0m
 
 SRCS	=	srcs/webserv.cpp \
-            srcs/classes/server/Server.cpp
+            srcs/classes/server/Server.cpp  \
+            srcs/classes/client/Client.cpp  \
+            srcs/classes/queries/Query.cpp  \
 
 OBJS	= $(SRCS:.cpp=.o)
 
 CC		= clang++
-CFLAGS	= -Wall -Wextra -Werror -std=c++11
+CFLAGS	= -std=c++11
 RM		= rm -f
 NAME	= webserv
 

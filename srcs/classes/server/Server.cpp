@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "../parser/Parser.hpp"
 
 //int errno_error(const char *str, int error)
 //{
@@ -10,8 +9,8 @@
 Server::Server()
 {
 	errno = 0;
-	max_clients = MAX_CLIENT_HOST,
-			memset(&client_socket, 0, sizeof(int) * max_clients);
+	max_clients = MAX_CLIENT_HOST;
+	memset(&client_socket, 0, sizeof(int) * max_clients);
 }
 
 Server::~Server()
@@ -44,7 +43,7 @@ int Server::setup()
 		return (-1);
 	}
 
-	logger.info("[SERVER]: Socket ready to use!...", NO_PRINT_CLASS);
+	logger.info("[SERVER]: TCP/IPv4 Socket ready to use!...", NO_PRINT_CLASS);
 
 	//allow multiple connection, work without this, but idk
 	if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
@@ -74,6 +73,13 @@ int Server::setup()
 //	logger.info("[SERVER]: Accepting connextions on port" + , NO_PRINT_CLASS);
 	logger.info("[SERVER]: Waiting for incoming connexions...", NO_PRINT_CLASS);
 	return (0);
+
+	if (fcntl(server_sock, F_SETFL, O_NONBLOCK) < 0)
+    {
+        logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS);
+        return (-1);
+    }
+
 }
 
 void Server::setAddress()
@@ -88,6 +94,7 @@ void Server::setAddress()
 int Server::accept_request_core(int fd)
 {
 	int size = sizeof(client_socket_in);
+	memset(&this->client_socket_in, 0, size);
 
 	//récupére le fd_client, contenant header + body; stock info IP:PORT dans client_socket_in;
 	if ((client_sock = accept(fd, (struct sockaddr *) &client_socket_in, (socklen_t *) &size)) < 0)
@@ -98,6 +105,21 @@ int Server::accept_request_core(int fd)
 	}
 	logger.info("[SERVER]: Connexion from <" + std::string(inet_ntoa(client_socket_in.sin_addr)) + ":" +
 				std::to_string(ntohs(client_socket_in.sin_port)) + "> accepted.", NO_PRINT_CLASS);
+
+
+    if (fcntl(client_sock, F_SETFL, O_NONBLOCK) < 0)
+    {
+        logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS);
+        return (-1);
+    }
+
+    int opt = 1;
+    if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
+    {
+        logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS);
+        return (-1);
+    }
+
 	return (0);
 }
 
@@ -116,7 +138,6 @@ int Server::read_request_core(int fd)
 	char        buffer[BUFFER];
 	int         read = BUFFER - 1;
 	std::string keeper("");
-	Parser      parser;
 
 	while (read == (BUFFER - 1))
 	{
@@ -130,14 +151,6 @@ int Server::read_request_core(int fd)
 		keeper += buffer;
 	}
 	this->request = keeper;
-	try
-	{
-		Query query = parser.parse(this->request);
-		logger.info("", query);
-	} catch (std::exception &e)
-	{
-		logger.error(std::string(e.what()), NO_PRINT_CLASS);
-	}
 	return (0);
 }
 
@@ -151,61 +164,74 @@ int Server::read_request(int fd)
 	return (read_request_core(fd));
 }
 
+int Server::send_request_core(int fd, std::string toSend)
+{
+    if (send(fd, toSend.c_str(), toSend.length(), 0) != (int) toSend.length())
+    {
+        logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS);
+        return (-1);
+    }
+    return (0);
+}
+
 int Server::send_request(std::string toSend)
 {
-	if (send(client_sock, toSend.c_str(), toSend.length(), 0) != (int) toSend.length())
-	{
-		logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS);
-		return (-1);
-	}
-	return (0);
+    return (send_request_core(this->client_sock, toSend));
+}
+
+int Server::send_request(int fd, std::string toSend)
+{
+    return (send_request_core(fd, toSend));
+}
+
+int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
+{
+    int higher_fd, client_curr;
+
+    FD_ZERO(&fd_pool);
+    FD_SET(master_socket, &fd_pool);
+    higher_fd = master_socket;
+
+    for (int i = 0; i < max_clients; i++)
+    {
+        client_curr = client_socket[i];
+        if (client_curr > 0)
+            FD_SET(client_curr, &fd_pool);
+        if (client_curr > higher_fd)
+            higher_fd = client_curr;
+    }
+    return (higher_fd);
 }
 
 int Server::server_run()
 {
 	int           higher_fd, client_curr, i = 0;
-	int           master_socket             = Server::getSocketServer();
+	int           master_socket = Server::getSocketServer();
 	fd_set        fd_pool;
-	std::ifstream ifs("query.txt", std::ios::in);
-	std::string   newStr;
-	if (ifs.is_open())
-		std::getline(ifs, newStr, '\0');
-	else
-	{
-		std::cerr << "cannot open the file" << std::endl;
-		return (1);
-	}
-	ifs.close();
 
 	while (1)
 	{
-		FD_ZERO(&fd_pool);
-		FD_SET(master_socket, &fd_pool);
-		higher_fd = master_socket;
+        //return le fd le + haut pour select, et ajoute les fd à la pool;
+        higher_fd = Server::setFD_MAX(fd_pool, master_socket);
 
-		for (i    = 0; i < max_clients; i++)
-		{
-			client_curr = client_socket[i];
-			if (client_curr > 0)
-				FD_SET(client_curr, &fd_pool);
-			if (client_curr > higher_fd)
-				higher_fd = client_curr;
-		}
-
+        //ok quand un fd de la pool et ready to read/write;
 		if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
 		{
 			logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS);
 			return (-1);
 		}
 
+		//fd pret ? accept + stock le socket client
 		if (FD_ISSET(master_socket, &fd_pool))
 		{
 			if (Server::accept_request(master_socket) == -1)
 				return (-1);
 
-			if (Server::send_request(newStr) == -1)
-				return (-1);
-			for (i = 0; i < max_clients; i++)
+			
+			client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
+            logger.success("[SERVER]: Adding in list of pending sockets.", NO_PRINT_CLASS);
+
+            for (i = 0; i < max_clients; i++)
 			{
 				if (client_socket[i] == 0)
 				{
@@ -216,17 +242,27 @@ int Server::server_run()
 			}
 		}
 
+		//gère les requetes, read + write
 		for (i = 0; i < max_clients; i++)
 		{
 			client_curr = client_socket[i];
 			if (FD_ISSET(client_curr, &fd_pool))
 			{
-				//need optimisation selon type de connexion;
-				Server::read_request(client_curr);
+				if (Server::read_request(client_curr) == -1)
+				    return (-1);
+
+				/* ICI REQUETE ICI QUERY ICI PARSER ICI DINGUERIE */
+
+
+				std::string req = Server::get_request();
+
+                if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
+                    return (-1);
+
 				close(client_curr);
-				client_socket[i] = 0;
-				logger.info("[SERVER]: Host disconnected. Socket: " + std::to_string(i), NO_PRINT_CLASS);
-			}
+                client_socket[i] = 0;
+                logger.info("[SERVER]: Host disconnected. Socket: " + std::to_string(i), NO_PRINT_CLASS);
+            }
 		}
 	}
 	return (0);

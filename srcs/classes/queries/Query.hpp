@@ -59,4 +59,18 @@ public:
 std::ostream&	operator<<(std::ostream &o, const Query &q);
 
 
+/*	int           higher_fd, client_curr, i = 0;
+	int           master_socket             = Server::getSocketServer();
+	fd_set        fd_pool;
+	std::ifstream ifs("query.txt", std::ios::in);
+	std::string   newStr;
+	if (ifs.is_open())
+		std::getline(ifs, newStr, '\0');
+	else
+	{
+		std::cerr << "cannot open the file" << std::endl;
+		return (1);
+	}
+	ifs.close();*/
+
 #endif
