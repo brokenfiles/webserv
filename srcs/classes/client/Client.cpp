@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client() : socket(-1), ip(), port(-1), request_send()
+Client::Client() : socket(-1), port(-1), ip(), request_send()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
 }

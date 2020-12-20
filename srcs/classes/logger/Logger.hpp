@@ -5,12 +5,14 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include <sstream>
 #include "time.h"
 
 enum LogType
 {
 	INFO,
 	WARNING,
+	NOTICE,
 	ERROR,
 	SUCCESS
 };
@@ -29,6 +31,7 @@ public:
 };
 
 #define NO_PRINT_CLASS NoPrintClass(0)
+#define DEFAULT_RETURN 0
 
 class Logger
 {
@@ -38,6 +41,7 @@ private:
 	bool silent;
 
 public:
+
 	Logger(bool silent = false)
 	{
 		this->silent = silent;
@@ -58,46 +62,61 @@ public:
 	}
 
 	template<class Cls>
-	void info(const std::string &message, Cls print_class)
+	int info(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
 	{
-		this->message(INFO, message, print_class);
+		return this->message(INFO, message, print_class, return_value);
 	}
 
 	template<class Cls>
-	void warning(const std::string &message, Cls print_class)
+	int warning(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
 	{
-		this->message(WARNING, message, print_class);
+		return this->message(WARNING, message, print_class, return_value);
 	}
 
 	template<class Cls>
-	void error(const std::string &message, Cls print_class)
+	int error(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
 	{
-		this->message(ERROR, message, print_class);
+		return this->message(ERROR, message, print_class, return_value);
 	}
 
 	template<class Cls>
-	void success(const std::string &message, Cls print_class)
+	int success(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
 	{
-		this->message(SUCCESS, message, print_class);
+		return this->message(SUCCESS, message, print_class, return_value);
 	}
 
 	template<class Cls>
-	void message(LogType type, const std::string &message, Cls print_class)
+	int notice(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
+	{
+		return this->message(NOTICE, message, print_class, return_value);
+	}
+
+	template<class Cls>
+	int message(LogType type, const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
 	{
 		if (this->silent)
 		{
-			return;
+			return return_value;
 		}
 
 		std::string prefix    = this->get_prefix(type);
 		std::string timestamp = this->get_current_timestamp();
 		std::cout << "\033[30m" << timestamp + " " + prefix;
-		if (dynamic_cast<NoPrintClass *>(&print_class)) {
+		Cls *pointer = &print_class;
+		if (dynamic_cast<NoPrintClass *>(pointer)) {
 			std::cout << " ";
 		} else {
 			std::cout << " " << print_class;
 		}
 		std::cout << message << "\033[0m" << std::endl;
+		return (return_value);
+	}
+
+	static const std::string to_string(int n)
+	{
+		std::ostringstream convert;
+		convert << n;
+		return (convert.str());
 	}
 
 private:
@@ -140,6 +159,10 @@ private:
 		else if (type == SUCCESS)
 		{
 			return "\033[32m[SUCCESS]";
+		}
+		else if (type == NOTICE)
+		{
+			return "\033[0;36m[NOTICE]";
 		}
 		else if (type == ERROR)
 		{

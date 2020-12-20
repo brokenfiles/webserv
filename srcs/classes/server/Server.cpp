@@ -103,8 +103,9 @@ int Server::accept_request_core(int fd)
 		logger.error("[SERVER]: accept: " + std::string(strerror(errno)), NO_PRINT_CLASS);
 		return (-1);
 	}
+
 	logger.success("[SERVER]: Connexion from <" + std::string(inet_ntoa(client_socket_in.sin_addr)) + ":" +
-				std::to_string(ntohs(client_socket_in.sin_port)) + ">.", NO_PRINT_CLASS);
+				Logger::to_string(ntohs(client_socket_in.sin_port)) + ">.", NO_PRINT_CLASS);
 
 
     if (fcntl(client_sock, F_SETFL, O_NONBLOCK) < 0)
@@ -205,7 +206,7 @@ int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
 
 int Server::server_run()
 {
-	int           higher_fd, client_curr, i = 0;
+	int           higher_fd, client_curr;
 	int           master_socket = Server::getSocketServer();
 	fd_set        fd_pool;
 
@@ -227,7 +228,7 @@ int Server::server_run()
 			if (Server::accept_request(master_socket) == -1)
 				return (-1);
 			client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
-            logger.info(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
+            logger.info(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + Logger::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
         }
 
         //gère les requetes, receive + send
@@ -240,12 +241,13 @@ int Server::server_run()
                     return (-1);
 
                 Client* toManage = (*it); //REQUETE DE CE CLIENT A GERE
+				(void)toManage;
 
                 if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
                     return (-1);
                 close(client_curr);
                 logger.success(std::string("[SERVER]: Request successfully received/sent."), NO_PRINT_CLASS);
-                logger.info(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
+                logger.info(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + Logger::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
                 it = client_settled.erase(it);
             }
         }
