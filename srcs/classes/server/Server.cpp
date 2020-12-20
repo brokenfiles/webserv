@@ -103,7 +103,7 @@ int Server::accept_request_core(int fd)
 		logger.error("[SERVER]: accept: " + std::string(strerror(errno)), NO_PRINT_CLASS);
 		return (-1);
 	}
-	logger.info("[SERVER]: Connexion from <" + std::string(inet_ntoa(client_socket_in.sin_addr)) + ":" +
+	logger.success("[SERVER]: Connexion from <" + std::string(inet_ntoa(client_socket_in.sin_addr)) + ":" +
 				std::to_string(ntohs(client_socket_in.sin_port)) + ">.", NO_PRINT_CLASS);
 
 
@@ -221,13 +221,13 @@ int Server::server_run()
 			return (-1);
 		}
 
-		//fd pret ? accept + stock le socket client
-		if (FD_ISSET(master_socket, &fd_pool))
+        //fd pret ? accept + stock le socket client
+        if (FD_ISSET(master_socket, &fd_pool))
 		{
 			if (Server::accept_request(master_socket) == -1)
 				return (-1);
 			client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
-            logger.success(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
+            logger.info(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
         }
 
         //gère les requetes, receive + send
@@ -244,8 +244,8 @@ int Server::server_run()
                 if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
                     return (-1);
                 close(client_curr);
+                logger.success(std::string("[SERVER]: Request successfully received/sent."), NO_PRINT_CLASS);
                 logger.info(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
-                logger.info(std::string("[SERVER]: Request successfully received and send back."), NO_PRINT_CLASS);
                 it = client_settled.erase(it);
             }
         }
