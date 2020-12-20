@@ -112,7 +112,8 @@ public:
 		return (return_value);
 	}
 
-	static const std::string to_string(int n)
+	template <class T>
+	static std::string to_string(T n)
 	{
 		std::ostringstream convert;
 		convert << n;
