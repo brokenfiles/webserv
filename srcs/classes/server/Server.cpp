@@ -226,20 +226,20 @@ int Server::server_run()
 		{
 			if (Server::accept_request(master_socket) == -1)
 				return (-1);
-			client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
+			client_settled.push_back(Client(Server::getSocketClient(), Server::getAddrClient()));
             logger.success(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + std::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
         }
 
         //gère les requetes, receive + send
-        for (std::list<Client*>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
+        for (std::list<Client>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
         {
-            client_curr = (*it)->getSocket();
+            client_curr = (*it).getSocket();
             if (FD_ISSET(client_curr, &fd_pool))
             {
                 if (Server::read_request(client_curr) == -1)
                     return (-1);
 
-                Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
+                Client toManage = (*it); //REQUETE DE CE CLIENT A GERE
 
                 if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
                     return (-1);
