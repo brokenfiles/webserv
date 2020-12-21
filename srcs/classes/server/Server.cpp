@@ -235,7 +235,7 @@ int Server::close_sock()
 	return (0);
 }
 
-std::string Server::get_request()
+std::string& Server::get_request()
 {
 	return (this->request);
 }

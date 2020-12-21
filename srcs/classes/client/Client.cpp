@@ -52,7 +52,7 @@ int Client::getPort()
     return (port);
 }
 
-void Client::setRequest(std::string request)
+void Client::setRequest(std::string& request)
 {
     request_send = request;
 }

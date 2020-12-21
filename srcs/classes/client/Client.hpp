@@ -23,7 +23,7 @@ class Client
         int getPort();
 
         //setters
-        void setRequest(std::string request);
+        void setRequest(std::string& request);
 
     private:
         int socket;

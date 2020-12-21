@@ -51,7 +51,7 @@ class Server
         int setFD_MAX(fd_set &fd_pool, int master_socket);
 
 	    //getters
-	    std::string get_request(void);
+	    std::string &get_request(void);
 	    int getSocketServer(void);
 	    int getSocketClient(void);
 	    std::string getClientIP(void);
