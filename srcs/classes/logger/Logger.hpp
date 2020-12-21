@@ -101,7 +101,7 @@ public:
 
 		std::string prefix    = this->get_prefix(type);
 		std::string timestamp = this->get_current_timestamp();
-		std::cout << "\033[30m" << timestamp + " " + prefix;
+		std::cout << "\033[37m" << timestamp + " " + prefix;
 		Cls *pointer = &print_class;
 		if (dynamic_cast<NoPrintClass *>(pointer)) {
 			std::cout << " ";
