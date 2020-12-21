@@ -24,10 +24,6 @@ stdlib.h
 fstream
 -
 
-/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.cpp
-Client.hpp
-/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.hpp
-
 /mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.hpp
 iostream
 -
@@ -69,12 +65,6 @@ iostream
 -
 map
 -
-
-/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.cpp
-../../../includes/includes.h
-/mnt/c/Users/louis/Projects/webserv/includes/includes.h
-Query.hpp
-/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.hpp
 
 /mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.hpp
 ../../../includes/includes.h
