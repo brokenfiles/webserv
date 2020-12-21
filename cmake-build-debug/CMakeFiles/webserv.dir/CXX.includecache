@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/includes/includes.h
+/mnt/c/Users/louis/Projects/webserv/includes/includes.h
 iostream
 -
 map
@@ -24,11 +24,11 @@ stdlib.h
 fstream
 -
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/client/Client.cpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.cpp
 Client.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/client/Client.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.hpp
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/client/Client.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.hpp
 iostream
 -
 sys/socket.h
@@ -40,7 +40,15 @@ arpa/inet.h
 cstring
 -
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/logger/Logger.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/config/Config.cpp
+Config.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/config/Config.hpp
+
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/config/Config.hpp
+../server/Server.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/server/Server.hpp
+
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/logger/Logger.hpp
 iostream
 -
 ctime
@@ -50,39 +58,39 @@ vector
 sstream
 -
 time.h
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/logger/time.h
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/logger/time.h
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/parser/Parser.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/parser/Parser.hpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/includes/includes.h
+/mnt/c/Users/louis/Projects/webserv/includes/includes.h
 ../queries/Query.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/queries/Query.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.hpp
 iostream
 -
 map
 -
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/queries/Query.cpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.cpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/includes/includes.h
+/mnt/c/Users/louis/Projects/webserv/includes/includes.h
 Query.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/queries/Query.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.hpp
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/queries/Query.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.hpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/includes/includes.h
+/mnt/c/Users/louis/Projects/webserv/includes/includes.h
 iostream
 -
 map
 -
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/server/Server.cpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/server/Server.cpp
 Server.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/server/Server.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/server/Server.hpp
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/server/Server.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/server/Server.hpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/includes/includes.h
+/mnt/c/Users/louis/Projects/webserv/includes/includes.h
 iostream
 -
 unistd.h
@@ -106,23 +114,23 @@ fstream
 list
 -
 ../logger/Logger.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/logger/Logger.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/logger/Logger.hpp
 ../parser/Parser.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/parser/Parser.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/parser/Parser.hpp
 ../client/Client.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/client/Client.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.hpp
 
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/webserv.cpp
+/mnt/c/Users/louis/Projects/webserv/srcs/webserv.cpp
 ../includes/includes.h
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/includes/includes.h
+/mnt/c/Users/louis/Projects/webserv/includes/includes.h
 ../srcs/classes/logger/Logger.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/logger/Logger.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/logger/Logger.hpp
 ../srcs/classes/server/Server.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/server/Server.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/server/Server.hpp
 ../srcs/classes/parser/Parser.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/parser/Parser.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/parser/Parser.hpp
 ../srcs/classes/queries/Query.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/queries/Query.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/queries/Query.hpp
 ../srcs/classes/client/Client.hpp
-/mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/srcs/classes/client/Client.hpp
+/mnt/c/Users/louis/Projects/webserv/srcs/classes/client/Client.hpp
 

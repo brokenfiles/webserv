@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/m4xdo/OneDrive/Bureau/webserv
+CMAKE_SOURCE_DIR = /mnt/c/Users/louis/Projects/webserv
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/cmake-build-debug
+CMAKE_BINARY_DIR = /mnt/c/Users/louis/Projects/webserv/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/cmake-build-debug/CMakeFiles /mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/louis/Projects/webserv/cmake-build-debug/CMakeFiles /mnt/c/Users/louis/Projects/webserv/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/m4xdo/OneDrive/Bureau/webserv/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/louis/Projects/webserv/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -149,6 +149,33 @@ srcs/classes/client/Client.s: srcs/classes/client/Client.cpp.s
 srcs/classes/client/Client.cpp.s:
 	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.s
 .PHONY : srcs/classes/client/Client.cpp.s
+
+srcs/classes/config/Config.o: srcs/classes/config/Config.cpp.o
+
+.PHONY : srcs/classes/config/Config.o
+
+# target to build an object file
+srcs/classes/config/Config.cpp.o:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o
+.PHONY : srcs/classes/config/Config.cpp.o
+
+srcs/classes/config/Config.i: srcs/classes/config/Config.cpp.i
+
+.PHONY : srcs/classes/config/Config.i
+
+# target to preprocess a source file
+srcs/classes/config/Config.cpp.i:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.i
+.PHONY : srcs/classes/config/Config.cpp.i
+
+srcs/classes/config/Config.s: srcs/classes/config/Config.cpp.s
+
+.PHONY : srcs/classes/config/Config.s
+
+# target to generate assembly for a file
+srcs/classes/config/Config.cpp.s:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.s
+.PHONY : srcs/classes/config/Config.cpp.s
 
 srcs/classes/queries/Query.o: srcs/classes/queries/Query.cpp.o
 
@@ -243,6 +270,9 @@ help:
 	@echo "... srcs/classes/client/Client.o"
 	@echo "... srcs/classes/client/Client.i"
 	@echo "... srcs/classes/client/Client.s"
+	@echo "... srcs/classes/config/Config.o"
+	@echo "... srcs/classes/config/Config.i"
+	@echo "... srcs/classes/config/Config.s"
 	@echo "... srcs/classes/queries/Query.o"
 	@echo "... srcs/classes/queries/Query.i"
 	@echo "... srcs/classes/queries/Query.s"
