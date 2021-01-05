@@ -63,7 +63,7 @@ int Server::setup()
 	return (0);
 
 	if (fcntl(server_sock, F_SETFL, O_NONBLOCK) < 0)
-        return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+		return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 }
 
@@ -71,8 +71,8 @@ void Server::setAddress()
 {
 	//initialisation des member de l'objet server;
 	memset(&serv_socket_in, 0, sizeof(struct sockaddr_in));
-	serv_socket_in.sin_family      = AF_INET;
-	serv_socket_in.sin_port        = htons(PORT);
+	serv_socket_in.sin_family = AF_INET;
+	serv_socket_in.sin_port = htons(PORT);
 	serv_socket_in.sin_addr.s_addr = INADDR_ANY; // inet_addr("127.0.0.1") ou INADDR_ANY;
 }
 
@@ -90,16 +90,17 @@ int Server::accept_request_core(int fd)
 	}
 
 	logger.success("[SERVER]: Connexion from <" + std::string(inet_ntoa(client_socket_in.sin_addr)) + ":" +
-				Logger::to_string(ntohs(client_socket_in.sin_port)) + ">.", NO_PRINT_CLASS);
+				   Logger::to_string(ntohs(client_socket_in.sin_port)) + ">.", NO_PRINT_CLASS);
 
 
-    if (fcntl(client_sock, F_SETFL, O_NONBLOCK) < 0)
-        return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+	if (fcntl(client_sock, F_SETFL, O_NONBLOCK) < 0)
+		return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
-    int opt = 1;
-    if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0) {
+	int opt = 1;
+	if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
+	{
 		return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-    }
+	}
 
 	return (0);
 }
@@ -116,8 +117,8 @@ int Server::accept_request(int fd)
 
 int Server::read_request_core(int fd)
 {
-	char        buffer[BUFFER];
-	int         read = BUFFER - 1;
+	char buffer[BUFFER];
+	int read = BUFFER - 1;
 	std::string keeper("");
 
 	while (read == (BUFFER - 1))
@@ -125,10 +126,12 @@ int Server::read_request_core(int fd)
 		memset(buffer, 0, 100);
 		read = recv(fd, buffer, BUFFER - 1, 0);
 		if (read == -1)
-			return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+			return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS,
+								 -1));
 		keeper += buffer;
 	}
 	this->request = keeper;
+
 	return (0);
 }
 
@@ -144,85 +147,92 @@ int Server::read_request(int fd)
 
 int Server::send_request_core(int fd, std::string toSend)
 {
-    if (send(fd, toSend.c_str(), toSend.length(), 0) != (int) toSend.length())
-        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-    return (0);
+	if (send(fd, toSend.c_str(), toSend.length(), 0) != (int) toSend.length())
+		return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+	return (0);
 }
 
 int Server::send_request(std::string toSend)
 {
-    return (send_request_core(this->client_sock, toSend));
+	return (send_request_core(this->client_sock, toSend));
 }
 
 int Server::send_request(int fd, std::string toSend)
 {
-    return (send_request_core(fd, toSend));
+	return (send_request_core(fd, toSend));
 }
 
 int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
 {
-    int higher_fd, client_curr;
+	int higher_fd, client_curr;
 
-    FD_ZERO(&fd_pool);
-    FD_SET(master_socket, &fd_pool);
-    higher_fd = master_socket;
+	FD_ZERO(&fd_pool);
+	FD_SET(master_socket, &fd_pool);
+	higher_fd = master_socket;
 
-    for (std::list<Client*>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
-    {
-        client_curr = (*it)->getSocket();
-        if (client_curr > 0)
-            FD_SET(client_curr, &fd_pool);
-        if (client_curr > higher_fd)
-            higher_fd = client_curr;
-    }
-    return (higher_fd);
+	for (std::list<Client *>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
+	{
+		client_curr = (*it)->getSocket();
+		if (client_curr > 0)
+			FD_SET(client_curr, &fd_pool);
+		if (client_curr > higher_fd)
+			higher_fd = client_curr;
+	}
+	return (higher_fd);
 }
 
 int Server::server_run()
 {
-	int           higher_fd, client_curr;
-	int           master_socket = Server::getSocketServer();
-	fd_set        fd_pool;
+	int higher_fd, client_curr;
+	int master_socket = Server::getSocketServer();
+	fd_set fd_pool;
+	Query response;
 
 	while (1)
 	{
-        //return le fd le + haut pour select, et ajoute les fd à la pool;
-        higher_fd = Server::setFD_MAX(fd_pool, master_socket);
+		//return le fd le + haut pour select, et ajoute les fd à la pool;
+		higher_fd = Server::setFD_MAX(fd_pool, master_socket);
 
-        //ok quand un fd de la pool et ready to read/write;
+		//ok quand un fd de la pool et ready to read/write;
 		if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
 			return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
-        //fd pret ? accept + stock le socket client
-        if (FD_ISSET(master_socket, &fd_pool))
+		//fd pret ? accept + stock le socket client
+		if (FD_ISSET(master_socket, &fd_pool))
 		{
 			if (Server::accept_request(master_socket) == -1)
 				return (-1);
 			client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
-            logger.info(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" + Logger::to_string(Server::getClientPort()) + std::string("> to pending sockets."), NO_PRINT_CLASS);
-        }
+			logger.info(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" +
+						Logger::to_string(Server::getClientPort()) + std::string("> to pending sockets."),
+						NO_PRINT_CLASS);
+		}
 
-        //gère les requetes, receive + send
-        for (std::list<Client*>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
-        {
-            client_curr = (*it)->getSocket();
-            if (FD_ISSET(client_curr, &fd_pool))
-            {
-                if (Server::read_request(client_curr) == -1)
-                    return (-1);
+		//gère les requetes, receive + send
+		for (std::list<Client *>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
+		{
+			client_curr = (*it)->getSocket();
+			if (FD_ISSET(client_curr, &fd_pool))
+			{
 
-                Client* toManage = (*it); //REQUETE DE CE CLIENT A GERE
-                toManage->setRequest(Server::get_request());
-                std::cout << toManage->getRequest() << std::endl;
+				Response response;
+				if (Server::read_request(client_curr) == -1)
+					return (-1);
 
-                if (Server::send_request(client_curr, std::string("ahaa=)=)=)=)=)")) == -1)
-                    return (-1);
-                close(client_curr);
-                logger.success(std::string("[SERVER]: Request successfully received/sent."), NO_PRINT_CLASS);
-                logger.notice(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" + Logger::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
-                it = client_settled.erase(it);
-            }
-        }
+				Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
+				toManage->setRequest(Server::get_request());
+				std::cout << toManage->getRequest() << std::endl;
+				response.prepareResponse(toManage->getRequest());
+
+				if (Server::send_request(client_curr, response.stringify()) == -1)
+					return (-1);
+				close(client_curr);
+				logger.success(std::string("[SERVER]: Request successfully received/sent."), NO_PRINT_CLASS);
+				logger.notice(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" +
+							  Logger::to_string(Server::getClientPort()) + std::string(">."), NO_PRINT_CLASS);
+				it = client_settled.erase(it);
+			}
+		}
 	}
 	return (0);
 }
@@ -262,10 +272,10 @@ struct sockaddr_in Server::getAddrClient()
 
 std::string Server::getClientIP(void)
 {
-    return (std::string(inet_ntoa(client_socket_in.sin_addr)));
+	return (std::string(inet_ntoa(client_socket_in.sin_addr)));
 }
 
 int Server::getClientPort(void)
 {
-    return (ntohs(client_socket_in.sin_port));
+	return (ntohs(client_socket_in.sin_port));
 }

@@ -3,9 +3,9 @@
 //
 
 #include "../../../includes/includes.h"
-#include "Query.hpp"
+#include "Request.hpp"
 
-std::ostream&	operator<<(std::ostream &o, const Query &q) {
+std::ostream&	operator<<(std::ostream &o, const Request &q) {
 
 	//std::map<std::string, std::string>::const_iterator	ite;
 

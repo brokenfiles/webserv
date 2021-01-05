@@ -101,10 +101,19 @@
 		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp">
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/response/Response.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/response/Response.hpp">
 			<Option target="webserv"/>
 		</Unit>
 		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp">

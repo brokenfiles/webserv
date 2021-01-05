@@ -3,7 +3,7 @@
 #include "../srcs/classes/logger/Logger.hpp"
 #include "../srcs/classes/server/Server.hpp"
 #include "../srcs/classes/parser/Parser.hpp"
-#include "../srcs/classes/queries/Query.hpp"
+#include "../srcs/classes/queries/Request.hpp"
 #include "../srcs/classes/client/Client.hpp"
 
 #define TRUE 1

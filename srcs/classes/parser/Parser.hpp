@@ -5,7 +5,7 @@
 #ifndef WEBSERV_PARSER_HPP
 #define WEBSERV_PARSER_HPP
 #include "../../../includes/includes.h"
-#include "../queries/Query.hpp"
+#include "../queries/Request.hpp"
 #include <iostream>
 #include <map>
 
@@ -25,10 +25,32 @@ public:
 
 	std::string 	getMethod(std::string query)
 	{
-		if (query.compare(0, 3, "GET") == 0)
-			return ("GET");
-		else if (query.compare(0, 3, "POST") == 0)
-			return ("POST");
+		std::vector<std::string>	methods(15);
+
+		methods.push_back("GET");
+		methods.push_back("POST");
+		methods.push_back("LINK");
+		methods.push_back("UNLINK");
+		methods.push_back("PURGE");
+		methods.push_back("PUT");
+		methods.push_back("PATCH");
+		methods.push_back("DELETE");
+		methods.push_back("COPY");
+		methods.push_back("HEAD");
+		methods.push_back("OPTIONS");
+		methods.push_back("LOCK");
+		methods.push_back("UNLOCK");
+		methods.push_back("PROPFIND");
+		methods.push_back("VIEW");
+
+		typedef std::vector<std::string>::iterator iterator;
+		iterator begin = methods.begin();
+		while (begin != methods.end())
+		{
+			if (*begin == query.substr(0, query.find(" ")))
+				return (*begin);
+			begin++;
+		}
 		return (NULL);
 	}
 
@@ -42,7 +64,6 @@ public:
 
 
 		//tant qu'on est pas au bout de la requete
-		//query.erase( query.length() - 1, 1);
 		while (query.find('\n') != std::string::npos)
 		{
 			r = query.find('\n');
@@ -73,9 +94,9 @@ public:
 	virtual ~Parser() {}
 
 	//methode qui renvoi une reference sur Query apres avoir effectué le parsing
-	Query	parse(std::string input_query) throw(std::exception)
+	Request	parse(std::string input_query) throw(std::exception)
 	{
-		Query	kwery;
+		Request	kwery;
 		if (this->_checkFormat(input_query) == 0)
 			throw std::invalid_argument("Bad format");
         kwery.setMethod(getMethod(input_query));
