@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/m4xdo/Desktop/webserv/includes/includes.h
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
 iostream
 -
 map
@@ -24,7 +24,7 @@ stdlib.h
 fstream
 -
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.hpp
 iostream
 -
 sys/socket.h
@@ -36,15 +36,7 @@ arpa/inet.h
 cstring
 -
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.cpp
-Config.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.hpp
-
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.hpp
-../server/Server.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.hpp
-
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/logger/Logger.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
 iostream
 -
 ctime
@@ -54,51 +46,53 @@ vector
 sstream
 -
 time.h
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/logger/time.h
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/time.h
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/parser/Parser.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/Desktop/webserv/includes/includes.h
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
 ../queries/Request.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
 iostream
 -
 map
 -
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
 iostream
 -
 map
 -
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/Desktop/webserv/includes/includes.h
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
 Query.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
 map
 -
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.cpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.cpp
 Response.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
+stdio.h
+-
+fcntl.h
+-
+unistd.h
+-
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
 Query.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
 Request.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
 ../server/Server.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.cpp
-Server.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.hpp
-
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 ../../../includes/includes.h
-/mnt/c/Users/m4xdo/Desktop/webserv/includes/includes.h
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
 iostream
 -
 unistd.h
@@ -126,25 +120,11 @@ ctime
 list
 -
 ../logger/Logger.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/logger/Logger.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
 ../parser/Parser.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/parser/Parser.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
 ../client/Client.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.hpp
 ../queries/Response.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.hpp
-
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/webserv.cpp
-../includes/includes.h
-/mnt/c/Users/m4xdo/Desktop/webserv/includes/includes.h
-../srcs/classes/logger/Logger.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/logger/Logger.hpp
-../srcs/classes/server/Server.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.hpp
-../srcs/classes/parser/Parser.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/parser/Parser.hpp
-../srcs/classes/queries/Request.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.hpp
-../srcs/classes/client/Client.hpp
-/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
 

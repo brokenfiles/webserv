@@ -4,15 +4,16 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
-  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/webserv.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/parser/Parser.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

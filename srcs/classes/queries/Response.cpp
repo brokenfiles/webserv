@@ -1,5 +1,7 @@
 #include "Response.hpp"
-
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 Response::Response()
 {}
@@ -42,57 +44,117 @@ std::string 	Response::stringify(void) const
     return (ret);
 }
 
+std::map<std::string, std::string>	Response::basicHeaders(void)
+{
+	std::map<std::string, std::string> map;
+
+	map["Content-Type"] = "text/html";
+	map["Server"] = "Webserv";
+	map["Date"] = getCurrentTime();
+	return (map);
+}
+
+void 	Response::fileExtension(std::map<std::string, std::string> *map, Request request)
+{
+	if (request.getPath().compare(request.getPath().length() - 4, 4, ".css") == 0)
+		(*map)["Content-Type"] = "text/css";
+	else if (request.getPath().compare(request.getPath().length() - 3, 3, ".js") == 0)
+		(*map)["Content-Type"] = "application/javascript";
+}
+
+void	Response::addBody(std::string path)
+{
+	std::string newStr;
+	std::ifstream file(path.c_str(), std::ifstream::in);
+	std::getline(file, newStr, '\0');
+	setBody(newStr);
+	file.close();
+}
+
+void 	Response::getHandler(Request request, int head)
+{
+	std::map<std::string, std::string> map;
+	std::string path = "home";
+
+	map = basicHeaders();
+	if (request.getPath() == "/")
+		path.insert(path.length(), "/index.html");
+	else
+	{
+		path.insert(path.length(), request.getPath());
+
+		std::ifstream ifs(path.c_str(), std::ifstream::in);
+
+		if (ifs.good())
+		{
+			if (ifs.is_open())
+				fileExtension(&map, request);
+			else
+				std::cout << "can't open file" << std::endl;
+		}
+		else
+		{
+			setStatus("404 Not Found");
+			path = "server/NotFound.html";
+		}
+		ifs.close();
+	}
+	if (head == 0)
+		addBody(path);
+	setHeaders(map);
+}
+
+void 	Response::putHandler(Request request)
+{
+	std::map<std::string, std::string> map;
+	setStatus("201 Created");
+	map = basicHeaders();
+	int fd;
+	std::string	path = request.getPath();
+
+	path.erase(0, 1);
+	if ((fd = open(path.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR)) == -1)
+		return ;
+	if (!write(fd, request.getBody().c_str(), request.getBody().length()))
+	{
+		std::cout << "test" << std::endl;
+		return ;
+	}
+	close(fd);
+	addBody("server/put.html");
+	setHeaders(map);
+}
+
+void 	Response::deleteHandler(Request request)
+{
+	std::map<std::string, std::string> map;
+	map = basicHeaders();
+	std::string	path = request.getPath();
+
+	path.erase(0, 1);
+	if (remove(path.c_str()) == -1)
+		return ;
+	addBody("server/delete.html");
+	setHeaders(map);
+}
+
 void	Response::prepareResponse(std::string req)
 {
-    std::map<std::string, std::string> map;	//contiendra les headers
-    std::string newStr;
-    std::string path = "home";	//definie dans quel repertoire se trouve le site
-
-    Request request;
     Parser parser;
+	Request	request;
 
-    request = parser.parse(req);
+	request = parser.parse(req);
 
-    if (request.getPath() == "/")	//chemin par defaut si rien n'est spécifié
-    {
-        path.insert(path.length(), "/index.html");
-        setStatus("200 OK");
-    }
-    else	//si on a un path de spécifié
-    {
-        path.insert(path.length(), request.getPath());	//on ajoute le path spécifié a home on obtient home/PATH
-        std::ifstream ifs(path.c_str(), std::ifstream::in);
-        if (ifs.good())	//vérifie si le fichier existe
-        {//si le fichier demandé existe
-            if (ifs.is_open())
-            {	//on vérifie l'extension du fichier et ajuste le header Content-Type en fonction
-                if (request.getPath().compare(request.getPath().length() - 5, 5, ".html") == 0)
-                    map["Content-Type"] = "text/html";
-                else if (request.getPath().compare(request.getPath().length() - 4, 4, ".css") == 0)
-                    map["Content-Type"] = "text/css";
-                else if (request.getPath().compare(request.getPath().length() - 3, 3, ".js") == 0)
-                    map["Content-Type"] = "application/javascript";
-                setStatus("200 OK");
-            }
-            else
-                std::cout << "can't open file" << std::endl;
-        }
-        else	//si le fichier n'existe pas
-        {
-            setStatus("404 Not Found");	//on met le status 404 Not Found
-            map["Content-Type"] = "text/html";
-            path = "error/NotFound.html";	//on redirige le path sur le fichier d'erreur 404 se trouvant dans error/NotFound.html
-        }
-        ifs.close();
-    }
+	setStatus("200 OK");
 
-    std::ifstream file(path.c_str(), std::ifstream::in);
-    std::getline(file, newStr, '\0');	//récupération du body dans newStr
-    setBody(newStr);	//ajout du body
-    map["Server"] = "Webserv";
-    map["Date"] = getCurrentTime();
-    setHeaders(map);
-    file.close();
+	if (request.getMethod() == "GET")
+    	getHandler(request, 0);
+	else if (request.getMethod() == "HEAD")
+		getHandler(request, 1);
+	else if (request.getMethod() == "PUT")
+		putHandler(request);
+	else if (request.getMethod() == "DELETE")
+		deleteHandler(request);
 }
 
 //fonction qui donne la date au format HTTP dans une string
@@ -110,4 +172,10 @@ std::string Response::getCurrentTime(void)
     strftime(str, sizeof str, "%a, %d %b %G %T GMT", current);
     ret.assign(str);
     return (ret);
+}
+
+std::ofstream&	operator<<(std::ofstream &o, const Response &res)
+{
+	o << res.stringify();
+	return (o);
 }

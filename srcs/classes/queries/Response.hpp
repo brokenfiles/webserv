@@ -13,6 +13,16 @@ class Response : public Query
     private:
 	    std::string 						_status;
 
+	    //method handlers
+	    void getHandler(Request request, int head);
+		void putHandler(Request request);
+		void deleteHandler(Request request);
+
+		//formattage functions
+		std::map<std::string, std::string>	basicHeaders(void);
+		void 								fileExtension(std::map<std::string, std::string> *map, Request request);
+		void								addBody(std::string path);
+
     public:
         Response();
         Response(Response &response);
@@ -28,5 +38,6 @@ class Response : public Query
         std::string getCurrentTime(void);
 };
 
+std::ofstream&	operator<<(std::ofstream &o, const Response &res);
 
 #endif //WEBSERV_RESPONSE_HPP
