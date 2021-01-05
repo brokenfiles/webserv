@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
   "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
+  "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
   "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
   "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
   "/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.cpp" "/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"

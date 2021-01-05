@@ -226,6 +226,9 @@ int Server::server_run()
 
 				if (Server::send_request(client_curr, response.stringify()) == -1)
 					return (-1);
+
+				std::cout << response.stringify() << std::endl;
+
 				close(client_curr);
 				logger.success(std::string("[SERVER]: Request successfully received/sent."), NO_PRINT_CLASS);
 				logger.notice(std::string("[SERVER]: Disconnecting from  <") + Server::getClientIP() + ":" +

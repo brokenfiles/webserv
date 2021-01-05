@@ -103,6 +103,9 @@
 		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/parser/Parser.hpp">
 			<Option target="webserv"/>
 		</Unit>
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.cpp">
+			<Option target="webserv"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.hpp">
 			<Option target="webserv"/>
 		</Unit>

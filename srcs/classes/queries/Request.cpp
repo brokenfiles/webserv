@@ -1,9 +1,26 @@
-//
-// Created by Timothe Lecouvreur on 18/12/2020.
-//
-
 #include "../../../includes/includes.h"
 #include "Request.hpp"
+
+
+const std::string &Request::getMethod() const
+{
+    return _method;
+}
+
+const std::string &Request::getPath() const
+{
+    return _path;
+}
+
+void Request::setMethod(const std::string &method)
+{
+    _method = method;
+}
+
+void Request::setPath(const std::string &path)
+{
+    _path = path;
+}
 
 std::ostream&	operator<<(std::ostream &o, const Request &q) {
 

@@ -15,6 +15,9 @@ CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o: ../srcs/classes/queries
 CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o: ../srcs/classes/queries/Response.hpp
 CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o: ../srcs/classes/server/Server.hpp
 
+CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o: ../srcs/classes/queries/Query.cpp
+CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o: ../srcs/classes/queries/Query.hpp
+
 CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o: ../includes/includes.h
 CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o: ../srcs/classes/queries/Query.hpp
 CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o: ../srcs/classes/queries/Request.cpp

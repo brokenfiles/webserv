@@ -6,6 +6,8 @@ SRCS	=	srcs/webserv.cpp \
             srcs/classes/server/Server.cpp  \
             srcs/classes/client/Client.cpp  \
             srcs/classes/queries/Query.cpp  \
+            srcs/classes/queries/Request.cpp  \
+            srcs/classes/queries/Response.cpp  \
 
 OBJS	= $(SRCS:.cpp=.o)
 

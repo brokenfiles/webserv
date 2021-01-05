@@ -102,6 +102,7 @@ public:
         kwery.setMethod(getMethod(input_query));
         kwery.setPath(getPath(input_query, kwery.getMethod()));
         kwery.setHeaders(getHeaders(input_query));
+        kwery.setBody(getBody(input_query));
 		return (kwery);
 	}
 
