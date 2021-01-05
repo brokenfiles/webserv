@@ -4,8 +4,8 @@
 
 #ifndef WEBSERV_RESPONSE_HPP
 #define WEBSERV_RESPONSE_HPP
-#include "../queries/Query.hpp"
-#include "../queries/Request.hpp"
+#include "Query.hpp"
+#include "Request.hpp"
 #include "../server/Server.hpp"
 
 class Response : public Query
@@ -75,7 +75,7 @@ public:
 		else	//si on a un path de spécifié
 		{
 			path.insert(path.length(), request.getPath());	//on ajoute le path spécifié a home on obtient home/PATH
-			std::ifstream ifs(path, std::ios::in);
+			std::ifstream ifs(path.c_str(), std::ifstream::in);
 			if (ifs.good())	//vérifie si le fichier existe
 			{//si le fichier demandé existe
 				if (ifs.is_open())
@@ -100,7 +100,7 @@ public:
 			ifs.close();
 		}
 
-		std::ifstream file(path, std::ios::in);
+		std::ifstream file(path.c_str(), std::ifstream::in);
 		std::getline(file, newStr, '\0');	//récupération du body dans newStr
 		setBody(newStr);	//ajout du body
 		map["Server"] = "Webserv";

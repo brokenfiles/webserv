@@ -48,5 +48,4 @@ public:
 	}
 };
 
-
 #endif //WEBSERV_QUERY_HPP

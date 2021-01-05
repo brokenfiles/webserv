@@ -15,9 +15,10 @@ public:
 		return _method;
 	}
 
-	void setMethod(const std::string &method) {
-		_method = method;
-	}
+	void setMethod(const std::string &method)
+    {
+	    _method = method;
+    }
 
 	const std::string &getPath() const {
 		return _path;

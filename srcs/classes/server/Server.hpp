@@ -18,7 +18,7 @@
 #include "../logger/Logger.hpp"
 #include "../parser/Parser.hpp"
 #include "../client/Client.hpp"
-#include "../response/Response.hpp"
+#include "../queries/Response.hpp"
 
 class Server
 {

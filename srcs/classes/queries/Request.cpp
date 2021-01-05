@@ -18,3 +18,4 @@ std::ostream&	operator<<(std::ostream &o, const Request &q) {
 //	o << q.getBody();
 	return (o);
 }
+
