@@ -74,7 +74,7 @@ void	Response::addBody(std::string path)
 void 	Response::getHandler(Request request, int head)
 {
 	std::map<std::string, std::string> map;
-	std::string path = "home";
+	std::string path = HOME;
 
 	map = basicHeaders();
 	if (request.getPath() == "/")
@@ -95,12 +95,14 @@ void 	Response::getHandler(Request request, int head)
 		else
 		{
 			setStatus("404 Not Found");
-			path = "server/NotFound.html";
+			path = "home/server/NotFound.html";
 		}
 		ifs.close();
 	}
 	if (head == 0)
+	{
 		addBody(path);
+	}
 	setHeaders(map);
 }
 
@@ -110,18 +112,15 @@ void 	Response::putHandler(Request request)
 	setStatus("201 Created");
 	map = basicHeaders();
 	int fd;
-	std::string	path = request.getPath();
+	std::string	path = HOME;
+	path.insert(path.length(), request.getPath());
 
-	path.erase(0, 1);
 	if ((fd = open(path.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR)) == -1)
 		return ;
-	if (!write(fd, request.getBody().c_str(), request.getBody().length()))
-	{
-		std::cout << "test" << std::endl;
+	if ((write(fd, request.getBody().c_str(), request.getBody().length())) == -1)
 		return ;
-	}
 	close(fd);
-	addBody("server/put.html");
+	addBody("home/server/put.html");
 	setHeaders(map);
 }
 
@@ -129,12 +128,12 @@ void 	Response::deleteHandler(Request request)
 {
 	std::map<std::string, std::string> map;
 	map = basicHeaders();
-	std::string	path = request.getPath();
+	std::string	path = HOME;
+	path.insert(path.length(), request.getPath());
 
-	path.erase(0, 1);
 	if (remove(path.c_str()) == -1)
 		return ;
-	addBody("server/delete.html");
+	addBody("home/server/deleted.html");
 	setHeaders(map);
 }
 
@@ -157,7 +156,7 @@ void	Response::prepareResponse(std::string req)
 		deleteHandler(request);
 }
 
-//fonction qui donne la date au format HTTP dans une string
+//fonction qui donne la date au format GMT
 std::string Response::getCurrentTime(void)
 {
     struct timeval tv;

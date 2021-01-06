@@ -36,6 +36,14 @@ arpa/inet.h
 cstring
 -
 
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.cpp
+Config.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.hpp
+
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.hpp
+../server/Server.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
+
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
 iostream
 -
@@ -90,6 +98,10 @@ Request.hpp
 ../server/Server.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp
+Server.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
+
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 ../../../includes/includes.h
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
@@ -127,4 +139,18 @@ list
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.hpp
 ../queries/Response.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
+
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp
+../includes/includes.h
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
+../srcs/classes/logger/Logger.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
+../srcs/classes/server/Server.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
+../srcs/classes/parser/Parser.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
+../srcs/classes/queries/Request.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
+../srcs/classes/client/Client.hpp
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.hpp
 

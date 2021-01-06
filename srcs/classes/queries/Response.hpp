@@ -7,6 +7,7 @@
 #include "Query.hpp"
 #include "Request.hpp"
 #include "../server/Server.hpp"
+#define HOME "home"
 
 class Response : public Query
 {
