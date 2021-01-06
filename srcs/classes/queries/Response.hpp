@@ -7,7 +7,12 @@
 #include "Query.hpp"
 #include "Request.hpp"
 #include "../server/Server.hpp"
+#ifndef MAKE
 #define HOME "home"
+#endif
+#ifdef MAKE
+#define HOME "srcs/home"
+#endif
 
 class Response : public Query
 {

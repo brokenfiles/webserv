@@ -95,7 +95,8 @@ void 	Response::getHandler(Request request, int head)
 		else
 		{
 			setStatus("404 Not Found");
-			path = "home/server/NotFound.html";
+			path = HOME;
+			path.insert(path.length(), "/server/NotFound.html");
 		}
 		ifs.close();
 	}
@@ -112,6 +113,7 @@ void 	Response::putHandler(Request request)
 	setStatus("201 Created");
 	map = basicHeaders();
 	int fd;
+	std::string	error_path = HOME;
 	std::string	path = HOME;
 	path.insert(path.length(), request.getPath());
 
@@ -120,7 +122,8 @@ void 	Response::putHandler(Request request)
 	if ((write(fd, request.getBody().c_str(), request.getBody().length())) == -1)
 		return ;
 	close(fd);
-	addBody("home/server/put.html");
+	error_path.insert(error_path.length(), "/server/put.html");
+	addBody(error_path);
 	setHeaders(map);
 }
 
@@ -128,12 +131,14 @@ void 	Response::deleteHandler(Request request)
 {
 	std::map<std::string, std::string> map;
 	map = basicHeaders();
+	std::string error_path = HOME;
 	std::string	path = HOME;
 	path.insert(path.length(), request.getPath());
 
 	if (remove(path.c_str()) == -1)
 		return ;
-	addBody("home/server/deleted.html");
+	error_path.insert(error_path.length(), "/server/deleted.html");
+	addBody(error_path);
 	setHeaders(map);
 }
 
