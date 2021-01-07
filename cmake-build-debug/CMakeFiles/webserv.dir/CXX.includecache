@@ -140,6 +140,10 @@ list
 ../queries/Response.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
 
+/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/utils/utils.cpp
+stdlib.h
+-
+
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp
 ../includes/includes.h
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h

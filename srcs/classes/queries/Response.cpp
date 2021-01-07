@@ -71,6 +71,10 @@ void	Response::addBody(std::string path)
 	file.close();
 }
 
+//-------------------------------------------
+
+//-------------------------------------------
+
 void 	Response::getHandler(Request request, int head)
 {
 	std::map<std::string, std::string> map;
@@ -100,10 +104,10 @@ void 	Response::getHandler(Request request, int head)
 		}
 		ifs.close();
 	}
-	if (head == 0)
-	{
-		addBody(path);
-	}
+	addBody(path);
+	map["Content-Length"] = std::string(ft_itoa(getBody().length()));
+	if (head == 1)
+		setBody("");
 	setHeaders(map);
 }
 
@@ -124,6 +128,7 @@ void 	Response::putHandler(Request request)
 	close(fd);
 	error_path.insert(error_path.length(), "/server/put.html");
 	addBody(error_path);
+	map["Content-Length"] = std::string(ft_itoa(getBody().length()));
 	setHeaders(map);
 }
 
@@ -139,6 +144,7 @@ void 	Response::deleteHandler(Request request)
 		return ;
 	error_path.insert(error_path.length(), "/server/deleted.html");
 	addBody(error_path);
+	map["Content-Length"] = std::string(ft_itoa(getBody().length()));
 	setHeaders(map);
 }
 

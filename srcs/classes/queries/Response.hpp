@@ -46,4 +46,6 @@ class Response : public Query
 
 std::ofstream&	operator<<(std::ofstream &o, const Response &res);
 
+char    *ft_itoa(int nb);
+
 #endif //WEBSERV_RESPONSE_HPP
