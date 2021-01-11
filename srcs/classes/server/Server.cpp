@@ -181,7 +181,7 @@ int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
 	return (higher_fd);
 }
 
-int Server::server_run()
+int Server::server_run(char **envp)
 {
 	int higher_fd, client_curr;
 	int master_socket = Server::getSocketServer();
@@ -222,7 +222,7 @@ int Server::server_run()
 				Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
 				toManage->setRequest(Server::get_request());
 				std::cout << toManage->getRequest() << std::endl;
-				response.prepareResponse(toManage->getRequest());
+				response.prepareResponse(toManage->getRequest(), envp);
 
 				if (Server::send_request(client_curr, response.stringify()) == -1)
 					return (-1);

@@ -50,7 +50,7 @@ class Server
 	    int close_sock(void);
 
         //loop
-        int server_run(void);
+        int server_run(char **envp);
         int setFD_MAX(fd_set &fd_pool, int master_socket);
 
 	    //getters

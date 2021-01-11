@@ -20,6 +20,18 @@ const std::string &Response::getStatus() const {
     return _status;
 }
 
+bool	Response::isCGI(std::string path)
+{
+//	std::string extension = path.substr(0, path.rfind('.', 0));
+//	std::string cgi = CGI;
+	(void)path;
+//	if (path == "/")
+//		return false;
+//	if (cgi.find(extension, 0) == std::string::npos)
+//		return false;
+	return true;
+}
+
 //assemble les elements de la requete dans une string et la renvoi
 std::string 	Response::stringify(void) const
 {
@@ -60,22 +72,36 @@ void 	Response::fileExtension(std::map<std::string, std::string> *map, Request r
 		(*map)["Content-Type"] = "text/css";
 	else if (request.getPath().compare(request.getPath().length() - 3, 3, ".js") == 0)
 		(*map)["Content-Type"] = "application/javascript";
+	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".svg") == 0)
+		(*map)["Content-Type"] = "images/svg";
+	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".gif") == 0)
+		(*map)["Content-Type"] = "images.gif";
+	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".png") == 0)
+		(*map)["Content-Type"] = "images/png";
 }
 
-void	Response::addBody(std::string path)
+std::string			Response::execute_cgi(std::string str, std::string path, Request request, char **envp)
+{
+	Cgi			object;
+
+	object.parse(str, path, request, envp);
+	object.execute(request);
+	return (object.getOutputBody());
+}
+
+void	Response::addBody(std::string path, Request request, char **envp)
 {
 	std::string newStr;
 	std::ifstream file(path.c_str(), std::ifstream::in);
 	std::getline(file, newStr, '\0');
-	setBody(newStr);
+	if (isCGI(path))
+		setBody(execute_cgi(newStr, path, request, envp));
+	else
+		setBody(newStr);
 	file.close();
 }
 
-//-------------------------------------------
-
-//-------------------------------------------
-
-void 	Response::getHandler(Request request, int head)
+void 	Response::getHandler(Request request, int head, char **envp)
 {
 	std::map<std::string, std::string> map;
 	std::string path = HOME;
@@ -104,15 +130,16 @@ void 	Response::getHandler(Request request, int head)
 		}
 		ifs.close();
 	}
-	addBody(path);
-	map["Content-Length"] = std::string(ft_itoa(getBody().length()));
+	addBody(path, request, envp);
+	map["Content-Length"] = Logger::to_string(getBody().length());
 	if (head == 1)
 		setBody("");
 	setHeaders(map);
 }
 
-void 	Response::putHandler(Request request)
+void 	Response::putHandler(Request request, char **envp)
 {
+	(void)envp;
 	std::map<std::string, std::string> map;
 	setStatus("201 Created");
 	map = basicHeaders();
@@ -127,13 +154,14 @@ void 	Response::putHandler(Request request)
 		return ;
 	close(fd);
 	error_path.insert(error_path.length(), "/server/put.html");
-	addBody(error_path);
-	map["Content-Length"] = std::string(ft_itoa(getBody().length()));
+	addBody(error_path, request, envp);
+	map["Content-Length"] = Logger::to_string(getBody().length());
 	setHeaders(map);
 }
 
-void 	Response::deleteHandler(Request request)
+void 	Response::deleteHandler(Request request, char **envp)
 {
+	(void)envp;
 	std::map<std::string, std::string> map;
 	map = basicHeaders();
 	std::string error_path = HOME;
@@ -143,12 +171,12 @@ void 	Response::deleteHandler(Request request)
 	if (remove(path.c_str()) == -1)
 		return ;
 	error_path.insert(error_path.length(), "/server/deleted.html");
-	addBody(error_path);
-	map["Content-Length"] = std::string(ft_itoa(getBody().length()));
+	addBody(error_path, request, envp);
+	map["Content-Length"] = Logger::to_string(getBody().length());
 	setHeaders(map);
 }
 
-void	Response::prepareResponse(std::string req)
+void	Response::prepareResponse(std::string req, char **envp)
 {
     Parser parser;
 	Request	request;
@@ -158,13 +186,13 @@ void	Response::prepareResponse(std::string req)
 	setStatus("200 OK");
 
 	if (request.getMethod() == "GET")
-    	getHandler(request, 0);
+    	getHandler(request, 0, envp);
 	else if (request.getMethod() == "HEAD")
-		getHandler(request, 1);
+		getHandler(request, 1, envp);
 	else if (request.getMethod() == "PUT")
-		putHandler(request);
+		putHandler(request, envp);
 	else if (request.getMethod() == "DELETE")
-		deleteHandler(request);
+		deleteHandler(request, envp);
 }
 
 //fonction qui donne la date au format GMT

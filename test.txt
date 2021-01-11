@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>LBB Signin</title>
+    <link rel="icon" type="image/x-icon" href="img/icon.png" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="logo">
+        <img src="img/Ratlogo.png" class="logo-image" alt="logo">
+    </div>
+    <div class="login-main">
+                <form class="form" action="home.php" method="post">
+            <div class="input-login">
+                <input class="login-user" autofocus="autofocus" placeholder="Login" type="text" name="user-login" required="">
+            </div>
+            <div class="input-password">
+                <input class="password-user" placeholder="Password" type="password" name="user-password" required="">
+            </div>
+            <div class="button-div">
+                <input class="button" data-disabled-with="Signing in ..." name="commit" type="submit" value="Sign in">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

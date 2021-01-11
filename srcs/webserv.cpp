@@ -11,7 +11,7 @@
 
 Logger logger;
 
-int main(int ac, char **av)
+int main(int ac, char **av, char **envp)
 {
 	Server server;
 	Parser parser;
@@ -26,7 +26,7 @@ int main(int ac, char **av)
 		return (1);
 
 	/* LOOP MULTIPLE CLIENTS */
-	if (server.server_run() == -1)
+	if (server.server_run(envp) == -1)
 	    return (1);
 
 

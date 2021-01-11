@@ -83,6 +83,12 @@
 		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h">
 			<Option target="webserv"/>
 		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/cgi/Cgi.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/cgi/Cgi.hpp">
+			<Option target="webserv"/>
+		</Unit>
 		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.cpp">
 			<Option target="webserv"/>
 		</Unit>
@@ -126,9 +132,6 @@
 			<Option target="webserv"/>
 		</Unit>
 		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp">
-			<Option target="webserv"/>
-		</Unit>
-		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/utils/utils.cpp">
 			<Option target="webserv"/>
 		</Unit>
 		<Unit filename="/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp">
