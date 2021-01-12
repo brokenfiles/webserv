@@ -90,13 +90,21 @@ void		Cgi::initEnv(char **envp, Request request)
 
 void		Cgi::addMetaVariables(std::map<std::string, std::string> *env, Request request)
 {
-	(void)request;
 	(*env)["SERVER_SOFTWARE"] = "Webserv/1.0";
 	(*env)["SERVER_NAME"] = "localhost";
 	(*env)["SERVER_PORT"] = Logger::to_string(PORT);
 	(*env)["PATH_INFO"] = "";
+	(*env)["GATEWAY_INTERFACE"] = "CGI/1.1";
+	(*env)["SCRIPT_NAME"] = request.getPath();
+	(*env)["REQUEST_METHOD"] = request.getMethod();
+	(*env)["SERVER_PROTOCOL"] = "HTTP/1.1";
+	(*env)["REQUEST_URI"] = request.getPath() + "?" + request.getQueryString();
 	if (request.getMethod() == "GET")
+	{
 		(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
+		(*env)["CONTENT_TYPE"] = "";
+		(*env)["CONTENT_LENGTH"] = "0";
+	}
 	else
 		(*env)["QUERY_STRING"] = "";
 }
@@ -117,6 +125,8 @@ int		Cgi::execute(Request request)
 	std::string										file = "cgi/bin/" + getType();
 	char											**argv = convertArgv(request, file);
 
+	for (int i = 0; env[i]; i++)
+		std::cout << "{" << env[i] << "}" << std::endl;
 	pipe(pipe_fd);
 	pid = fork();
 	if (pid == -1)
