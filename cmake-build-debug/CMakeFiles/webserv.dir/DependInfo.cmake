@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
   "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
   "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/utils/utils.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o"
   "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")

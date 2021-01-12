@@ -63,6 +63,8 @@ CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o: ../srcs/classes/queries
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o: ../srcs/classes/server/Server.cpp
 CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o: ../srcs/classes/server/Server.hpp
 
+CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o: ../srcs/utils/utils.cpp
+
 CMakeFiles/webserv.dir/srcs/webserv.cpp.o: ../includes/includes.h
 CMakeFiles/webserv.dir/srcs/webserv.cpp.o: ../srcs/classes/cgi/Cgi.hpp
 CMakeFiles/webserv.dir/srcs/webserv.cpp.o: ../srcs/classes/client/Client.hpp

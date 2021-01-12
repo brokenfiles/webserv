@@ -22,14 +22,13 @@ const std::string &Response::getStatus() const {
 
 bool	Response::isCGI(std::string path)
 {
-//	std::string extension = path.substr(0, path.rfind('.', 0));
-//	std::string cgi = CGI;
-	(void)path;
-//	if (path == "/")
-//		return false;
-//	if (cgi.find(extension, 0) == std::string::npos)
-//		return false;
-	return true;
+	int		nb = path.rfind('.', path.length());
+
+	path = path.substr(nb + 1, path.length() - nb);
+
+	if (path == "php")
+		return (true);
+	return (false);
 }
 
 //assemble les elements de la requete dans une string et la renvoi

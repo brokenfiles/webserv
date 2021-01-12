@@ -66,6 +66,7 @@ std::string 	Parser::getPath(std::string query, std::string method)
 {
 	query.erase(0, method.length() + 1);
 	int 	i = query.find(' ');
+
 	return (query.substr(0, i));
 }
 
@@ -78,10 +79,18 @@ std::string 	Parser::getBody(std::string query)
 Request	Parser::parse(std::string input_query) throw(std::exception)
 {
 	Request	kwery;
+	std::string		ret = "";
+	size_t			nb = 0;
+
 	if (this->_checkFormat(input_query) == 0)
 		throw std::invalid_argument("Bad format");
 	kwery.setMethod(getMethod(input_query));
 	kwery.setPath(getPath(input_query, kwery.getMethod()));
+	nb = kwery.getPath().find('?', 0);
+	if (nb != std::string::npos)
+		ret = kwery.getPath().substr(nb + 1, kwery.getPath().length() - nb - 1);
+	kwery.setQueryString(ret);
+	kwery.setPath(kwery.getPath().substr(0, nb));
 	kwery.setHeaders(getHeaders(input_query));
 	kwery.setBody(getBody(input_query));
 	return (kwery);

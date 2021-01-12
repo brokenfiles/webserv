@@ -64,7 +64,9 @@ void Cgi::setEnvNumber(unsigned int envNumber)
 
 void 		Cgi::parse(std::string body, std::string path, Request request, char **envp)
 {
-	setType(path.erase(0, path.rfind('.', 0)));
+	int		nb = path.rfind('.', path.length());
+
+	setType(path.substr(nb + 1, path.length() - nb));
 	setInputBody(body);
 	initEnv(envp, request);
 }
@@ -93,68 +95,16 @@ void		Cgi::addMetaVariables(std::map<std::string, std::string> *env, Request req
 	(*env)["SERVER_NAME"] = "localhost";
 	(*env)["SERVER_PORT"] = Logger::to_string(PORT);
 	(*env)["PATH_INFO"] = "";
+	if (request.getMethod() == "GET")
+		(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
+	else
+		(*env)["QUERY_STRING"] = "";
 }
 
-//----------------------------------
-static int	ft_strlen(const char *str)
+std::string		Cgi::setQueryString(std::string str)
 {
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	while (str[i] != '\0')
-		i++;
-	return (i);
+	return (str);
 }
-
-char		*ft_strdup(const char *str)
-{
-	int		i;
-	char	*res;
-
-	i = 0;
-	if (!(res = (char*)malloc(sizeof(char) * (ft_strlen(str) + 1))))
-		return (NULL);
-	while (str[i] != '\0')
-	{
-		res[i] = str[i];
-		i++;
-	}
-	res[i] = '\0';
-	return (res);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	int		i;
-	int		j;
-	char	*res;
-
-	i = 0;
-	j = 0;
-	if (!s1 || !s2)
-		return (NULL);
-	if (!(res = (char*)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))))
-		return (NULL);
-	while (s1[i])
-	{
-		res[j] = s1[i];
-		i++;
-		j++;
-	}
-	i = 0;
-	while (s2[i])
-	{
-		res[j] = s2[i];
-		i++;
-		j++;
-	}
-	res[j] = '\0';
-	return (res);
-}
-
-//-----------------------------------
 
 int		Cgi::execute(Request request)
 {
@@ -162,9 +112,10 @@ int		Cgi::execute(Request request)
 	int												pid;
 	int												pipe_fd[2];
 	char 											**env = convertEnv();
-	char											**argv = convertArgv(request);
 	char 											buffer[BUFFER];
 	std::string										output = "";
+	std::string										file = "cgi/bin/" + getType();
+	char											**argv = convertArgv(request, file);
 
 	pipe(pipe_fd);
 	pid = fork();
@@ -175,7 +126,7 @@ int		Cgi::execute(Request request)
 		close(pipe_fd[0]);
 		if (dup2(pipe_fd[1], 1) == -1)
 			return (-1);
-		if (execve("cgi/bin/php", argv, env) == -1)
+		if (execve(file.c_str(), argv, env) == -1)
 			return (-1);
 	}
 	else
@@ -193,30 +144,18 @@ int		Cgi::execute(Request request)
 	return (0);
 }
 
-void		Cgi::freeAll(char **env, char **argv)
-{
-	int		i = 0;
-
-	for (int j = 0; j < i; j++)
-		free(env[j]);
-	free(env);
-	free(argv[0]);
-	free(argv);
-}
-
 char**		Cgi::convertEnv(void)
 {
+	int												i = 0;
 	std::map<std::string, std::string>::iterator	ite;
-	std::map<std::string, std::string>				envp;
+	std::map<std::string, std::string>				envp = getEnv();
 	std::string										tmp;
 	char 											**env;
-	int												i = 0;
 
 	if (!(env = (char**)malloc(sizeof(char*) * (getEnvNumber() + 1))))
 		return NULL;
 	for (ite = envp.begin(); ite != envp.end(); ite++)
 	{
-		std::cout << ite->first << std::endl;
 		tmp = "";
 		tmp.insert(0, ite->first);
 		tmp.insert(tmp.length(), "=");
@@ -228,16 +167,26 @@ char**		Cgi::convertEnv(void)
 	return (env);
 }
 
-char**	Cgi::convertArgv(Request request)
+char**	Cgi::convertArgv(Request request, std::string file)
 {
 	char											**argv;
 
 	if (!(argv = (char**)malloc(sizeof(char*) * 3)))
 		return NULL;
-	argv[0] = ft_strdup("cgi/bin/php");
+	argv[0] = ft_strdup(file.c_str());
 	argv[1] = ft_strdup((HOME + request.getPath()).c_str());
 	argv[2] = NULL;
 	return (argv);
 }
 
+void		Cgi::freeAll(char **env, char **argv)
+{
+	int		i = 0;
+
+	for (int j = 0; j < i; j++)
+		free(env[j]);
+	free(env);
+	free(argv[0]);
+	free(argv);
+}
 

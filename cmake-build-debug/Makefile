@@ -359,6 +359,33 @@ srcs/classes/server/Server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.s
 .PHONY : srcs/classes/server/Server.cpp.s
 
+srcs/utils/utils.o: srcs/utils/utils.cpp.o
+
+.PHONY : srcs/utils/utils.o
+
+# target to build an object file
+srcs/utils/utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o
+.PHONY : srcs/utils/utils.cpp.o
+
+srcs/utils/utils.i: srcs/utils/utils.cpp.i
+
+.PHONY : srcs/utils/utils.i
+
+# target to preprocess a source file
+srcs/utils/utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/utils/utils.cpp.i
+.PHONY : srcs/utils/utils.cpp.i
+
+srcs/utils/utils.s: srcs/utils/utils.cpp.s
+
+.PHONY : srcs/utils/utils.s
+
+# target to generate assembly for a file
+srcs/utils/utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/utils/utils.cpp.s
+.PHONY : srcs/utils/utils.cpp.s
+
 srcs/webserv.o: srcs/webserv.cpp.o
 
 .PHONY : srcs/webserv.o
@@ -419,6 +446,9 @@ help:
 	@echo "... srcs/classes/server/Server.o"
 	@echo "... srcs/classes/server/Server.i"
 	@echo "... srcs/classes/server/Server.s"
+	@echo "... srcs/utils/utils.o"
+	@echo "... srcs/utils/utils.i"
+	@echo "... srcs/utils/utils.s"
 	@echo "... srcs/webserv.o"
 	@echo "... srcs/webserv.i"
 	@echo "... srcs/webserv.s"

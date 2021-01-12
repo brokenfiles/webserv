@@ -22,6 +22,16 @@ void Request::setPath(const std::string &path)
     _path = path;
 }
 
+const std::string &Request::getQueryString() const
+{
+	return _queryString;
+}
+
+void Request::setQueryString(const std::string &queryString)
+{
+	_queryString = queryString;
+}
+
 std::ostream&	operator<<(std::ostream &o, const Request &q) {
 
 	//std::map<std::string, std::string>::const_iterator	ite;

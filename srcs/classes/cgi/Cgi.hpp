@@ -42,13 +42,17 @@ class Cgi
 
 		//utils functions
 		void				parse(std::string body, std::string path, Request request, char **envp);
+		void				freeAll(char **env, char **argv);
+		char**				convertArgv(Request request, std::string file);
+
+		//env var functions
 		void				initEnv(char **envp, Request request);
 		void				addMetaVariables(std::map<std::string, std::string> *env, Request request);
-		void				freeAll(char **env, char **argv);
+		std::string			setQueryString(std::string path);
 		char**				convertEnv(void);
-		char**				convertArgv(Request request);
 
 };
 
+char		*ft_strdup(const char *str);
 
 #endif //WEBSERV_CGI_HPP
