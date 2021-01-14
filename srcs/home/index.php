@@ -18,9 +18,8 @@
     </div>
 </header>
 <div class="content">
-    <h1 class="titre"><?php echo 'var = [' . getenv('PATH_INFO') . ']'?></h1>
-    <h1 class="titre"><?php echo 'get[test] = ' . $_GET["test"]?></h1>
-	<?php var_dump($_GET)?>
+    <h1 class="titre"><?php echo 'QUERY_STRING=' . getenv('QUERY_STRING')?></h1>
+    <h1 class="titre"><?php echo 'get= ' . $_GET["salut"]?></h1>
 </div>
 <script type="text/javascript" src="app.js"></script>
 </body>

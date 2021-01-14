@@ -26,7 +26,7 @@ bool	Response::isCGI(std::string path)
 
 	path = path.substr(nb + 1, path.length() - nb);
 
-	if (path == "php")
+	if (path == "php" || path == "rb")
 		return (true);
 	return (false);
 }

@@ -66,7 +66,10 @@ void 		Cgi::parse(std::string body, std::string path, Request request, char **en
 {
 	int		nb = path.rfind('.', path.length());
 
-	setType(path.substr(nb + 1, path.length() - nb));
+	if (path.substr(nb + 1, path.length() - nb) == "php")
+		setType("php");
+	else if (path.substr(nb + 1, path.length() - nb) == "rb")
+		setType("ruby");
 	setInputBody(body);
 	initEnv(envp, request);
 }
@@ -99,14 +102,9 @@ void		Cgi::addMetaVariables(std::map<std::string, std::string> *env, Request req
 	(*env)["REQUEST_METHOD"] = request.getMethod();
 	(*env)["SERVER_PROTOCOL"] = "HTTP/1.1";
 	(*env)["REQUEST_URI"] = request.getPath() + "?" + request.getQueryString();
-	if (request.getMethod() == "GET")
-	{
-		(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
-		(*env)["CONTENT_TYPE"] = "";
-		(*env)["CONTENT_LENGTH"] = "0";
-	}
-	else
-		(*env)["QUERY_STRING"] = "";
+	(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
+	(*env)["CONTENT_TYPE"] = "";
+	(*env)["CONTENT_LENGTH"] = Logger::to_string(request.getQueryString().length());
 }
 
 std::string		Cgi::setQueryString(std::string str)
