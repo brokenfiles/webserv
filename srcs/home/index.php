@@ -18,8 +18,8 @@
     </div>
 </header>
 <div class="content">
-    <h1 class="titre"><?php echo 'QUERY_STRING=' . getenv('QUERY_STRING')?></h1>
-    <h1 class="titre"><?php echo 'get= ' . $_GET["salut"]?></h1>
+    <h5 class="titre"><?php echo 'get= ' . $_GET["salut"]?></h5>
+	<h5><?= phpinfo()?></h5>
 </div>
 <script type="text/javascript" src="app.js"></script>
 </body>
