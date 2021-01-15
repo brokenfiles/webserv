@@ -93,21 +93,22 @@ void		Cgi::initEnv(char **envp, Request request)
 
 void		Cgi::addMetaVariables(std::map<std::string, std::string> *env, Request request)
 {
+	(*env)["REQUEST_METHOD"] = request.getMethod();
+	(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
+	(*env)["REDIRECT_STATUS"] = "200";
 	(*env)["SERVER_SOFTWARE"] = "Webserv/1.0";
-	//(*env)["REDIRECT_STATUS"] = "200";
-	/*(*env)["SERVER_NAME"] = "localhost";
+	(*env)["SERVER_NAME"] = "localhost";
 	(*env)["SERVER_PORT"] = Logger::to_string(PORT);
 	(*env)["PATH_INFO"] = "";
 	(*env)["GATEWAY_INTERFACE"] = "CGI/1.1";
-	(*env)["SCRIPT_NAME"] = request.getPath();
-	(*env)["REQUEST_METHOD"] = request.getMethod();
+	(*env)["SCRIPT_NAME"] = request.getPath().substr(1, request.getPath().length() - 1);
+	(*env)["SCRIPT_FILENAME"] = HOME + request.getPath();
 	(*env)["SERVER_PROTOCOL"] = "HTTP/1.1";
 	(*env)["REQUEST_URI"] = request.getPath();
-	if (request.getMethod() == "GET")
+	if (request.getMethod() == "GET" && !(*env)["QUERY_STRING"].empty())
 		(*env)["REQUEST_URI"] += "?" + request.getQueryString();
 	(*env)["CONTENT_TYPE"] = "";
-	(*env)["CONTENT_LENGTH"] = Logger::to_string(request.getQueryString().length());*/
-	(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
+	(*env)["CONTENT_LENGTH"] = Logger::to_string(request.getBody().length());
 }
 
 std::string		Cgi::setQueryString(std::string str)

@@ -29,16 +29,16 @@ class Cgi
 		int		execute(Request request);
 
 		//getters and setters
-		std::map<std::string, std::string> getEnv() const;
-		const std::string &getType() const;
-		void setType(const std::string &type);
-		void setEnv(const std::map<std::string, std::string> &env);
-		const std::string &getInputBody() const;
-		void setInputBody(const std::string &inputBody);
-		const std::string &getOutputBody() const;
-		void setOutputBody(const std::string &outputBody);
-		unsigned int getEnvNumber() const;
-		void setEnvNumber(unsigned int envNumber);
+		std::map<std::string, std::string>		getEnv() const;
+		const std::string						&getType() const;
+		void									setType(const std::string &type);
+		void									setEnv(const std::map<std::string, std::string> &env);
+		const std::string						&getInputBody() const;
+		void									setInputBody(const std::string &inputBody);
+		const std::string						&getOutputBody() const;
+		void									setOutputBody(const std::string &outputBody);
+		unsigned int							getEnvNumber() const;
+		void									setEnvNumber(unsigned int envNumber);
 
 		//utils functions
 		void				parse(std::string body, std::string path, Request request, char **envp);

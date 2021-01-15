@@ -54,14 +54,6 @@ arpa/inet.h
 cstring
 -
 
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.cpp
-Config.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.hpp
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.hpp
-../server/Server.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
-
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
 iostream
 -
@@ -73,12 +65,6 @@ sstream
 -
 time.h
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/time.h
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.cpp
-Parser.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
-vector
--
 
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
 ../../../includes/includes.h
@@ -96,28 +82,12 @@ iostream
 map
 -
 
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.cpp
-../../../includes/includes.h
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
-Request.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
-
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
 ../../../includes/includes.h
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
 Query.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.hpp
 map
--
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.cpp
-Response.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
-stdio.h
--
-fcntl.h
--
-unistd.h
 -
 
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
@@ -129,10 +99,6 @@ Request.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 ../cgi/Cgi.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/cgi/Cgi.hpp
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp
-Server.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
 ../../../includes/includes.h
@@ -171,18 +137,4 @@ list
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.hpp
 ../queries/Response.hpp
 /Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.hpp
-
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp
-../includes/includes.h
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/includes/includes.h
-../srcs/classes/logger/Logger.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/logger/Logger.hpp
-../srcs/classes/server/Server.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.hpp
-../srcs/classes/parser/Parser.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.hpp
-../srcs/classes/queries/Request.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.hpp
-../srcs/classes/client/Client.hpp
-/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.hpp
 
