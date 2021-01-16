@@ -12,7 +12,7 @@ class Parser {
 		std::string 							getMethod(std::string query);
 		std::map<std::string, std::string>		getHeaders(std::string &query);
 		std::string 							getPath(std::string query, std::string method);
-		std::string 							getBody(std::string query);
+		std::string 							getBody(std::string query, Request kwery);
 
 	public:
 		Parser();

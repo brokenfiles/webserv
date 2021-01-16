@@ -50,6 +50,7 @@ class Cgi
 		void				addMetaVariables(std::map<std::string, std::string> *env, Request request);
 		std::string			setQueryString(std::string path);
 		char**				convertEnv(void);
+		void				print_env(void);
 
 };
 

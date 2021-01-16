@@ -64,34 +64,40 @@ std::map<std::string, std::string>	Parser::getHeaders(std::string &query)
 
 std::string 	Parser::getPath(std::string query, std::string method)
 {
-	query.erase(0, method.length() + 1);
-	int 	i = query.find(' ');
+	int 	i = 0;
 
+	query.erase(0, method.length() + 1);
+	i = query.find(' ');
 	return (query.substr(0, i));
 }
 
-std::string 	Parser::getBody(std::string query)
+std::string 	Parser::getBody(std::string query, Request kwery)
 {
 	query.erase(0, 2);
+	if (kwery.getMethod() == "POST")// && kwery.getHeaders().find("Content-Type")->second == "application/x-www-form-urlencoded")
+		kwery.setQueryString(query);
+	else
+		kwery.setQueryString("");
 	return (query);
 }
 
 Request	Parser::parse(std::string input_query) throw(std::exception)
 {
-	Request	kwery;
-	std::string		ret = "";
+	Request			kwery;
 	size_t			nb = 0;
 
 	if (this->_checkFormat(input_query) == 0)
 		throw std::invalid_argument("Bad format");
 	kwery.setMethod(getMethod(input_query));
 	kwery.setPath(getPath(input_query, kwery.getMethod()));
-	nb = kwery.getPath().find('?', 0);
-	if (nb != std::string::npos)
-		ret = kwery.getPath().substr(nb + 1, kwery.getPath().length() - nb - 1);
-	kwery.setQueryString(ret);
-	kwery.setPath(kwery.getPath().substr(0, nb));
+	if (kwery.getMethod() == "GET")
+	{
+		nb = kwery.getPath().find('?', 0);
+		if (nb != std::string::npos)
+			kwery.setQueryString(kwery.getPath().substr(nb + 1, kwery.getPath().length() - nb - 1));
+		kwery.setPath(kwery.getPath().substr(0, nb));
+	}
 	kwery.setHeaders(getHeaders(input_query));
-	kwery.setBody(getBody(input_query));
+	kwery.setBody(getBody(input_query, kwery));
 	return (kwery);
 }

@@ -91,6 +91,7 @@ std::string			Response::execute_cgi(std::string str, std::string path, Request r
 void	Response::addBody(std::string path, Request request, char **envp)
 {
 	std::string newStr;
+
 	std::ifstream file(path.c_str(), std::ifstream::in);
 	std::getline(file, newStr, '\0');
 	if (isCGI(path))
@@ -102,8 +103,8 @@ void	Response::addBody(std::string path, Request request, char **envp)
 
 void 	Response::getHandler(Request request, int head, char **envp)
 {
-	std::map<std::string, std::string> map;
-	std::string path = HOME;
+	std::map<std::string, std::string>	map;
+	std::string 						path = HOME;
 
 	map = basicHeaders();
 	if (request.getPath() == "/")
@@ -184,7 +185,7 @@ void	Response::prepareResponse(std::string req, char **envp)
 
 	setStatus("200 OK");
 
-	if (request.getMethod() == "GET")
+	if (request.getMethod() == "GET" || request.getMethod() == "POST")
     	getHandler(request, 0, envp);
 	else if (request.getMethod() == "HEAD")
 		getHandler(request, 1, envp);

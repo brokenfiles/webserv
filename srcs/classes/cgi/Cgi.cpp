@@ -107,8 +107,8 @@ void		Cgi::addMetaVariables(std::map<std::string, std::string> *env, Request req
 	(*env)["REQUEST_URI"] = request.getPath();
 	if (request.getMethod() == "GET" && !(*env)["QUERY_STRING"].empty())
 		(*env)["REQUEST_URI"] += "?" + request.getQueryString();
-	(*env)["CONTENT_TYPE"] = "";
-	(*env)["CONTENT_LENGTH"] = Logger::to_string(request.getBody().length());
+	(*env)["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
+	(*env)["CONTENT_LENGTH"] = Logger::to_string(request.getHeaders().find("Content-Length")->second);
 }
 
 std::string		Cgi::setQueryString(std::string str)
@@ -116,11 +116,20 @@ std::string		Cgi::setQueryString(std::string str)
 	return (str);
 }
 
+void	Cgi::print_env(void)
+{
+	std::map<std::string, std::string>::iterator 	ite;
+
+	for (ite = getEnv().begin(); ite != getEnv().end(); ite++)
+		std::cout << ite->first << "=" << ite->second << std::endl;
+}
+
 int		Cgi::execute(Request request)
 {
 
 	int												pid;
 	int												pipe_fd[2];
+	int												outfd[2];
 	char 											**env = convertEnv();
 	char 											buffer[BUFFER];
 	std::string										output = "";
@@ -128,12 +137,16 @@ int		Cgi::execute(Request request)
 	char											**argv = convertArgv(request, file);
 
 	pipe(pipe_fd);
+	pipe(outfd);
 	pid = fork();
 	if (pid == -1)
 		return (-1);
 	else if (pid == 0)
 	{
-		close(pipe_fd[0]);
+		close(0);
+		close(1);
+		if (dup2(outfd[0], 0) == -1)
+			return (-1);
 		if (dup2(pipe_fd[1], 1) == -1)
 			return (-1);
 		if (execve(file.c_str(), argv, env) == -1)
@@ -142,6 +155,10 @@ int		Cgi::execute(Request request)
 	else
 	{
 		int 		ret;
+		close(outfd[0]);
+		if (request.getMethod() == "POST")
+			write(outfd[1], getInputBody().c_str(), getInputBody().length());
+		close(outfd[1]);
 		close(pipe_fd[1]);
 		while ((ret = read(pipe_fd[0], &buffer, BUFFER - 1)) != 0)
 		{
