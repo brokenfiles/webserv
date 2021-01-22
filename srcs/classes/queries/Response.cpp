@@ -26,7 +26,7 @@ bool	Response::isCGI(std::string path)
 
 	path = path.substr(nb + 1, path.length() - nb);
 
-	if (path == "php" || path == "rb")
+	if (path == "php" || path == "rb" || path == "bla")
 		return (true);
 	return (false);
 }
@@ -71,6 +71,8 @@ void 	Response::fileExtension(std::map<std::string, std::string> *map, Request r
 		(*map)["Content-Type"] = "text/css";
 	else if (request.getPath().compare(request.getPath().length() - 3, 3, ".js") == 0)
 		(*map)["Content-Type"] = "application/javascript";
+	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".bla") == 0)
+		(*map)["Content-Type"] = "text/bla";
 	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".svg") == 0)
 		(*map)["Content-Type"] = "images/svg";
 	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".gif") == 0)
@@ -94,7 +96,7 @@ void	Response::addBody(std::string path, Request request, char **envp)
 
 	std::ifstream file(path.c_str(), std::ifstream::in);
 	std::getline(file, newStr, '\0');
-	if (isCGI(path))
+	if (isCGI(path) && request.getMethod() == "POST")
 		setBody(execute_cgi(newStr, path, request, envp));
 	else
 		setBody(newStr);
@@ -161,7 +163,6 @@ void 	Response::putHandler(Request request, char **envp)
 
 void 	Response::deleteHandler(Request request, char **envp)
 {
-	(void)envp;
 	std::map<std::string, std::string> map;
 	map = basicHeaders();
 	std::string error_path = HOME;

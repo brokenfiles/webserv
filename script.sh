@@ -1,0 +1,1 @@
+curl --header "Content-Type: application/json" --request POST --data '{"username":"timothe","password":"xyz"}' http://localhost:8081/test.php

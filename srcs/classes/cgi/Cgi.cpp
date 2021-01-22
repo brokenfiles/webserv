@@ -70,6 +70,8 @@ void 		Cgi::parse(std::string body, std::string path, Request request, char **en
 		setType("php");
 	else if (path.substr(nb + 1, path.length() - nb) == "rb")
 		setType("ruby");
+	else if (path.substr(nb + 1, path.length() - nb) == "bla")
+		setType("bla");
 	setInputBody(body);
 	initEnv(envp, request);
 }
@@ -93,22 +95,34 @@ void		Cgi::initEnv(char **envp, Request request)
 
 void		Cgi::addMetaVariables(std::map<std::string, std::string> *env, Request request)
 {
+	(*env)["PATH_INFO"] = request.getPath();
 	(*env)["REQUEST_METHOD"] = request.getMethod();
+	(*env)["SERVER_PROTOCOL"] = "HTTP/1.1";
+	(*env)["REQUEST_URI"] = request.getPath();
 	(*env)["QUERY_STRING"] = setQueryString(request.getQueryString());
 	(*env)["REDIRECT_STATUS"] = "200";
 	(*env)["SERVER_SOFTWARE"] = "Webserv/1.0";
 	(*env)["SERVER_NAME"] = "localhost";
 	(*env)["SERVER_PORT"] = Logger::to_string(PORT);
-	(*env)["PATH_INFO"] = "";
 	(*env)["GATEWAY_INTERFACE"] = "CGI/1.1";
 	(*env)["SCRIPT_NAME"] = request.getPath().substr(1, request.getPath().length() - 1);
+	if (request.getHeaders().find("Content-Type") == request.getHeaders().end())
+		(*env)["CONTENT_TYPE"] = "";
+	else
+		(*env)["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
+	if (request.getHeaders().find("Content-Length") == request.getHeaders().end())
+		(*env)["CONTENT_TYPE"] = "0";
+	else
+		(*env)["CONTENT_LENGTH"] = Logger::to_string(getInputBody().length());
 	(*env)["SCRIPT_FILENAME"] = HOME + request.getPath();
-	(*env)["SERVER_PROTOCOL"] = "HTTP/1.1";
-	(*env)["REQUEST_URI"] = request.getPath();
+	(*env)["REMOTE_ADDR"] = "127.0.0.1";
+	(*env)["REMOTE_IDENT"] = "login_user";
+	(*env)["REMOTE_USER"] = "user";
 	if (request.getMethod() == "GET" && !(*env)["QUERY_STRING"].empty())
 		(*env)["REQUEST_URI"] += "?" + request.getQueryString();
-	(*env)["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
-	(*env)["CONTENT_LENGTH"] = Logger::to_string(request.getHeaders().find("Content-Length")->second);
+	//(*env)["HTTP_ACCEPT"] = request.getHeaders().at("Accept");
+	//(*env)["HTTP_ACCEPT_LANGUAGE"] = request.getHeaders().at("Accept-Language");
+	//(*env)["HTTP_USER_AGENT"] = request.getHeaders().at("User-Agent");
 }
 
 std::string		Cgi::setQueryString(std::string str)
@@ -121,7 +135,7 @@ void	Cgi::print_env(void)
 	std::map<std::string, std::string>::iterator 	ite;
 
 	for (ite = getEnv().begin(); ite != getEnv().end(); ite++)
-		std::cout << ite->first << "=" << ite->second << std::endl;
+		std::cout << ite->first << "=" << ite->second <<std::endl;
 }
 
 int		Cgi::execute(Request request)
@@ -130,21 +144,26 @@ int		Cgi::execute(Request request)
 	int												pid;
 	int												pipe_fd[2];
 	int												outfd[2];
+	int												save_in;
+	int												save_out;
 	char 											**env = convertEnv();
 	char 											buffer[BUFFER];
 	std::string										output = "";
-	std::string										file = "cgi/bin/" + getType();
+	std::string										file = "cgi/bin/cgi_tester";// + getType();
 	char											**argv = convertArgv(request, file);
 
 	pipe(pipe_fd);
 	pipe(outfd);
+	save_in = dup(STDIN_FILENO);
+	save_out = dup(STDOUT_FILENO);
+	if (dup2(outfd[1], 1) == -1)
+		return (-1);
 	pid = fork();
 	if (pid == -1)
 		return (-1);
 	else if (pid == 0)
 	{
-		close(0);
-		close(1);
+		close(outfd[1]);
 		if (dup2(outfd[0], 0) == -1)
 			return (-1);
 		if (dup2(pipe_fd[1], 1) == -1)
@@ -155,17 +174,24 @@ int		Cgi::execute(Request request)
 	else
 	{
 		int 		ret;
+		int 		status;
+
 		close(outfd[0]);
-		if (request.getMethod() == "POST")
+		if (request.getMethod() == "POST" && !getInputBody().empty())
 			write(outfd[1], getInputBody().c_str(), getInputBody().length());
 		close(outfd[1]);
 		close(pipe_fd[1]);
+		waitpid(-1, &status, 0);
 		while ((ret = read(pipe_fd[0], &buffer, BUFFER - 1)) != 0)
 		{
 			buffer[ret] = 0;
 			output += buffer;
 		}
+		if (getType() == "php")
+			output.erase(0, 66);
 		setOutputBody(output);
+		dup2(save_in, STDIN_FILENO);
+		dup2(save_out, STDOUT_FILENO);
 	}
 	freeAll(env, argv);
 	return (0);
