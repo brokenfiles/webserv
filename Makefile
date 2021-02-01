@@ -10,6 +10,7 @@ SRCSC		= srcs/webserv.cpp \
 			 srcs/classes/client/Client.cpp  \
 			 srcs/classes/queries/Query.cpp  \
 			 srcs/classes/queries/Request.cpp  \
+			 srcs/classes/config/Config.cpp  \
 			 srcs/classes/queries/Response.cpp  \
 			 srcs/classes/parser/Parser.cpp  \
 			 srcs/classes/cgi/Cgi.cpp \

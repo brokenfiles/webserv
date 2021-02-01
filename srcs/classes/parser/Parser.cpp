@@ -1,5 +1,6 @@
 #include "Parser.hpp"
 #include <vector>
+#include <list>
 
 Parser::Parser(void) {}
 
@@ -14,24 +15,23 @@ int 		Parser::_checkFormat(std::string query)
 
 std::string 	Parser::getMethod(std::string query)
 {
-	std::vector<std::string>	methods(15);
+	std::list<std::string> allowedMethods;
 
-	// TODO: LOUIS: REFACT VECTOR
-	methods.push_back("GET");
-	methods.push_back("HEAD");
-	methods.push_back("POST");
-	methods.push_back("PUT");
-	methods.push_back("DELETE");
-	methods.push_back("CONNECT");
-	methods.push_back("OPTIONS");
-	methods.push_back("TRACE");
-	methods.push_back("PATCH");
+	allowedMethods.push_back("GET");
+	allowedMethods.push_back("HEAD");
+	allowedMethods.push_back("POST");
+	allowedMethods.push_back("PUT");
+	allowedMethods.push_back("DELETE");
+	allowedMethods.push_back("CONNECT");
+	allowedMethods.push_back("OPTIONS");
+	allowedMethods.push_back("TRACE");
+	allowedMethods.push_back("PATCH");
 
-	typedef std::vector<std::string>::iterator iterator;
-	iterator begin = methods.begin();
-	while (begin != methods.end())
+	typedef std::list<std::string>::iterator iterator;
+	iterator begin = allowedMethods.begin();
+	while (begin != allowedMethods.end())
 	{
-		if (*begin == query.substr(0, query.find(" ")))
+		if (*begin == query.substr(0, query.find(' ')))
 			return (*begin);
 		begin++;
 	}

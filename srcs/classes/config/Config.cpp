@@ -22,9 +22,36 @@ Config::Config(const Config &config)
 	(void)config;
 }
 
-void Config::parse(std::string filename)
+void Config::parseConfig(const std::string &filename)
 {
-	(void)filename;
+	std::string line;
+
+	// Ouverture du fichier de configuration
+	std::ifstream file(filename, std::ifstream::in);
+	// On check si le fichier est bien ouvert
+	if (file.good() && file.is_open()) {
+		int scopes = 0, count = 0;
+		// On récupère la ligne
+		while ((std::getline(file, line, '\n'))) {
+			count ++;
+			if (line.find("server {") != std::string::npos) {
+				scopes++;
+				continue;
+			}
+			if (line.find('{') != std::string::npos) {
+				scopes++;
+			}
+			if (line.find('}') != std::string::npos) {
+				scopes--;
+				if (scopes == 0) {
+					std::cout << "end server scope: " << count << std::endl;
+				}
+			}
+		}
+	} else {
+		// il y a eu une erreur, throw une exception
+		throw std::bad_function_call();
+	}
 }
 
 

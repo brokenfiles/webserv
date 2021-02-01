@@ -12,10 +12,10 @@ private:
 public:
 	Config();
 	virtual ~Config();
-	Config &operator=(const Config &);
-	Config(const Config &);
+	Config &operator=(const Config &config);
+	Config(const Config &config);
 
-	void parse(std::string filename);
+	void parseConfig(const std::string &filename);
 };
 
 #endif
