@@ -16,21 +16,16 @@ std::string 	Parser::getMethod(std::string query)
 {
 	std::vector<std::string>	methods(15);
 
+	// TODO: regarder les méthodes que l'on doit gérer ou non
 	methods.push_back("GET");
-	methods.push_back("POST");
-	methods.push_back("LINK");
-	methods.push_back("UNLINK");
-	methods.push_back("PURGE");
-	methods.push_back("PUT");
-	methods.push_back("PATCH");
-	methods.push_back("DELETE");
-	methods.push_back("COPY");
 	methods.push_back("HEAD");
+	methods.push_back("POST");
+	methods.push_back("PUT");
+	methods.push_back("DELETE");
+	methods.push_back("CONNECT");
 	methods.push_back("OPTIONS");
-	methods.push_back("LOCK");
-	methods.push_back("UNLOCK");
-	methods.push_back("PROPFIND");
-	methods.push_back("VIEW");
+	methods.push_back("TRACE");
+	methods.push_back("PATCH");
 
 	typedef std::vector<std::string>::iterator iterator;
 	iterator begin = methods.begin();
@@ -71,33 +66,33 @@ std::string 	Parser::getPath(std::string query, std::string method)
 	return (query.substr(0, i));
 }
 
-std::string 	Parser::getBody(std::string query, Request kwery)
+std::string 	Parser::getBody(std::string query, Request request)
 {
 	query.erase(0, 2);
-	if (kwery.getMethod() == "POST")// && kwery.getHeaders().find("Content-Type")->second == "application/x-www-form-urlencoded")
-		kwery.setQueryString(query);
+	if (request.getMethod() == "POST")// && request.getHeaders().find("Content-Type")->second == "application/x-www-form-urlencoded")
+		request.setQueryString(query);
 	else
-		kwery.setQueryString("");
+		request.setQueryString("");
 	return (query);
 }
 
 Request	Parser::parse(std::string input_query) throw(std::exception)
 {
-	Request			kwery;
+	Request			request;
 	size_t			nb = 0;
 
 	if (this->_checkFormat(input_query) == 0)
 		throw std::invalid_argument("Bad format");
-	kwery.setMethod(getMethod(input_query));
-	kwery.setPath(getPath(input_query, kwery.getMethod()));
-	if (kwery.getMethod() == "GET")
+	request.setMethod(getMethod(input_query));
+	request.setPath(getPath(input_query, request.getMethod()));
+	if (request.getMethod() == "GET")
 	{
-		nb = kwery.getPath().find('?', 0);
+		nb = request.getPath().find('?', 0);
 		if (nb != std::string::npos)
-			kwery.setQueryString(kwery.getPath().substr(nb + 1, kwery.getPath().length() - nb - 1));
-		kwery.setPath(kwery.getPath().substr(0, nb));
+			request.setQueryString(request.getPath().substr(nb + 1, request.getPath().length() - nb - 1));
+		request.setPath(request.getPath().substr(0, nb));
 	}
-	kwery.setHeaders(getHeaders(input_query));
-	kwery.setBody(getBody(input_query, kwery));
-	return (kwery);
+	request.setHeaders(getHeaders(input_query));
+	request.setBody(getBody(input_query, request));
+	return (request);
 }

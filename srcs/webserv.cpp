@@ -29,7 +29,5 @@ int main(int ac, char **av, char **envp)
 	if (server.server_run(envp) == -1)
 	    return (1);
 
-
-
     return (0);
 }
