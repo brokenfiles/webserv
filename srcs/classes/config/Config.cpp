@@ -27,18 +27,17 @@ void Config::parseConfig(const std::string &filename)
 	std::string line;
 
 	// Ouverture du fichier de configuration
-	std::ifstream file(filename, std::ifstream::in);
+	std::ifstream file(filename.c_str(), std::ifstream::in);
 	// On check si le fichier est bien ouvert
 	if (file.good() && file.is_open()) {
 		int scopes = 0, count = 0;
 		// On récupère la ligne
 		while ((std::getline(file, line, '\n'))) {
 			count ++;
-			if (line.find("server {") != std::string::npos) {
-				scopes++;
-				continue;
-			}
 			if (line.find('{') != std::string::npos) {
+				if (scopes == 0) {
+					std::cout << "begin server scope: " << count << std::endl;
+				}
 				scopes++;
 			}
 			if (line.find('}') != std::string::npos) {
@@ -50,7 +49,7 @@ void Config::parseConfig(const std::string &filename)
 		}
 	} else {
 		// il y a eu une erreur, throw une exception
-		throw std::bad_function_call();
+//		throw std::bad_function_call();
 	}
 }
 
