@@ -1,52 +1,55 @@
-GREEN	= \033[0;32m
-GREEN_B	= \033[1;32m
-RESET	= \033[0m
+NAME		= webserv
+CC			= clang++
+RM			= rm -f
+OBJS_DIR	= ./objects/
+START		= 1
+CFLAGS		= -Wall -Wextra -Werror -std=c++98
 
-SRCS	=	srcs/webserv.cpp \
-            srcs/classes/server/Server.cpp  \
-            srcs/classes/client/Client.cpp  \
-            srcs/classes/queries/Query.cpp  \
-            srcs/classes/queries/Request.cpp  \
-            srcs/classes/queries/Response.cpp  \
-            srcs/classes/parser/Parser.cpp  \
-            srcs/classes/cgi/Cgi.cpp \
-            srcs/utils/utils.cpp \
+SRCSC		= srcs/webserv.cpp \
+			 srcs/classes/server/Server.cpp  \
+			 srcs/classes/client/Client.cpp  \
+			 srcs/classes/queries/Query.cpp  \
+			 srcs/classes/queries/Request.cpp  \
+			 srcs/classes/queries/Response.cpp  \
+			 srcs/classes/parser/Parser.cpp  \
+			 srcs/classes/cgi/Cgi.cpp \
+			 srcs/utils/utils.cpp
 
-OBJS	= $(SRCS:.cpp=.o)
+OBJS		= ${SRCSC:%.cpp=${OBJS_DIR}/%.o}
 
-CC		= clang++
-CFLAGS	= -Wall -Wextra -Werror -D MAKE=yes -std=c++98
-RM		= rm -f
-NAME	= webserv
+${OBJS_DIR}/%.o: %.cpp
+			@mkdir -p ${@D}
+			@printf "\033[2K\033[0;35mWEBSERV\033[0;0m:    \033[0;33mCompilation...    \033[0;31m%-15.15s\033[0;0m\r" $(notdir ${<})
+			@${CC} -pthread ${CFLAGS} -c $< -o $@
 
-all:		$(NAME)
+${NAME}:	header ${OBJS}
+			@printf "\033[2K\033[0;35mWEBSERV\033[0;0m:    \033[0;32mCompleted         \033[0;31m----\033[0;0m          \r"
+			@printf "\n\033[0;0m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n\033[0;35mWEBSERV\033[0;0m:    \033[0;32mReady             \033[0;31m----          \033[0;0m\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n"
+			@${CC} -pthread ${CFLAGS} ${OBJS} -o ${NAME}
 
-%.o:		%.cpp
-			@$(CC) $(CFLAGS) -c $< -o $@
-#        	@$(CC) $(CFLAGS) -c -MD $< -o $@
+run:		${NAME}
+			@echo "\033[0;34mRunning ${NAME}...\033[0;0m"
+			@./${NAME}
 
-$(NAME):	$(OBJS)
-			@$(CC) $(CFLAGS) $^ -o $@
-#			@$(RM) *.d
-#			@$(RM) *.o
-			@printf "$(GREEN_B)$(NAME) $(GREEN)Created.$(RESET)\033[0;0m\n"
+test:		re
+			@echo "\033[0;34mRunning ${NAME}...\033[0;0m"
+			@./${NAME}
 
+header:
+			@printf "\033[0;0m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n\033[0;35mNAME          \033[0;0mSTATUS            \033[0;31mFILE          \033[0;0m\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n"
 
-include_dep:
-			@$(RM) *.d
+all:		${NAME}
 
-clean:		include_dep
-			@$(RM) $(OBJS)
+clean:
+			@${RM} ${OBJS}
+			@printf "\033[0;35mPROJECT\033[0;0m:      \033[0;32mCleaned\033[0;0m\n"
 
 fclean:		clean
-			@$(RM) $(NAME)
+			@${RM} ${NAME}
 
 re:			fclean all
 
+silent:
+			@:
+
 .PHONY:		all clean fclean re
-
-#-include *.d
-
-# $^ = liste des dependance
-# $@ = cible de la règle.
-# $< = première dependance
