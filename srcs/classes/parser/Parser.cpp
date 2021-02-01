@@ -16,7 +16,7 @@ std::string 	Parser::getMethod(std::string query)
 {
 	std::vector<std::string>	methods(15);
 
-	// TODO: regarder les méthodes que l'on doit gérer ou non
+	// TODO: LOUIS: REFACT VECTOR
 	methods.push_back("GET");
 	methods.push_back("HEAD");
 	methods.push_back("POST");

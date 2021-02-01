@@ -186,7 +186,6 @@ int Server::server_run(char **envp)
 	int higher_fd, client_curr;
 	int master_socket = Server::getSocketServer();
 	fd_set fd_pool;
-	Query response;
 
 	while (1)
 	{
@@ -214,14 +213,17 @@ int Server::server_run(char **envp)
 			client_curr = (*it)->getSocket();
 			if (FD_ISSET(client_curr, &fd_pool))
 			{
-
 				Response response;
+
 				if (Server::read_request(client_curr) == -1)
 					return (-1);
 
 				Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
+
 				toManage->setRequest(Server::get_request());
+
 				std::cout << toManage->getRequest() << std::endl;
+
 				response.prepareResponse(toManage->getRequest(), envp);
 
 				if (Server::send_request(client_curr, response.stringify()) == -1)
