@@ -20,12 +20,12 @@ OBJS		= ${SRCSC:%.cpp=${OBJS_DIR}/%.o}
 ${OBJS_DIR}/%.o: %.cpp
 			@mkdir -p ${@D}
 			@printf "\033[2K\033[0;35mWEBSERV\033[0;0m:    \033[0;33mCompilation...    \033[0;31m%-15.15s\033[0;0m\r" $(notdir ${<})
-			@${CC} -pthread ${CFLAGS} -c $< -o $@
+			@${CC} ${CFLAGS} -c $< -o $@
 
 ${NAME}:	header ${OBJS}
 			@printf "\033[2K\033[0;35mWEBSERV\033[0;0m:    \033[0;32mCompleted         \033[0;31m----\033[0;0m          \r"
 			@printf "\n\033[0;0m⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n\033[0;35mWEBSERV\033[0;0m:    \033[0;32mReady             \033[0;31m----          \033[0;0m\n⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤\n"
-			@${CC} -pthread ${CFLAGS} ${OBJS} -o ${NAME}
+			@${CC} ${CFLAGS} ${OBJS} -o ${NAME}
 
 run:		${NAME}
 			@echo "\033[0;34mRunning ${NAME}...\033[0;0m"

@@ -30,7 +30,6 @@ class Server
 
 	    //make it works
 	    int setup(void);
-	    void setAddress(void);
 
 	    //accept
 	    int accept_request(void);

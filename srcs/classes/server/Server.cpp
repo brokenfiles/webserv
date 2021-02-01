@@ -36,44 +36,38 @@ int Server::setup()
 {
 	int opt = 1;
 
-	//création du socket TCP IPv4 - retourne un file descriptor;
+	//création du socket (point de communication) PF_INET = Proto Internet IPv4, IPPROTO_TCP = TCP, et retourne un fd
 	if ((server_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		return (logger.error("[SERVER]: socket: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
+	//fonction pour rendre non bloquant un fd
+	if (fcntl(server_sock, F_SETFL, O_NONBLOCK) < 0)
+		return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+
 	logger.info("[SERVER]: TCP/IPv4 Socket ready to use!...", NO_PRINT_CLASS);
 
-	//allow multiple connection, work without this, but idk
+	//TODO TREUSEADDR MUST BE FIXED
 	if ((setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
 		return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
-	Server::setAddress();
+	//Set les vqleurs du socket server (s_addr = INADDR_ANY car server donc locqlhost + PORT)
+	memset(&serv_socket_in, 0, sizeof(struct sockaddr_in));
+	serv_socket_in.sin_family = AF_INET;
+	serv_socket_in.sin_port = htons(PORT);
+	serv_socket_in.sin_addr.s_addr = INADDR_ANY; // inet_addr("127.0.0.1") ou INADDR_ANY;
 
-	//affectation d'un nom au socket "sock_fd", affecte <adresse> <port> specifié dans setAddress();
+	//bind, lie le point de communication (fd server) a l'addresse - port specifié dans setAddress();
 	if (bind(server_sock, (const struct sockaddr *) &serv_socket_in, sizeof(serv_socket_in)) < 0)
 		return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
 	logger.info("[SERVER]: Binding success.", NO_PRINT_CLASS);
 
-	//ecoute sur le socket server, queue de 20 request;
+	//met le socket en ecoute, attente de connexion.
 	if (listen(server_sock, 20) < 0)
 		return (logger.error("[SERVER]: listen" + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
-//	logger.info("[SERVER]: Accepting connextions on port" + , NO_PRINT_CLASS);
 	logger.info("[SERVER]: Waiting for incoming connexions...", NO_PRINT_CLASS);
 	return (0);
-
-	if (fcntl(server_sock, F_SETFL, O_NONBLOCK) < 0)
-		return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-}
-
-void Server::setAddress()
-{
-	//initialisation des member de l'objet server;
-	memset(&serv_socket_in, 0, sizeof(struct sockaddr_in));
-	serv_socket_in.sin_family = AF_INET;
-	serv_socket_in.sin_port = htons(PORT);
-	serv_socket_in.sin_addr.s_addr = INADDR_ANY; // inet_addr("127.0.0.1") ou INADDR_ANY;
 }
 
 int Server::accept_request_core(int fd)
@@ -217,12 +211,10 @@ int Server::server_run(char **envp)
 
 				if (Server::read_request(client_curr) == -1)
 					return (-1);
-
 				Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
-
 				toManage->setRequest(Server::get_request());
 
-				std::cout << toManage->getRequest() << std::endl;
+//				std::cout << toManage->getRequest() << std::endl;
 
 				response.prepareResponse(toManage->getRequest(), envp);
 

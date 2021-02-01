@@ -4,16 +4,16 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/cgi/Cgi.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/cgi/Cgi.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/client/Client.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/config/Config.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/parser/Parser.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/parser/Parser.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Query.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Request.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/queries/Response.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/classes/server/Server.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/utils/utils.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o"
-  "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/srcs/webserv.cpp" "/Users/timothelecouvreur/Documents/cursus_42/github/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/cgi/Cgi.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/cgi/Cgi.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/client/Client.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/config/Config.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/parser/Parser.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/parser/Parser.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/queries/Query.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/queries/Request.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/queries/Response.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/classes/server/Server.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/utils/utils.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o"
+  "/Users/mbrignol/Cursus/webserv/srcs/webserv.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

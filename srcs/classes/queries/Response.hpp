@@ -10,7 +10,7 @@
 #include "../cgi/Cgi.hpp"
 #define CGI "php;cgi"
 #ifndef MAKE
-#define HOME "home"
+#define HOME "srcs/home"
 #endif
 #ifdef MAKE
 #define HOME "srcs/home"
