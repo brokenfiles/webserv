@@ -7,6 +7,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
 #include "../logger/Logger.hpp"

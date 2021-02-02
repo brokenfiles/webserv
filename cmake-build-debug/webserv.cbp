@@ -8,145 +8,147 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/llaurent/42/webserv/cmake-build-debug"/>
+				<Option working_dir="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/llaurent/42/webserv/cmake-build-debug"/>
+				<Option working_dir="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/llaurent/42/webserv/cmake-build-debug"/>
+				<Option working_dir="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="webserv">
-				<Option output="/Users/llaurent/42/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/llaurent/42/webserv/cmake-build-debug"/>
+				<Option output="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="webserv/fast">
-				<Option output="/Users/llaurent/42/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/llaurent/42/webserv/cmake-build-debug"/>
+				<Option output="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/webserv" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/llaurent/42/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 webserv/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/m4xdo/Desktop/webserv/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/llaurent/42/webserv/includes/includes.h">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/includes/includes.h">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/cgi/Cgi.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/cgi/Cgi.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/cgi/Cgi.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/cgi/Cgi.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/client/Client.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/client/Client.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/client/Client.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/Config.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/Config.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/Config.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/ServerConfig.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/ServerConfig.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/ServerConfig.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/config/ServerConfig.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/logger/Logger.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/logger/Logger.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/parser/Parser.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/parser/Parser.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/parser/Parser.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/parser/Parser.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/queries/Query.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/queries/Query.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Query.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/queries/Request.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/queries/Request.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Request.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/queries/Response.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/queries/Response.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/queries/Response.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/server/Server.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/server/Server.hpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/classes/server/Server.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/utils/utils.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/utils/utils.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/srcs/webserv.cpp">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/srcs/webserv.cpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/llaurent/42/webserv/CMakeLists.txt">
+		<Unit filename="/mnt/c/Users/m4xdo/Desktop/webserv/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

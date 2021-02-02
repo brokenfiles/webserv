@@ -46,8 +46,6 @@ class Server
 	    int send_request(int fd, std::string);
         int send_request_core(int fd, std::string);
 
-	    int close_sock(void);
-
         //loop
         int server_run(char **envp);
         int setFD_MAX(fd_set &fd_pool, int master_socket);

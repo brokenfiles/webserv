@@ -29,7 +29,7 @@ int main(int ac, char **av, char **envp)
 		exit(1);
 	}
 
-	exit(0);
+//	exit(0);
 
 	/* SETUP SERVER SOCKET AND LISTENING */
 	if (server.setup() == -1)

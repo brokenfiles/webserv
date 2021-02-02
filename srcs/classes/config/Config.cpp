@@ -28,7 +28,7 @@ void Config::parseConfig(const std::string &filename)
 	std::list<std::string> lines;
 
 	// Ouverture du fichier de configuration
-	std::ifstream file(filename, std::ifstream::in);
+	std::ifstream file(filename.c_str(), std::ifstream::in);
 	// On check si le fichier est bien ouvert
 	if (file.good() && file.is_open()) {
 		/** Explications scopes_level : dans la configuration, les serveurs sont à la racine donc au niveau 0 */
@@ -57,7 +57,7 @@ void Config::parseConfig(const std::string &filename)
 		}
 	} else {
 		// il y a eu une erreur, throw une exception
-		throw std::bad_function_call();
+		throw std::exception();
 	}
 }
 
@@ -104,7 +104,8 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 }
 
 std::pair<std::string, std::string> getPair(const std::string &line) {
-
+    (void)line;
+    return (std::pair<std::string, std::string>(NULL, NULL));
 }
 
 void Config::addServer(ServerConfig server)
