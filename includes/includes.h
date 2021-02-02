@@ -9,6 +9,8 @@
 #include <string>
 #include <stdlib.h>
 #include <fstream>
+#include <list>
+#include <vector>
 
 #define PORT 8082
 #define LOCAL "127.0.0.1"

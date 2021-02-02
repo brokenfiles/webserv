@@ -4,16 +4,17 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/cgi/Cgi.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/cgi/Cgi.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/client/Client.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/config/Config.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/parser/Parser.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/parser/Parser.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/queries/Query.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/queries/Request.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/queries/Response.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/classes/server/Server.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/utils/utils.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o"
-  "/Users/mbrignol/Cursus/webserv/srcs/webserv.cpp" "/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/cgi/Cgi.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/cgi/Cgi.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/client/Client.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/config/Config.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/config/ServerConfig.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/ServerConfig.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/parser/Parser.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/parser/Parser.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/queries/Query.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/queries/Request.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Request.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/queries/Response.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Response.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/server/Server.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/server/Server.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/utils/utils.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/utils/utils.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/webserv.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/webserv.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

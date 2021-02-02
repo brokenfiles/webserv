@@ -1,3 +1,3 @@
-/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/webserv.dir
+/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir

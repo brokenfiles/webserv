@@ -135,7 +135,6 @@ void 	Response::getHandler(Request request, int head, char **envp)
 	}
 	addBody(path, request, envp);
 	map["Content-Length"] = Logger::to_string(getBody().length());
-	//todo: attention, on peut renvoyer un body dans une requête DELETE, etc..etc..
 	if (head == 1)
 		setBody("");
 	setHeaders(map);

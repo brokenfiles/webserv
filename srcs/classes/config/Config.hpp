@@ -2,12 +2,13 @@
 #ifndef WEBSERV_CONFIG_HPP
 #define WEBSERV_CONFIG_HPP
 
-#include "../server/Server.hpp"
+#include "../../../includes/includes.h"
+#include "ServerConfig.hpp"
 
 class Config
 {
 private:
-	std::vector<Server> servers;
+	std::vector<ServerConfig> servers;
 
 public:
 	Config();
@@ -16,6 +17,10 @@ public:
 	Config(const Config &config);
 
 	void parseConfig(const std::string &filename);
+	void parseServer(std::list<std::string>::iterator begin, std::list<std::string>::iterator end);
+	void addServer(ServerConfig server);
+	std::vector<ServerConfig> getServers(void);
+	std::string removeBeginWhitespaces(const std::string &line);
 };
 
 #endif

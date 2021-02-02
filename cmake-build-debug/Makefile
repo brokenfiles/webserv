@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Users/mbrignol/Desktop/Clion.app/Contents/bin/cmake/mac/bin/cmake
+CMAKE_COMMAND = /Users/llaurent/Desktop/CLion.app/Contents/bin/cmake/mac/bin/cmake
 
 # The command to remove a file.
-RM = /Users/mbrignol/Desktop/Clion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
+RM = /Users/llaurent/Desktop/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/mbrignol/Cursus/webserv
+CMAKE_SOURCE_DIR = /Users/llaurent/42/webserv
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/mbrignol/Cursus/webserv/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/llaurent/42/webserv/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /Users/mbrignol/Cursus/webserv/cmake-build-debug
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/Users/mbrignol/Desktop/Clion.app/Contents/bin/cmake/mac/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/Users/llaurent/Desktop/CLion.app/Contents/bin/cmake/mac/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -70,7 +70,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/Users/mbrignol/Desktop/Clion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	/Users/llaurent/Desktop/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles /Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles /Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mbrignol/Cursus/webserv/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -203,6 +203,33 @@ srcs/classes/config/Config.s: srcs/classes/config/Config.cpp.s
 srcs/classes/config/Config.cpp.s:
 	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.s
 .PHONY : srcs/classes/config/Config.cpp.s
+
+srcs/classes/config/ServerConfig.o: srcs/classes/config/ServerConfig.cpp.o
+
+.PHONY : srcs/classes/config/ServerConfig.o
+
+# target to build an object file
+srcs/classes/config/ServerConfig.cpp.o:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/ServerConfig.cpp.o
+.PHONY : srcs/classes/config/ServerConfig.cpp.o
+
+srcs/classes/config/ServerConfig.i: srcs/classes/config/ServerConfig.cpp.i
+
+.PHONY : srcs/classes/config/ServerConfig.i
+
+# target to preprocess a source file
+srcs/classes/config/ServerConfig.cpp.i:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/ServerConfig.cpp.i
+.PHONY : srcs/classes/config/ServerConfig.cpp.i
+
+srcs/classes/config/ServerConfig.s: srcs/classes/config/ServerConfig.cpp.s
+
+.PHONY : srcs/classes/config/ServerConfig.s
+
+# target to generate assembly for a file
+srcs/classes/config/ServerConfig.cpp.s:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/ServerConfig.cpp.s
+.PHONY : srcs/classes/config/ServerConfig.cpp.s
 
 srcs/classes/parser/Parser.o: srcs/classes/parser/Parser.cpp.o
 
@@ -411,6 +438,9 @@ help:
 	@echo "... srcs/classes/config/Config.o"
 	@echo "... srcs/classes/config/Config.i"
 	@echo "... srcs/classes/config/Config.s"
+	@echo "... srcs/classes/config/ServerConfig.o"
+	@echo "... srcs/classes/config/ServerConfig.i"
+	@echo "... srcs/classes/config/ServerConfig.s"
 	@echo "... srcs/classes/parser/Parser.o"
 	@echo "... srcs/classes/parser/Parser.i"
 	@echo "... srcs/classes/parser/Parser.s"
