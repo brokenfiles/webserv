@@ -60,7 +60,12 @@ void Config::parseConfig(const std::string &filename)
 				if (scopes_level == 0) {
 					server_end = lines.end();
 					// on a les bounds et les lignes
-					this->parseServer(server_begin, server_end);
+					try {
+						this->parseServer(server_begin, server_end);
+					} catch (const std::exception &exception) {
+						std::cout << exception.what() << std::endl;
+						exit(1);
+					}
 				}
 			}
 			line_index ++;
@@ -75,27 +80,6 @@ void Config::parseConfig(const std::string &filename)
 		throw std::bad_function_call();
 	}
 }
-
-/*
- * server {
-  listen 80;
-  host 127.0.0.1;
-  server_name  lespelos;
-  error      srcs/home/error.html;
-  # le root par défaut
-  root         srcs/home;
-  max_body_size 1000000;
-
-  location / {
-    methods GET, POST;
-    // le root dans la location / (priorisé)
-    root         srcs/home;
-    autoindex on;
-    default_dir srcs/home;
-    upload_dir srcs/uploads;
-  }
-}
- */
 
 /**
  * Parse le serveur ligne par ligne de begin à end
@@ -121,13 +105,22 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 				if (line.find('{') != std::string::npos) {
 					scopeLevel ++;
 					if (line.find("location") != std::string::npos) {
-						// get path
+						// on récupère ici le path de chaque location
+						//																							|
+						//																							v
+						//premièrement, on trouve le premier index de l'espace après le location (exemple : location / {)
 						size_t index = line.find(' ');
 						if (index != std::string::npos) {
+							// si l'espace est trouvé on va récupérer le path
+							// le problème c'est que la méthode en dessous renvoie le { (exemple / {)
+							// on doit donc l'enlever
 							std::string path = removeBeginWhitespaces(line.substr(index, line.size() - index));
+							// on trouve l'index de l'espace après le path
 							size_t nextSpace = path.find(' ');
 							if (nextSpace != std::string::npos) {
+								// si il est trouvé on enlève l'espace et le {
 								path = path.substr(0, nextSpace);
+								// on défini le path dans currentLocation
 								currentLocation.configuration["path"] = path;
 							}
 						}
@@ -137,7 +130,10 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 					scopeLevel --;
 					// on est à la fin d'une location
 					if (scopeLevel == 1) {
+						// si le scopeLevel est égal à 1 après un } ça veut dire qu'on a fini de parser la location
+						// on l'ajoute donc à la liste
 						server.addLocation(currentLocation);
+						// on remet à zéro la location pour la suite sur parsing
 						currentLocation = LocationConfig();
 					}
 				}
@@ -145,8 +141,10 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 				// gérer la clé valeur (le scope 0 indique qu'on est dans le serveur)
 				try {
 					std::pair<std::string, std::string> pair = getPair(line);
+					// si le scopeLevel = 1 on est dans la config du serveur
 					if (scopeLevel == 1)
 						server.configuration.insert(pair);
+					// sinon ça veut dire qu'on est dans une location (scopeLevel = 2)
 					else
 						currentLocation.configuration.insert(pair);
 				} catch (const std::exception &e) {
@@ -154,8 +152,7 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 					exit(1);
 				}
 			} else {
-				// erreur
-
+				throw ScopeException();
 			}
 		}
 		begin++;
@@ -247,4 +244,9 @@ std::vector<ServerConfig> Config::getServers(void)
 const char *Config::NoSemicolonException::what() const throw()
 {
 	return "Pas de point virgule dans la configuration";
+}
+
+const char *Config::ScopeException::what() const throw()
+{
+	return "Erreur dans les scopes de la config";
 }

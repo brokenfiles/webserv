@@ -37,6 +37,11 @@ public:
 	{
 		virtual const char *what() const throw();
 	};
+
+	class ScopeException : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
 };
 
 #endif
