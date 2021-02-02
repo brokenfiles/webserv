@@ -12,15 +12,31 @@ private:
 
 public:
 	Config();
+
 	virtual ~Config();
+
 	Config &operator=(const Config &config);
+
 	Config(const Config &config);
 
 	void parseConfig(const std::string &filename);
+
 	void parseServer(std::list<std::string>::iterator begin, std::list<std::string>::iterator end);
+
 	void addServer(ServerConfig server);
+
 	std::vector<ServerConfig> getServers(void);
+
 	std::string removeBeginWhitespaces(const std::string &line);
+
+	std::vector<std::string> explode(const std::string &s, const char &c);
+
+	std::pair<std::string, std::string> getPair(const std::string &line);
+
+	class NoSemicolonException : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
 };
 
 #endif

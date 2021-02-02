@@ -204,6 +204,33 @@ srcs/classes/config/Config.cpp.s:
 	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.s
 .PHONY : srcs/classes/config/Config.cpp.s
 
+srcs/classes/config/LocationConfig.o: srcs/classes/config/LocationConfig.cpp.o
+
+.PHONY : srcs/classes/config/LocationConfig.o
+
+# target to build an object file
+srcs/classes/config/LocationConfig.cpp.o:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/LocationConfig.cpp.o
+.PHONY : srcs/classes/config/LocationConfig.cpp.o
+
+srcs/classes/config/LocationConfig.i: srcs/classes/config/LocationConfig.cpp.i
+
+.PHONY : srcs/classes/config/LocationConfig.i
+
+# target to preprocess a source file
+srcs/classes/config/LocationConfig.cpp.i:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/LocationConfig.cpp.i
+.PHONY : srcs/classes/config/LocationConfig.cpp.i
+
+srcs/classes/config/LocationConfig.s: srcs/classes/config/LocationConfig.cpp.s
+
+.PHONY : srcs/classes/config/LocationConfig.s
+
+# target to generate assembly for a file
+srcs/classes/config/LocationConfig.cpp.s:
+	$(MAKE) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/srcs/classes/config/LocationConfig.cpp.s
+.PHONY : srcs/classes/config/LocationConfig.cpp.s
+
 srcs/classes/config/ServerConfig.o: srcs/classes/config/ServerConfig.cpp.o
 
 .PHONY : srcs/classes/config/ServerConfig.o
@@ -438,6 +465,9 @@ help:
 	@echo "... srcs/classes/config/Config.o"
 	@echo "... srcs/classes/config/Config.i"
 	@echo "... srcs/classes/config/Config.s"
+	@echo "... srcs/classes/config/LocationConfig.o"
+	@echo "... srcs/classes/config/LocationConfig.i"
+	@echo "... srcs/classes/config/LocationConfig.s"
 	@echo "... srcs/classes/config/ServerConfig.o"
 	@echo "... srcs/classes/config/ServerConfig.i"
 	@echo "... srcs/classes/config/ServerConfig.s"

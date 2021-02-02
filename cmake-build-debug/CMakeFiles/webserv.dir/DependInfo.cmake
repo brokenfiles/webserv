@@ -7,6 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/llaurent/42/webserv/srcs/classes/cgi/Cgi.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/cgi/Cgi.cpp.o"
   "/Users/llaurent/42/webserv/srcs/classes/client/Client.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/client/Client.cpp.o"
   "/Users/llaurent/42/webserv/srcs/classes/config/Config.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/Config.cpp.o"
+  "/Users/llaurent/42/webserv/srcs/classes/config/LocationConfig.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/LocationConfig.cpp.o"
   "/Users/llaurent/42/webserv/srcs/classes/config/ServerConfig.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/config/ServerConfig.cpp.o"
   "/Users/llaurent/42/webserv/srcs/classes/parser/Parser.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/parser/Parser.cpp.o"
   "/Users/llaurent/42/webserv/srcs/classes/queries/Query.cpp" "/Users/llaurent/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir/srcs/classes/queries/Query.cpp.o"

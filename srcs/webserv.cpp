@@ -19,9 +19,6 @@ int main(int ac, char **av, char **envp)
 	Parser parser;
 	Query query;
 
-	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
-	(void) av;
-	(void) ac;
 
 	try {
 		config.parseConfig("srcs/webserv.conf");
@@ -30,6 +27,10 @@ int main(int ac, char **av, char **envp)
 	}
 
 	exit(0);
+
+	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
+	(void) av;
+	(void) ac;
 
 	/* SETUP SERVER SOCKET AND LISTENING */
 	if (server.setup() == -1)

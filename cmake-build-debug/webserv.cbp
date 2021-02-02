@@ -101,6 +101,12 @@
 		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/Config.hpp">
 			<Option target="webserv"/>
 		</Unit>
+		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/LocationConfig.cpp">
+			<Option target="webserv"/>
+		</Unit>
+		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/LocationConfig.h">
+			<Option target="webserv"/>
+		</Unit>
 		<Unit filename="/Users/llaurent/42/webserv/srcs/classes/config/ServerConfig.cpp">
 			<Option target="webserv"/>
 		</Unit>
