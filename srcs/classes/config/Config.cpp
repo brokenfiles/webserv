@@ -38,7 +38,7 @@ void Config::parseConfig(const std::string &filename)
 	std::list<std::string> lines;
 
 	// Ouverture du fichier de configuration
-	std::ifstream file(filename, std::ifstream::in);
+	std::ifstream file(filename.c_str(), std::ifstream::in);
 	// On check si le fichier est bien ouvert
 	if (file.good() && file.is_open()) {
 		/** Explications scopes_level : dans la configuration, les serveurs sont à la racine donc au niveau 0 */
@@ -48,7 +48,7 @@ void Config::parseConfig(const std::string &filename)
 		while ((std::getline(file, line, '\n'))) {
 			lines.push_back(line);
 			if (line.find('{') != std::string::npos) {
-				// si on est au level 0 et qu'on a une scope ouvrante, c'est forcément que c'est le début d'un serveur
+				// si on est au level 0 et qu'on a une scope ouvrante, c'est forcément que c'est le début d'un serveurc
 				if (scopes_level == 0) {
 					server_begin = lines.end();
 					server_begin--;
@@ -77,7 +77,7 @@ void Config::parseConfig(const std::string &filename)
 		}
 	} else {
 		// il y a eu une erreur, throw une exception
-		throw std::bad_function_call();
+//		throw std::bad_function_call();
 	}
 }
 

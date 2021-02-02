@@ -3,6 +3,8 @@
 //
 
 #include "Cgi.hpp"
+#include <sys/types.h>
+#include <sys/wait.h>
 
 Cgi::Cgi()
 {}
