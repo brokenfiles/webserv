@@ -25,6 +25,8 @@ public:
 
 	void addServer(ServerConfig server);
 
+	void checkConfig();
+
 	std::vector<ServerConfig> getServers(void);
 
 	std::string removeBeginWhitespaces(const std::string &line);
@@ -42,6 +44,17 @@ public:
 	{
 		virtual const char *what() const throw();
 	};
+
+	class MissingFieldException : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
+
+	class MissingLocationException : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
+
 };
 
 #endif

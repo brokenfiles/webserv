@@ -42,7 +42,7 @@ void Config::parseConfig(const std::string &filename)
 	// On check si le fichier est bien ouvert
 	if (file.good() && file.is_open()) {
 		/** Explications scopes_level : dans la configuration, les serveurs sont à la racine donc au niveau 0 */
-		int scopes_level = 0, line_index = 0;
+		int scopes_level = 0;
 		std::list<std::string>::iterator server_begin, server_end;
 		// On récupère la ligne
 		while ((std::getline(file, line, '\n'))) {
@@ -68,13 +68,13 @@ void Config::parseConfig(const std::string &filename)
 					}
 				}
 			}
-			line_index ++;
 		}
-		std::vector<ServerConfig>::iterator begin = servers.begin();
-		while(begin != servers.end()) {
-			std::cout << *begin << std::endl;
-			begin++;
-		}
+//		example : print the config
+//		std::vector<ServerConfig>::iterator begin = servers.begin();
+//		while(begin != servers.end()) {
+//			std::cout << *begin << std::endl;
+//			begin++;
+//		}
 	} else {
 		// il y a eu une erreur, throw une exception
 		throw std::exception();
@@ -171,7 +171,6 @@ std::pair<std::string, std::string> Config::getPair(const std::string &line) {
 	if (parts.size() == 2) {
 		// on check si il y a bien le point virgule sinon on throw une erreur
 		if (parts[1].at(parts[1].size() - 1) != ';') {
-			std::cout << "ligne sans point virgule : " << line << std::endl;
 			throw NoSemicolonException();
 		}
 		// suppression du point virgule
@@ -231,6 +230,27 @@ std::vector<std::string> Config::explode(const std::string& s, const char& c)
 	return v;
 }
 
+void Config::checkConfig() {
+	//check if root field exists
+	std::vector<ServerConfig>::iterator begin = this->servers.begin();
+	while (begin != this->servers.end()) {
+		ServerConfig server = *begin;
+		if (server.locations.empty()) {
+			throw MissingLocationException();
+		}
+		if (server.configuration.find("listen") == server.configuration.end()) {
+			throw MissingFieldException();
+		}
+		if (server.configuration.find("server_name") == server.configuration.end()) {
+			throw MissingFieldException();
+		}
+		if (server.configuration.find("root") == server.configuration.end()) {
+			throw MissingFieldException();
+		}
+		begin++;
+	}
+}
+
 void Config::addServer(ServerConfig server)
 {
 	this->servers.push_back(server);
@@ -238,7 +258,7 @@ void Config::addServer(ServerConfig server)
 
 std::vector<ServerConfig> Config::getServers(void)
 {
-	return std::vector<ServerConfig>();
+	return this->servers;
 }
 
 const char *Config::NoSemicolonException::what() const throw()
@@ -249,4 +269,14 @@ const char *Config::NoSemicolonException::what() const throw()
 const char *Config::ScopeException::what() const throw()
 {
 	return "Erreur dans les scopes de la config";
+}
+
+const char *Config::MissingFieldException::what() const throw()
+{
+	return "Il manque un champ dans la configuration";
+}
+
+const char *Config::MissingLocationException::what() const throw()
+{
+	return "Il faut au moins une location par serveur";
 }
