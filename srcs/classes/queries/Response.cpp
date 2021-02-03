@@ -183,8 +183,10 @@ void	Response::prepareResponse(std::string req, char **envp)
     Parser parser;
 	Request	request;
 
+
 	request = parser.parse(req);
 
+	request.getPort();
 	setStatus("200 OK");
 
 	if (request.getMethod() == "GET" || request.getMethod() == "POST")

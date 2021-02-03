@@ -46,3 +46,16 @@ std::ostream&	operator<<(std::ostream &o, const Request &q) {
 	return (o);
 }
 
+int     Request::getPort() const
+{
+    std::string     str = this->_headers.at("Host");
+    int             port = 80;
+
+
+    if (str.find(':', 0) != std::string::npos)
+    {
+
+    }
+    return (port);
+}
+
