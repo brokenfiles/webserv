@@ -27,7 +27,7 @@ public:
 
 	void checkConfig();
 
-	std::vector<ServerConfig> getServers(void);
+	std::vector<ServerConfig> &getServers(void);
 
 	std::string removeBeginWhitespaces(const std::string &line);
 

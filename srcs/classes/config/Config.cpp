@@ -252,7 +252,7 @@ void Config::addServer(ServerConfig server)
 	this->servers.push_back(server);
 }
 
-std::vector<ServerConfig> Config::getServers(void)
+std::vector<ServerConfig> &Config::getServers(void)
 {
 	return this->servers;
 }
