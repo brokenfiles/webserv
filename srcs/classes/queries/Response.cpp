@@ -124,26 +124,35 @@ void	Response::addBody(std::string path, Request request, char **envp)
 void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
 {
 	std::map<std::string, std::string>	    map;
-	std::string 						    path = request.getPath();
+	std::string 						    path = HOME + request.getPath();
     std::map<std::string, std::string>      configMap = server.getConfiguration();
     std::map<std::string, std::string>      location = find_location(server, path);
-	map = basicHeaders();
 
+    map = basicHeaders();
 
-	if (request.getPath() == "/")
-		path.insert(path.length(), "/index.html");
+    //gérer l'extension de fichier
+
+    if (location.at("methods").find(request.getMethod(), 0) == std::string::npos)
+	{
+		setStatus("403 Forbidden");
+		path = HOME;
+		path.insert(path.length(), "/server/Forbidden.html");
+	}
+	else if (request.getPath() == "/")
+		path.insert(path.length(), location.at("index"));
 	else
 	{
-		path.insert(path.length(), request.getPath());
-
 		std::ifstream ifs(path.c_str(), std::ifstream::in);
-
 		if (ifs.good())
 		{
 			if (ifs.is_open())
 				fileExtension(&map, request);
 			else
-				std::cout << "can't open file" << std::endl;
+			{
+				setStatus("500 Internal Server Error");
+				path = HOME;
+				path.insert(path.length(), "/server/InternalServerError.html");
+			}
 		}
 		else
 		{
@@ -153,6 +162,8 @@ void 	Response::getHandler(Request request, int head, char **envp, ServerConfig 
 		}
 		ifs.close();
 	}
+
+	//ajout du body dans la reponse
 	addBody(path, request, envp);
 	map["Content-Length"] = Logger::to_string(getBody().length());
 	if (head == 1)
