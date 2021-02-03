@@ -88,7 +88,8 @@ std::map<std::string, std::string> Response::find_location(ServerConfig server)
 
     for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
     {
-        std::cout << (*ite).getRootDir() << std::endl;
+        if ((*ite).getExtension() == ".php")
+            std::cout << (*ite).configuration["path"] << std::endl;
     }
 
     return (location);
