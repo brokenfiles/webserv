@@ -77,7 +77,7 @@ void Config::parseConfig(const std::string &filename)
 		}
 	} else {
 		// il y a eu une erreur, throw une exception
-//		throw std::bad_function_call();
+		throw std::exception();
 	}
 }
 

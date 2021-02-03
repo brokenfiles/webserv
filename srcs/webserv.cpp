@@ -26,7 +26,7 @@ int main(int ac, char **av, char **envp)
 		exit(1);
 	}
 
-	exit(0);
+//	exit(0);
 
 	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
 	(void) av;
