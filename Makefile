@@ -7,6 +7,7 @@ CFLAGS		= -Wall -Wextra -Werror -std=c++98
 
 SRCSC		= srcs/webserv.cpp \
 			 srcs/classes/server/Server.cpp  \
+			 srcs/classes/server/ServerManager.cpp  \
 			 srcs/classes/client/Client.cpp  \
 			 srcs/classes/queries/Query.cpp  \
 			 srcs/classes/queries/Request.cpp  \

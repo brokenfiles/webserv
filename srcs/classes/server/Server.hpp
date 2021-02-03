@@ -51,6 +51,7 @@ class Server
         //loop
         int server_run(char **envp);
         int setFD_MAX(fd_set &fd_pool, int master_socket);
+        int setFD_MAX(fd_set &fd_pool);
 
 	    //getters
 	    std::string &get_request(void);

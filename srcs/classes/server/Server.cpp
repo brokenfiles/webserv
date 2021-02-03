@@ -129,6 +129,25 @@ int Server::server_run(char **envp)
 	return (0);
 }
 
+int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
+{
+    int higher_fd, client_curr;
+
+    FD_ZERO(&fd_pool);
+    FD_SET(master_socket, &fd_pool);
+    higher_fd = master_socket;
+
+    for (std::list<Client *>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
+    {
+        client_curr = (*it)->getSocket();
+        if (client_curr > 0)
+            FD_SET(client_curr, &fd_pool);
+        if (client_curr > higher_fd)
+            higher_fd = client_curr;
+    }
+    return (higher_fd);
+}
+
 int Server::setup_multiple_socket(std::list<Server*> &servers, Config &conf)
 {
 	std::list<Server*>::iterator it_serv = servers.begin();
@@ -164,26 +183,54 @@ int Server::setup_multiple_socket(std::list<Server*> &servers, Config &conf)
 	return (0);
 }
 
-int Server::run_multiple_socket(std::list<Server*> &servers)
-{
+//int Server::run_multiple_socket(std::list<Server*> &servers)
+//{
+//
+//    (void) servers;
+//    int higher_fd;
+////    int master_socket = Server::getSocketServer();
+//    fd_set fd_pool;
+//
+//    while (1)
+//    {
+//        higher_fd = Server::setFD_MAX(fd_pool);
+//
+//        if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
+//            return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+//
+//
+//
+//        int size = sizeof(client_socket_in);
+//        memset(&this->client_socket_in, 0, size);
+//
+//        if ((client_sock = accept(fd, (struct sockaddr *) &client_socket_in, (socklen_t *) &size)) < 0)
+//        {
+//            close(fd);
+//            return (logger.error("[SERVER]: accept: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+//        }
+//
+////            client_settled.push_back(new Client(Server::getSocketClient(), Server::getAddrClient()));
+////            logger.info(std::string("[SERVER]: Adding <") + Server::getClientIP() + ":" +
+////                        Logger::to_string(Server::getClientPort()) + std::string("> to pending sockets."),
+////                        NO_PRINT_CLASS);
+////        }
+//
+//
+//    }
+//    return (0);
+//}
 
-}
-
-
-
-int Server::setFD_MAX(fd_set &fd_pool, int master_socket)
+int Server::setFD_MAX(fd_set &fd_pool)
 {
     int higher_fd, client_curr;
 
     FD_ZERO(&fd_pool);
-    FD_SET(master_socket, &fd_pool);
-    higher_fd = master_socket;
+    higher_fd = -1;
 
     for (std::list<Client *>::iterator it = client_settled.begin(); it != client_settled.end(); it++)
     {
         client_curr = (*it)->getSocket();
-        if (client_curr > 0)
-            FD_SET(client_curr, &fd_pool);
+        FD_SET(client_curr, &fd_pool);
         if (client_curr > higher_fd)
             higher_fd = client_curr;
     }

@@ -2,6 +2,7 @@
 #include "../includes/includes.h"
 #include "../srcs/classes/logger/Logger.hpp"
 #include "../srcs/classes/server/Server.hpp"
+#include "../srcs/classes/server/ServerManager.hpp"
 #include "../srcs/classes/parser/Parser.hpp"
 #include "../srcs/classes/queries/Request.hpp"
 #include "../srcs/classes/client/Client.hpp"
@@ -18,7 +19,7 @@ int main(int ac, char **av, char **envp)
 	Server server;
 	Parser parser;
 	Query query;
-
+    ServerManager serverManager;
 
 	try {
 		config.parseConfig("srcs/webserv.conf");
@@ -37,12 +38,19 @@ int main(int ac, char **av, char **envp)
 	(void) ac;
 	(void) envp;
 
-	std::list<Server*> servers;
-	/* SET SERVER CONFIGS */
-	server.setup_multiple_socket(servers, config);
-	server.run_multiple_socket(servers);
+	serverManager.setup_multiple_socket(config);
 
-	std::cout << servers.size() << std::endl;
+
+
+
+
+
+//	std::list<Server*> servers;
+	/* SET SERVER CONFIGS */
+//	server.setup_multiple_socket(servers, config);
+//	server.run_multiple_socket(servers);
+
+//	std::cout << servers.size() << std::endl;
 
 	/* SETUP SERVER SOCKET AND LISTENING */
 //	if (server.setup() == -1)
