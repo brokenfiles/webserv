@@ -30,12 +30,15 @@ int main(int ac, char **av, char **envp)
 
 	std::cout << config.getServers()[0].getPort() << std::endl;
 
-	exit(0);
+//	exit(0);
 
 	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
 	(void) av;
 	(void) ac;
 
+	/* SET SERVER CONFIGS */
+	server.setConfig(config);
+	server.setup_multiple_socket();
 	/* SETUP SERVER SOCKET AND LISTENING */
 	if (server.setup() == -1)
 		return (1);
