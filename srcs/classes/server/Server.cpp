@@ -71,26 +71,30 @@ int Server::setup()
 	return (0);
 }
 
-void Server::setup_multiple_socket()
+int Server::setup_multiple_socket(std::list<Server*> &servers)
 {
-//	for (std::vector<ServerConfig>::iterator it = this->config.getServers().begin(); it != this->config.getServers().end(); it++)
-//	{
-//		std::cout << *it << std::endl;
-//
-//		//création du socket (point de communication) PF_INET = Proto Internet IPv4, IPPROTO_TCP = TCP, et retourne un fd
-//		if ((server_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-//			return (logger.error("[SERVER]: socket: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-//
-//		//fonction pour rendre non bloquant un fd
-//		if (fcntl(server_sock, F_SETFL, O_NONBLOCK) < 0)
-//			return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-//
-//		memset(&serv_socket_in, 0, sizeof(struct sockaddr_in));
-//		serv_socket_in.sin_family = AF_INET;
-//		serv_socket_in.sin_port = htons(PORT);
-//		serv_socket_in.sin_addr.s_addr = INADDR_ANY; // inet_addr("127.0.0.1") ou INADDR_ANY;
-//		break;
-//	}
+	std::list<Server*>::iterator it_serv = servers.begin();
+
+	for (std::vector<ServerConfig>::iterator it = this->config.getServers().begin(); it != this->config.getServers().end(); it++)
+	{
+		std::cout << "OK" << std::endl;
+		it_serv = servers.insert(it_serv, new Server());
+//		(*it_serv)->setConfig()
+
+		if (((*it_serv)->getServerSocket() = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)))
+			return (logger.error("[SERVER]: socket: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+
+		if (fcntl((*it_serv)->getServerSocket(), F_SETFL, O_NONBLOCK) < 0)
+			return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+
+		memset(&(*it_serv)->getServerAddr(), 0, sizeof(struct sockaddr_in));
+		(*it_serv)->getServerAddr().sin_family = AF_INET;
+		(*it_serv)->getServerAddr().sin_port = htons(PORT);
+		(*it_serv)->getServerAddr().sin_addr.s_addr = INADDR_ANY; // inet_addr("127.0.0.1") ou INADDR_ANY;
+//		servers.insert()
+
+
+	}
 }
 
 
@@ -288,4 +292,14 @@ int Server::getClientPort(void)
 void Server::setConfig(Config &conf)
 {
 	this->config = conf;
+}
+
+int &Server::getServerSocket(void)
+{
+	return (this->server_sock);
+}
+
+struct sockaddr_in &Server::getServerAddr()
+{
+	return (this->serv_socket_in);
 }

@@ -35,17 +35,21 @@ int main(int ac, char **av, char **envp)
 	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
 	(void) av;
 	(void) ac;
+	(void) envp;
 
+	std::list<Server*> servers;
 	/* SET SERVER CONFIGS */
 	server.setConfig(config);
-	server.setup_multiple_socket();
+	server.setup_multiple_socket(servers);
+
+
 	/* SETUP SERVER SOCKET AND LISTENING */
-	if (server.setup() == -1)
-		return (1);
+//	if (server.setup() == -1)
+//		return (1);
 
 	/* LOOP MULTIPLE CLIENTS */
-	if (server.server_run(envp) == -1)
-	    return (1);
+//	if (server.server_run(envp) == -1)
+//	    return (1);
 
     return (0);
 }

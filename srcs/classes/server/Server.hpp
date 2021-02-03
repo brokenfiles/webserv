@@ -60,10 +60,14 @@ class Server
 	    struct sockaddr_in getAddrServer();
 	    struct sockaddr_in getAddrClient();
 
+	    //setters
 	    void setConfig(Config &conf);
 
-	    //MULTIPLE SOCKET SETUP
-	    void setup_multiple_socket();
+
+	    /*RENEW*/
+	    int setup_multiple_socket(std::list<Server*>&);
+		int &getServerSocket(void);
+		struct sockaddr_in &getServerAddr();
 
     private:
 	    struct sockaddr_in serv_socket_in;
