@@ -136,7 +136,7 @@ int Server::server_run(char **envp)
 
 				std::cout << toManage->getRequest() << std::endl;
 //
-                response.prepareResponse(toManage->getRequest(), envp);
+                response.prepareResponse(toManage->getRequest(), envp, this->config);
                 if (Server::send_request(client_curr, response.stringify()) == -1)
                     return (-1);
 

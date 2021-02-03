@@ -81,6 +81,19 @@ void 	Response::fileExtension(std::map<std::string, std::string> *map, Request r
 		(*map)["Content-Type"] = "images/png";
 }
 
+std::map<std::string, std::string> Response::find_location(ServerConfig server)
+{
+    std::list<LocationConfig> location_list = server.getLocations();
+    std::map<std::string, std::string>      location;
+
+    for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
+    {
+        std::cout << (*ite).getRootDir() << std::endl;
+    }
+
+    return (location);
+}
+
 std::string			Response::execute_cgi(std::string str, std::string path, Request request, char **envp)
 {
 	Cgi			object;
@@ -103,12 +116,15 @@ void	Response::addBody(std::string path, Request request, char **envp)
 	file.close();
 }
 
-void 	Response::getHandler(Request request, int head, char **envp)
+void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
 {
-	std::map<std::string, std::string>	map;
-	std::string 						path = HOME;
-
+	std::map<std::string, std::string>	    map;
+	std::string 						    path = HOME;
+    std::map<std::string, std::string>      configMap = server.getConfiguration();
+    std::map<std::string, std::string>      location = find_location(server);
 	map = basicHeaders();
+
+
 	if (request.getPath() == "/")
 		//todo: changer le dossier par rapport au serveur
 		path.insert(path.length(), "/index.html");
@@ -140,9 +156,10 @@ void 	Response::getHandler(Request request, int head, char **envp)
 	setHeaders(map);
 }
 
-void 	Response::putHandler(Request request, char **envp)
+void 	Response::putHandler(Request request, char **envp, ServerConfig server)
 {
 	(void)envp;
+    (void)server;
 	std::map<std::string, std::string> map;
 	setStatus("201 Created");
 	map = basicHeaders();
@@ -162,9 +179,10 @@ void 	Response::putHandler(Request request, char **envp)
 	setHeaders(map);
 }
 
-void 	Response::deleteHandler(Request request, char **envp)
+void 	Response::deleteHandler(Request request, char **envp, ServerConfig server)
 {
-	std::map<std::string, std::string> map;
+    (void)server;
+    std::map<std::string, std::string> map;
 	map = basicHeaders();
 	std::string error_path = HOME;
 	std::string	path = HOME;
@@ -178,25 +196,23 @@ void 	Response::deleteHandler(Request request, char **envp)
 	setHeaders(map);
 }
 
-void	Response::prepareResponse(std::string req, char **envp)
+void	Response::prepareResponse(std::string req, char **envp, Config config)
 {
     Parser parser;
 	Request	request;
-
+    ServerConfig   server = config.getServers()[0];
 
 	request = parser.parse(req);
-
-	request.getPort();
 	setStatus("200 OK");
 
 	if (request.getMethod() == "GET" || request.getMethod() == "POST")
-    	getHandler(request, 0, envp);
+    	getHandler(request, 0, envp, server);
 	else if (request.getMethod() == "HEAD")
-		getHandler(request, 1, envp);
+		getHandler(request, 1, envp, server);
 	else if (request.getMethod() == "PUT")
-		putHandler(request, envp);
+		putHandler(request, envp, server);
 	else if (request.getMethod() == "DELETE")
-		deleteHandler(request, envp);
+		deleteHandler(request, envp, server);
 }
 
 //fonction qui donne la date au format GMT

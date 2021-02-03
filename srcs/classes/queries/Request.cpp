@@ -48,14 +48,23 @@ std::ostream&	operator<<(std::ostream &o, const Request &q) {
 
 int     Request::getPort() const
 {
-    std::string     str = this->_headers.at("Host");
     int             port = 80;
 
-
-    if (str.find(':', 0) != std::string::npos)
-    {
-
+    try {
+        std::string     str = this->_headers.at("Host");
+        unsigned int    index = str.find(':', 0);
+        if (str != "")
+        {
+            if (str.find(':', 0) != std::string::npos)
+                port = std::atoi(str.substr(index + 1, (str.length() - index - 1)).c_str());
+            else
+                port = std::atoi(str.c_str());
+        }
     }
+    catch (const std::out_of_range& oor) {
+        std::cerr << "Out of Range error: " << oor.what() << '\n';
+    }
+    std::cout << port << std::endl;
     return (port);
 }
 
