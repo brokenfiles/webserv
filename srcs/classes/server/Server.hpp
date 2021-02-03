@@ -15,6 +15,7 @@
 #include <fstream>
 #include <ctime>
 #include <list>
+#include <ostream>
 #include "../logger/Logger.hpp"
 #include "../parser/Parser.hpp"
 #include "../client/Client.hpp"
@@ -60,14 +61,14 @@ class Server
 	    struct sockaddr_in getAddrServer();
 	    struct sockaddr_in getAddrClient();
 
-	    //setters
-	    void setConfig(Config &conf);
-
 
 	    /*RENEW*/
-	    int setup_multiple_socket(std::list<Server*>&);
+	    int setup_multiple_socket(std::list<Server*>&, Config &);
+	    int run_multiple_socket(std::list<Server*> &servers);
 		int &getServerSocket(void);
 		struct sockaddr_in &getServerAddr();
+		void setServerConfig(ServerConfig &);
+		ServerConfig& getServerConfig(void);
 
     private:
 	    struct sockaddr_in serv_socket_in;
@@ -80,6 +81,7 @@ class Server
 	    int                max_clients;
 	    Parser             parser;
 	    Config				config;
+	    ServerConfig		serverConfig;
 };
 
 #endif

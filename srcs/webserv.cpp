@@ -39,9 +39,10 @@ int main(int ac, char **av, char **envp)
 
 	std::list<Server*> servers;
 	/* SET SERVER CONFIGS */
-	server.setConfig(config);
-	server.setup_multiple_socket(servers);
+	server.setup_multiple_socket(servers, config);
+	server.run_multiple_socket(servers);
 
+	std::cout << servers.size() << std::endl;
 
 	/* SETUP SERVER SOCKET AND LISTENING */
 //	if (server.setup() == -1)
