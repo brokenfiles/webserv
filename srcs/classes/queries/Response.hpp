@@ -49,7 +49,7 @@ class Response : public Query
         std::string stringify(void) const;
 
         std::string getCurrentTime(void);
-        std::map<std::string, std::string> find_location(ServerConfig server);
+        std::map<std::string, std::string> find_location(ServerConfig server, std::string path);
 };
 
 std::ofstream&	operator<<(std::ofstream &o, const Response &res);
