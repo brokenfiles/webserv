@@ -4,6 +4,7 @@
 
 #include "../../../includes/includes.h"
 #include "ServerConfig.hpp"
+#include "../queries/Request.hpp"
 
 class Config
 {
@@ -26,6 +27,8 @@ public:
 	void addServer(ServerConfig server);
 
 	void checkConfig();
+
+	ServerConfig &getServer(Request request);
 
 	std::vector<ServerConfig> &getServers(void);
 

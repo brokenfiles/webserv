@@ -41,6 +41,8 @@ public:
 	std::string getErrorFile();
 
 	std::string getRootDir();
+
+	std::list<LocationConfig> &getLocations();
 };
 
 

@@ -67,6 +67,9 @@ std::string ServerConfig::getHost()
 	return (DEFAULT_HOST);
 }
 
+std::list<LocationConfig> &ServerConfig::getLocations() {
+	return (locations);
+}
 
 std::ostream &operator<<(std::ostream &os, ServerConfig &server)
 {

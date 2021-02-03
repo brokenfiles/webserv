@@ -14,7 +14,25 @@ class LocationConfig
 public:
 	std::map<std::string, std::string> configuration;
 
+
+
 	friend std::ostream &operator<<(std::ostream &os, LocationConfig &config);
+
+	std::vector<std::string> getMethods();
+
+	std::vector<std::string> explode(const std::string &s, const std::string &charset);
+
+	std::string getRootDir();
+
+	std::string getAutoindex();
+
+	std::string getUploadDir();
+
+	std::string getDefaultDir();
+
+	std::string getExtension();
+
+	std::string getCgiPath();
 };
 
 
