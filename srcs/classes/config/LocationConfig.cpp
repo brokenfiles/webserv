@@ -6,8 +6,8 @@
 
 std::vector<std::string> LocationConfig::getMethods()
 {
-	if (this->configuration.find("host") != this->configuration.end()) {
-		return (explode(this->configuration["host"], ", "));
+	if (this->configuration.find("methods") != this->configuration.end()) {
+		return (explode(this->configuration["methods"], ", "));
 	}
 	return (std::vector<std::string>());
 }

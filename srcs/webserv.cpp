@@ -28,7 +28,7 @@ int main(int ac, char **av, char **envp)
 		exit(1);
 	}
 
-	std::cout << config.getServers()[0].getPort() << std::endl;
+	std::cout << config.getServers()[0].getLocations().front().getMethods().front() << std::endl;
 
 //	exit(0);
 
