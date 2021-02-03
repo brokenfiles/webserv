@@ -3,24 +3,20 @@
 #include "LocationConfig.hpp"
 
 Config::Config()
-{
-
-}
+{}
 
 Config::~Config()
-{
-
-}
+{}
 
 Config &Config::operator=(const Config &config)
 {
-	(void)config;
+	this->servers = config.servers;
 	return (*this);
 }
 
 Config::Config(const Config &config)
 {
-	(void)config;
+	*this = config;
 }
 
 /**
