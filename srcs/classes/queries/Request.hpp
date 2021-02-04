@@ -17,6 +17,7 @@ public:
         const std::string &getMethod() const;
         const std::string &getPath() const;
 		const std::string &getQueryString() const;
+		int               getPort() const;
 
 	//setters
         void setPath(const std::string &path);

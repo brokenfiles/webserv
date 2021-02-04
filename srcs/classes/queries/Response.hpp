@@ -7,6 +7,7 @@
 #include "Query.hpp"
 #include "Request.hpp"
 #include "../server/Server.hpp"
+#include "../config/Config.hpp"
 #include "../cgi/Cgi.hpp"
 #define CGI "php;cgi"
 #ifndef MAKE
@@ -22,9 +23,9 @@ class Response : public Query
 	    std::string 						_status;
 
 	    //method handlers
-	    void getHandler(Request request, int head, char **envp);
-		void putHandler(Request request, char **envp);
-		void deleteHandler(Request request, char **envp);
+	    void getHandler(Request request, int head, char **envp, ServerConfig server);
+		void putHandler(Request request, char **envp, ServerConfig server);
+		void deleteHandler(Request request, char **envp, ServerConfig server);
 
 		//formattage functions
 		std::map<std::string, std::string>	basicHeaders(void);
@@ -44,10 +45,11 @@ class Response : public Query
         void setStatus(const std::string &status);
         const std::string &getStatus() const;
 
-        void prepareResponse(std::string req, char **envp);
+        void prepareResponse(std::string req, char **envp, Config config);
         std::string stringify(void) const;
 
         std::string getCurrentTime(void);
+        std::map<std::string, std::string> find_location(ServerConfig server, std::string path);
 };
 
 std::ofstream&	operator<<(std::ofstream &o, const Response &res);

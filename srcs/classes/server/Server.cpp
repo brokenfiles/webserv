@@ -134,9 +134,9 @@ int Server::server_run(char **envp)
                 Client *toManage = (*it); //REQUETE DE CE CLIENT A GERE
                 toManage->setRequest(Server::get_request());
 
-//				std::cout << toManage->getRequest() << std::endl;
+				std::cout << toManage->getRequest() << std::endl;
 //
-                response.prepareResponse(toManage->getRequest(), envp);
+                response.prepareResponse(toManage->getRequest(), envp, this->config);
                 if (Server::send_request(client_curr, response.stringify()) == -1)
                     return (-1);
 
