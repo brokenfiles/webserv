@@ -162,13 +162,17 @@ void    Response::fileExist(std::string file, std::map<std::string, std::string>
 void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
 {
 	std::map<std::string, std::string>	    map;
+	unsigned int 							length = 0;
 
 	(void)server;
     map = basicHeaders();
     std::cout << getCompletePath() << std::endl;
     if (getLocation().find("extension") != getLocation().end())
-        if (getIndex().compare(getIndex().length() - getLocation().at("extension").length(), getLocation().at("extension").length(), getLocation().at("extension")) != 0)
-            setErrorStatus(403);
+	{
+		length = getLocation().at("extension").length();
+		if (getIndex().compare(getIndex().length() - length, length, getLocation().at("extension")) != 0)
+			setErrorStatus(403);
+	}
     if (getLocation().at("methods").find(request.getMethod(), 0) == std::string::npos)
         setErrorStatus(403);
     fileExist(getCompletePath().c_str(), map, request);
