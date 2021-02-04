@@ -67,28 +67,29 @@ std::map<std::string, std::string>	Response::basicHeaders(void)
 
 void 	Response::fileExtension(std::map<std::string, std::string> *map, Request request)
 {
-	if (request.getPath().compare(request.getPath().length() - 4, 4, ".css") == 0)
+    (void)request;
+	if (getIndex().compare(getIndex().length() - 4, 4, ".css") == 0)
 		(*map)["Content-Type"] = "text/css";
-	else if (request.getPath().compare(request.getPath().length() - 3, 3, ".js") == 0)
+	else if (getIndex().compare(getIndex().length() - 3, 3, ".js") == 0)
 		(*map)["Content-Type"] = "application/javascript";
-	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".bla") == 0)
+	else if (getIndex().compare(getIndex().length() - 4, 4, ".bla") == 0)
 		(*map)["Content-Type"] = "text/bla";
-	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".svg") == 0)
+	else if (getIndex().compare(getIndex().length() - 4, 4, ".svg") == 0)
 		(*map)["Content-Type"] = "images/svg";
-	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".gif") == 0)
+	else if (getIndex().compare(getIndex().length() - 4, 4, ".gif") == 0)
 		(*map)["Content-Type"] = "images.gif";
-	else if (request.getPath().compare(request.getPath().length() - 4, 4, ".png") == 0)
+	else if (getIndex().compare(getIndex().length() - 4, 4, ".png") == 0)
 		(*map)["Content-Type"] = "images/png";
 }
 
-std::map<std::string, std::string> Response::find_location(ServerConfig server, std::string path)
+std::map<std::string, std::string> Response::find_location(ServerConfig server)
 {
     std::list<LocationConfig> location_list = server.getLocations();
     std::map<std::string, std::string>      location;
 
     for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
     {
-        if ((*ite).configuration["path"] == path)
+        if ((*ite).configuration["path"] == getPath())
         	return ((*ite).configuration);
 	}
 	for (std::list<LocationConfig>::iterator it = location_list.begin(); it != location_list.end(); it++)
@@ -108,63 +109,78 @@ std::string			Response::execute_cgi(std::string str, std::string path, Request r
 	return (object.getOutputBody());
 }
 
-void	Response::addBody(std::string path, Request request, char **envp)
+void	Response::addBody(Request request, char **envp)
 {
 	std::string newStr;
 
-	std::ifstream file(path.c_str(), std::ifstream::in);
+	std::ifstream file(getCompletePath().c_str(), std::ifstream::in);
 	std::getline(file, newStr, '\0');
-	if (isCGI(path) && request.getMethod() == "POST")
-		setBody(execute_cgi(newStr, path, request, envp));
+	if (isCGI(getCompletePath()) && request.getMethod() == "POST")
+		setBody(execute_cgi(newStr, getCompletePath(), request, envp));
 	else
 		setBody(newStr);
 	file.close();
 }
 
+void                                Response::setErrorStatus(int status_code)
+{
+    if (status_code == 403)
+    {
+        setStatus("403 Forbidden");
+        setCompletePath(HOME);
+        this->_complete_path.insert(getCompletePath().length(), "/server/Forbidden.html");
+    }
+    else if (status_code == 404)
+    {
+        setStatus("404 Not Found");
+        setCompletePath(HOME);
+        this->_complete_path.insert(getCompletePath().length(), "/server/NotFound.html");
+    }
+    else if (status_code == 500)
+    {
+        setStatus("500 Internal Server error");
+        setCompletePath(HOME);
+        this->_complete_path.insert(getCompletePath().length(), "/server/InternalServerError.html");
+    }
+}
+
 void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
 {
 	std::map<std::string, std::string>	    map;
-	std::string 						    path = HOME + request.getPath();
     std::map<std::string, std::string>      configMap = server.getConfiguration();
-    std::map<std::string, std::string>      location = find_location(server, path);
+    std::map<std::string, std::string>      location = find_location(server);
 
     map = basicHeaders();
-
-    //gérer l'extension de fichier
-
+    setPath(HOME + request.getPath());
+    if (getPath().find('.', 0) != std::string::npos)
+    {
+        setIndex(getPath().substr(getPath().rfind('/', getPath().length()), getPath().length() - getPath().rfind('/', getPath().length())));
+        setPath(getPath().substr(0, getPath().rfind('/', getPath().length())));
+    }
+    else
+    {
+        setIndex("/" + location.at("index"));
+        setPath(HOME);
+    }
+    setCompletePath(getPath() + getIndex());
+    std::cout << getCompletePath() << std::endl;
+    if (location.find("extension") != location.end())
+        if (getIndex().compare(getIndex().length() - location.at("extension").length(), location.at("extension").length(), location.at("extension")) != 0)
+            setErrorStatus(403);
     if (location.at("methods").find(request.getMethod(), 0) == std::string::npos)
-	{
-		setStatus("403 Forbidden");
-		path = HOME;
-		path.insert(path.length(), "/server/Forbidden.html");
-	}
-	else if (request.getPath() == "/")
-		path.insert(path.length(), location.at("index"));
-	else
-	{
-		std::ifstream ifs(path.c_str(), std::ifstream::in);
-		if (ifs.good())
-		{
-			if (ifs.is_open())
-				fileExtension(&map, request);
-			else
-			{
-				setStatus("500 Internal Server Error");
-				path = HOME;
-				path.insert(path.length(), "/server/InternalServerError.html");
-			}
-		}
-		else
-		{
-			setStatus("404 Not Found");
-			path = HOME;
-			path.insert(path.length(), "/server/NotFound.html");
-		}
-		ifs.close();
-	}
-
-	//ajout du body dans la reponse
-	addBody(path, request, envp);
+        setErrorStatus(403);
+    std::ifstream ifs(getCompletePath().c_str(), std::ifstream::in);
+    if (ifs.good())
+    {
+        if (ifs.is_open())
+            fileExtension(&map, request);
+        else
+            setErrorStatus(500);
+    }
+    else
+        setErrorStatus(404);
+    ifs.close();
+	addBody(request, envp);
 	map["Content-Length"] = Logger::to_string(getBody().length());
 	if (head == 1)
 		setBody("");
@@ -189,7 +205,8 @@ void 	Response::putHandler(Request request, char **envp, ServerConfig server)
 		return ;
 	close(fd);
 	error_path.insert(error_path.length(), "/server/put.html");
-	addBody(error_path, request, envp);
+    setCompletePath(error_path);
+    addBody(request, envp);
 	map["Content-Length"] = Logger::to_string(getBody().length());
 	setHeaders(map);
 }
@@ -206,7 +223,8 @@ void 	Response::deleteHandler(Request request, char **envp, ServerConfig server)
 	if (remove(path.c_str()) == -1)
 		return ;
 	error_path.insert(error_path.length(), "/server/deleted.html");
-	addBody(error_path, request, envp);
+	setCompletePath(error_path);
+	addBody(request, envp);
 	map["Content-Length"] = Logger::to_string(getBody().length());
 	setHeaders(map);
 }
@@ -245,6 +263,30 @@ std::string Response::getCurrentTime(void)
     strftime(str, sizeof str, "%a, %d %b %G %T GMT", current);
     ret.assign(str);
     return (ret);
+}
+
+const std::string &Response::getPath() const {
+    return _path;
+}
+
+void Response::setPath(const std::string &path) {
+    _path = path;
+}
+
+const std::string &Response::getIndex() const {
+    return _index;
+}
+
+void Response::setIndex(const std::string &index) {
+    _index = index;
+}
+
+const std::string &Response::getCompletePath() const {
+    return _complete_path;
+}
+
+void Response::setCompletePath(const std::string &completePath) {
+    _complete_path = completePath;
 }
 
 std::ofstream&	operator<<(std::ofstream &o, const Response &res)

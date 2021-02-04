@@ -21,21 +21,40 @@ class Response : public Query
 {
     private:
 	    std::string 						_status;
+	    std::string                         _path;
+	    std::string                         _index;
+	    std::string                         _complete_path;
+public:
+    const std::string &getCompletePath() const;
 
-	    //method handlers
+    void setCompletePath(const std::string &completePath);
+
+private:
+
+    //method handlers
 	    void getHandler(Request request, int head, char **envp, ServerConfig server);
 		void putHandler(Request request, char **envp, ServerConfig server);
 		void deleteHandler(Request request, char **envp, ServerConfig server);
+        std::string							execute_cgi(std::string, std::string, Request, char **envp);
 
-		//formattage functions
+    //formattage functions
 		std::map<std::string, std::string>	basicHeaders(void);
 		void 								fileExtension(std::map<std::string, std::string> *map, Request request);
-		void								addBody(std::string path, Request request, char **envp);
-
+		void								addBody(Request request, char **envp);
+        void                                setErrorStatus(int status_code);
 		//utils functions
 		bool								isCGI(std::string);
 
-		std::string							execute_cgi(std::string, std::string, Request, char **envp);
+public:
+    const std::string &getPath() const;
+
+    void setPath(const std::string &path);
+
+    const std::string &getIndex() const;
+
+    void setIndex(const std::string &index);
+
+private:
     public:
         Response();
         Response(Response &response);
@@ -49,7 +68,7 @@ class Response : public Query
         std::string stringify(void) const;
 
         std::string getCurrentTime(void);
-        std::map<std::string, std::string> find_location(ServerConfig server, std::string path);
+        std::map<std::string, std::string> find_location(ServerConfig server);
 };
 
 std::ofstream&	operator<<(std::ofstream &o, const Response &res);
