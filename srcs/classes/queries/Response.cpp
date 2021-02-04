@@ -1,6 +1,7 @@
 #include "Response.hpp"
 #include <stdio.h>
 #include <fcntl.h>
+#include <fstream>
 #include <unistd.h>
 
 Response::Response()
@@ -146,7 +147,7 @@ void                                Response::setErrorStatus(int status_code)
 
 void    Response::fileExist(std::string file, std::map<std::string, std::string> map, Request request)
 {
-    std::ifstream ifs(file, std::ifstream::in);
+    std::ifstream ifs(file.c_str(), std::ifstream::in);
     if (ifs.good())
     {
         if (ifs.is_open())
