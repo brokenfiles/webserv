@@ -1,3 +1,0 @@
-/mnt/c/Users/louis/42/webserv/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/mnt/c/Users/louis/42/webserv/cmake-build-debug/CMakeFiles/edit_cache.dir
-/mnt/c/Users/louis/42/webserv/cmake-build-debug/CMakeFiles/webserv.dir

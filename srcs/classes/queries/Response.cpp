@@ -81,6 +81,24 @@ void 	Response::fileExtension(std::map<std::string, std::string> *map, Request r
 		(*map)["Content-Type"] = "images/png";
 }
 
+std::map<std::string, std::string> Response::find_location(ServerConfig server, std::string path)
+{
+    std::list<LocationConfig> location_list = server.getLocations();
+    std::map<std::string, std::string>      location;
+
+    for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
+    {
+        if ((*ite).configuration["path"] == path)
+        	return ((*ite).configuration);
+	}
+	for (std::list<LocationConfig>::iterator it = location_list.begin(); it != location_list.end(); it++)
+	{
+		if ((*it).configuration["path"] == "/")
+			return ((*it).configuration);
+	}
+    return (location);
+}
+
 std::string			Response::execute_cgi(std::string str, std::string path, Request request, char **envp)
 {
 	Cgi			object;
@@ -103,27 +121,38 @@ void	Response::addBody(std::string path, Request request, char **envp)
 	file.close();
 }
 
-void 	Response::getHandler(Request request, int head, char **envp)
+void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
 {
-	std::map<std::string, std::string>	map;
-	std::string 						path = HOME;
+	std::map<std::string, std::string>	    map;
+	std::string 						    path = HOME + request.getPath();
+    std::map<std::string, std::string>      configMap = server.getConfiguration();
+    std::map<std::string, std::string>      location = find_location(server, path);
 
-	map = basicHeaders();
-	if (request.getPath() == "/")
-		//todo: changer le dossier par rapport au serveur
-		path.insert(path.length(), "/index.html");
+    map = basicHeaders();
+
+    //gérer l'extension de fichier
+
+    if (location.at("methods").find(request.getMethod(), 0) == std::string::npos)
+	{
+		setStatus("403 Forbidden");
+		path = HOME;
+		path.insert(path.length(), "/server/Forbidden.html");
+	}
+	else if (request.getPath() == "/")
+		path.insert(path.length(), location.at("index"));
 	else
 	{
-		path.insert(path.length(), request.getPath());
-
 		std::ifstream ifs(path.c_str(), std::ifstream::in);
-
 		if (ifs.good())
 		{
 			if (ifs.is_open())
 				fileExtension(&map, request);
 			else
-				std::cout << "can't open file" << std::endl;
+			{
+				setStatus("500 Internal Server Error");
+				path = HOME;
+				path.insert(path.length(), "/server/InternalServerError.html");
+			}
 		}
 		else
 		{
@@ -133,17 +162,19 @@ void 	Response::getHandler(Request request, int head, char **envp)
 		}
 		ifs.close();
 	}
+
+	//ajout du body dans la reponse
 	addBody(path, request, envp);
 	map["Content-Length"] = Logger::to_string(getBody().length());
-	//todo: attention, on peut renvoyer un body dans une requête DELETE, etc..etc..
 	if (head == 1)
 		setBody("");
 	setHeaders(map);
 }
 
-void 	Response::putHandler(Request request, char **envp)
+void 	Response::putHandler(Request request, char **envp, ServerConfig server)
 {
 	(void)envp;
+    (void)server;
 	std::map<std::string, std::string> map;
 	setStatus("201 Created");
 	map = basicHeaders();
@@ -163,9 +194,10 @@ void 	Response::putHandler(Request request, char **envp)
 	setHeaders(map);
 }
 
-void 	Response::deleteHandler(Request request, char **envp)
+void 	Response::deleteHandler(Request request, char **envp, ServerConfig server)
 {
-	std::map<std::string, std::string> map;
+    (void)server;
+    std::map<std::string, std::string> map;
 	map = basicHeaders();
 	std::string error_path = HOME;
 	std::string	path = HOME;
@@ -179,23 +211,23 @@ void 	Response::deleteHandler(Request request, char **envp)
 	setHeaders(map);
 }
 
-void	Response::prepareResponse(std::string req, char **envp)
+void	Response::prepareResponse(std::string req, char **envp, Config config)
 {
     Parser parser;
 	Request	request;
+    ServerConfig   server = config.getServers()[0];
 
 	request = parser.parse(req);
-
 	setStatus("200 OK");
 
 	if (request.getMethod() == "GET" || request.getMethod() == "POST")
-    	getHandler(request, 0, envp);
+    	getHandler(request, 0, envp, server);
 	else if (request.getMethod() == "HEAD")
-		getHandler(request, 1, envp);
+		getHandler(request, 1, envp, server);
 	else if (request.getMethod() == "PUT")
-		putHandler(request, envp);
+		putHandler(request, envp, server);
 	else if (request.getMethod() == "DELETE")
-		deleteHandler(request, envp);
+		deleteHandler(request, envp, server);
 }
 
 //fonction qui donne la date au format GMT

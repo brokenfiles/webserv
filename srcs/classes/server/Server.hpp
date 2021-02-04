@@ -19,6 +19,7 @@
 #include "../parser/Parser.hpp"
 #include "../client/Client.hpp"
 #include "../queries/Response.hpp"
+#include "../config/Config.hpp"
 
 class Server
 {
@@ -46,8 +47,6 @@ class Server
 	    int send_request(int fd, std::string);
         int send_request_core(int fd, std::string);
 
-	    int close_sock(void);
-
         //loop
         int server_run(char **envp);
         int setFD_MAX(fd_set &fd_pool, int master_socket);
@@ -61,6 +60,10 @@ class Server
 	    struct sockaddr_in getAddrServer();
 	    struct sockaddr_in getAddrClient();
 
+	    void setConfig(Config &conf);
+
+	    //MULTIPLE SOCKET SETUP
+	    void setup_multiple_socket();
 
     private:
 	    struct sockaddr_in serv_socket_in;
@@ -72,6 +75,7 @@ class Server
 	    int                client_socket[MAX_CLIENT_HOST];
 	    int                max_clients;
 	    Parser             parser;
+	    Config				config;
 };
 
 #endif
