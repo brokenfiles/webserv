@@ -247,6 +247,20 @@ void Config::checkConfig() {
 	}
 }
 
+ServerConfig Config::getBestServer(Request request) {
+	ServerConfig bestServer;
+
+	std::vector<ServerConfig>::iterator begin = this->servers.begin();
+	while (begin != this->servers.end()) {
+		ServerConfig server = *begin;
+		if (server.getPort() == request.getPort()) {
+			bestServer = server;
+		}
+		begin++;
+	}
+	return bestServer;
+}
+
 void Config::addServer(ServerConfig server)
 {
 	this->servers.push_back(server);

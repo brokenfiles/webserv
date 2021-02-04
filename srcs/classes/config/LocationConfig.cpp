@@ -6,8 +6,8 @@
 
 std::vector<std::string> LocationConfig::getMethods()
 {
-	if (this->configuration.find("host") != this->configuration.end()) {
-		return (explode(this->configuration["host"], ", "));
+	if (this->configuration.find("methods") != this->configuration.end()) {
+		return (explode(this->configuration["methods"], ", "));
 	}
 	return (std::vector<std::string>());
 }
@@ -62,7 +62,7 @@ std::vector<std::string> LocationConfig::explode(const std::string& s, const std
 	for(size_t i = 0; i < s.size(); i++)
 	{
 		char n = s.at(i);
-		if(charset.find(n) != std::string::npos)
+		if(charset.find(n) == std::string::npos)
 			buff+=n;
 		else
 		if(charset.find(n) != std::string::npos && buff != "") {

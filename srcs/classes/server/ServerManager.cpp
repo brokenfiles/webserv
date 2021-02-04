@@ -27,12 +27,12 @@ ServerManager &ServerManager::operator=(const ServerManager &copy)
 int ServerManager::setup_sockets(Config &conf)
 {
     std::list<Server*>::iterator it_serv = servers.begin();
-    
+
     for (std::vector<ServerConfig>::iterator it_conf = conf.getServers().begin(); it_conf != conf.getServers().end(); it_conf++)
     {
         it_serv = servers.insert(it_serv, new Server());
         Server* current = (*it_serv);
-        
+
         current->setServerConfig((*it_conf));
 
         if ((current->getServerSocket() = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
@@ -90,11 +90,6 @@ int ServerManager::read_request(Client* client)
     char buffer[BUFFER];
     int read = BUFFER - 1;
     std::string keeper("");
-
-    //savoir si un fd est nonblockant
-//    if(fcntl(client->getSocket(), F_GETFL) & O_NONBLOCK) {
-//        std::cout << client->getSocket() << " is blocking" << std::endl;
-//    }
 
     while (read == (BUFFER - 1))
     {
@@ -178,15 +173,15 @@ int ServerManager::run_servers(char **env)
                     std::cout << "request:\n";
                     std::cout << client_curr->getRequest() << std::endl;
 
-//                    (void)env;
-                    Response rep;
-                    rep.prepareResponse(client_curr->getRequest(), env);
-                    rep.stringify();
-
-                    if (this->send_request(client_curr->getSocket(), rep.stringify()) == -1)
-                        return (-1);
-//                    if (this->send_request(client_curr->getSocket(), "omgwhatawoowww") == -1)
+                    (void)env;
+//                    Response rep;
+//                    rep.prepareResponse(client_curr->getRequest());
+//                    rep.stringify();
+//
+//                    if (this->send_request(client_curr->getSocket(), rep.stringify()) == -1)
 //                        return (-1);
+                    if (this->send_request(client_curr->getSocket(), "omgwhatawoowww") == -1)
+                        return (-1);
 
                     close(client_curr->getSocket());
                     logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
