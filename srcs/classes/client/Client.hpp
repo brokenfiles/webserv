@@ -11,26 +11,27 @@ class Client
 {
     public:
         Client();
-        Client(int fd, struct sockaddr_in address);
         ~Client();
         Client(const Client &copy);
         Client &operator=(const Client &copy);
 
         //getters
+        struct sockaddr_in& getAddr();
+        int &getSocket();
         std::string getRequest();
         std::string getIP();
-        int getSocket();
         int getPort();
 
         //setters
         void setRequest(std::string& request);
 
     private:
+        struct sockaddr_in client_addr;
         int socket;
+
         int port;
         std::string ip;
         std::string request_send;
-        struct sockaddr_in client_addr;
 
 };
 

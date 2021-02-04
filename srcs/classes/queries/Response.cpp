@@ -60,7 +60,7 @@ std::map<std::string, std::string>	Response::basicHeaders(void)
 	std::map<std::string, std::string> map;
 
 	map["Content-Type"] = "text/html";
-	map["Server"] = "Webserv";
+	map["Server_old"] = "Webserv";
 	map["Date"] = getCurrentTime();
 	return (map);
 }

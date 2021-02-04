@@ -5,14 +5,6 @@ Client::Client() : socket(-1), port(-1), ip(), request_send()
     memset(&this->client_addr, 0, sizeof(client_addr));
 }
 
-Client::Client(int fd, struct sockaddr_in address) : socket(fd), client_addr(address)
-{
-    ip = std::string(inet_ntoa(client_addr.sin_addr));
-    port = ntohs(client_addr.sin_port);
-    request_send = "";
-}
-
-
 Client::~Client()
 {
 
@@ -30,11 +22,6 @@ Client &Client::operator=(const Client &copy)
 
     }
     return (*this);
-}
-
-int Client::getSocket(void)
-{
-    return (this->socket);
 }
 
 std::string Client::getRequest(void)
@@ -56,3 +43,14 @@ void Client::setRequest(std::string& request)
 {
     request_send = request;
 }
+
+struct sockaddr_in &Client::getAddr()
+{
+    return (client_addr);
+}
+int &Client::getSocket()
+{
+    return (socket);
+}
+
+
