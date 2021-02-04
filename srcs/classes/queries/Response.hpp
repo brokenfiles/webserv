@@ -24,6 +24,8 @@ class Response : public Query
 	    std::string                         _path;
 	    std::string                         _index;
 	    std::string                         _complete_path;
+        std::map<std::string, std::string>  _location;
+
 public:
     const std::string &getCompletePath() const;
 
@@ -42,6 +44,7 @@ private:
 		void 								fileExtension(std::map<std::string, std::string> *map, Request request);
 		void								addBody(Request request, char **envp);
         void                                setErrorStatus(int status_code);
+        void                                init_location(ServerConfig server, Request request);
 		//utils functions
 		bool								isCGI(std::string);
 
@@ -54,7 +57,10 @@ public:
 
     void setIndex(const std::string &index);
 
-private:
+    const std::map<std::string, std::string> &getLocation() const;
+
+    void setLocation(const std::map<std::string, std::string> &location);
+
     public:
         Response();
         Response(Response &response);

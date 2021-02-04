@@ -90,7 +90,7 @@ std::map<std::string, std::string> Response::find_location(ServerConfig server)
     for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
     {
         if ((*ite).configuration["path"] == getPath())
-        	return ((*ite).configuration);
+            return ((*ite).configuration);
 	}
 	for (std::list<LocationConfig>::iterator it = location_list.begin(); it != location_list.end(); it++)
 	{
@@ -147,27 +147,14 @@ void                                Response::setErrorStatus(int status_code)
 void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
 {
 	std::map<std::string, std::string>	    map;
-    std::map<std::string, std::string>      configMap = server.getConfiguration();
-    std::map<std::string, std::string>      location = find_location(server);
 
+	(void)server;
     map = basicHeaders();
-    setPath(HOME + request.getPath());
-    if (getPath().find('.', 0) != std::string::npos)
-    {
-        setIndex(getPath().substr(getPath().rfind('/', getPath().length()), getPath().length() - getPath().rfind('/', getPath().length())));
-        setPath(getPath().substr(0, getPath().rfind('/', getPath().length())));
-    }
-    else
-    {
-        setIndex("/" + location.at("index"));
-        setPath(HOME);
-    }
-    setCompletePath(getPath() + getIndex());
     std::cout << getCompletePath() << std::endl;
-    if (location.find("extension") != location.end())
-        if (getIndex().compare(getIndex().length() - location.at("extension").length(), location.at("extension").length(), location.at("extension")) != 0)
+    if (getLocation().find("extension") != getLocation().end())
+        if (getIndex().compare(getIndex().length() - getLocation().at("extension").length(), getLocation().at("extension").length(), getLocation().at("extension")) != 0)
             setErrorStatus(403);
-    if (location.at("methods").find(request.getMethod(), 0) == std::string::npos)
+    if (getLocation().at("methods").find(request.getMethod(), 0) == std::string::npos)
         setErrorStatus(403);
     std::ifstream ifs(getCompletePath().c_str(), std::ifstream::in);
     if (ifs.good())
@@ -229,15 +216,44 @@ void 	Response::deleteHandler(Request request, char **envp, ServerConfig server)
 	setHeaders(map);
 }
 
+void        Response::init_location(ServerConfig server, Request request)
+{
+    std::map<std::string, std::string>      configMap = server.getConfiguration();
+    setPath(request.getPath());
+
+    if (getPath().find('.', 0) != std::string::npos)
+    {
+        setIndex(getPath().substr(getPath().rfind('/', getPath().length()), getPath().length() - getPath().rfind('/', getPath().length())));
+        setPath(getPath().substr(0, getPath().rfind('/', getPath().length())));
+        setLocation(find_location(server));
+    }
+    else
+    {
+        setPath("");
+        setLocation(find_location(server));
+        setIndex("/" + getLocation().at("index"));
+    }
+    if (getLocation().find("root") != getLocation().end())
+        setCompletePath(getLocation().at("root") + getPath() + getIndex());
+    else
+    {
+        if (configMap.find("root") != configMap.end())
+            setCompletePath(configMap.at("root") + getPath() + getIndex());
+        else
+            setCompletePath("");
+    }
+}
+
 void	Response::prepareResponse(std::string req, char **envp, Config config)
 {
     Parser parser;
 	Request	request;
     ServerConfig   server = config.getServers()[0];
 
-	request = parser.parse(req);
+    request = parser.parse(req);
 	setStatus("200 OK");
 
+	init_location(server, request);
 	if (request.getMethod() == "GET" || request.getMethod() == "POST")
     	getHandler(request, 0, envp, server);
 	else if (request.getMethod() == "HEAD")
@@ -287,6 +303,16 @@ const std::string &Response::getCompletePath() const {
 
 void Response::setCompletePath(const std::string &completePath) {
     _complete_path = completePath;
+}
+
+const std::map<std::string, std::string> &Response::getLocation() const
+{
+    return _location;
+}
+
+void Response::setLocation(const std::map<std::string, std::string> &location)
+{
+    _location = location;
 }
 
 std::ofstream&	operator<<(std::ofstream &o, const Response &res)
