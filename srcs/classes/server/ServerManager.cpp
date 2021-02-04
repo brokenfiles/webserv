@@ -50,7 +50,7 @@ int ServerManager::setup_sockets(Config &conf)
             return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
         int opt = 1;
-        if ((setsockopt(current->getServerSocket(), SOL_SOCKET, SO_REUSEADDR, (char *) &opt, 0)) == 0)
+        if ((setsockopt(current->getServerSocket(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))) < 0)
             return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
         if (listen(current->getServerSocket(), 20) < 0)
@@ -98,19 +98,17 @@ int ServerManager::read_request(Client* client)
 
     while (read == (BUFFER - 1))
     {
-        memset(buffer, 0, 100);
+        memset(buffer, 0, BUFFER);
         read = recv(client->getSocket(), buffer, BUFFER - 1, 0);
         if (read < 1)
         {
             if (errno == EWOULDBLOCK || errno == EAGAIN)
             {
-                std::cout << "EWOULDBLOCK || EAGAIN returned after recv" << std::endl;
+//                std::cout << "EWOULDBLOCK || EAGAIN returned after recv" << std::endl;
                 return (-100);
             }
             else if (read == 0)
-            {
                 std::cout << "0 returned after recv" << std::endl;
-            }
             else
                 return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS,-1));
         }
@@ -150,7 +148,6 @@ int ServerManager::run_servers(char **env)
                 Client *newClient = new Client();
                 int size = sizeof(newClient->getAddr());
 
-                errno = 0;
                 if ((newClient->getSocket() = accept(server_curr->getServerSocket(), (struct sockaddr *) &newClient->getAddr(), (socklen_t *) &size)) < 0)
                     return (logger.error("[SERVER]: accept: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
@@ -171,7 +168,7 @@ int ServerManager::run_servers(char **env)
 
                 if (FD_ISSET(client_curr->getSocket(), &fd_pool))
                 {
-                    int code = 0;
+                    int code;
                     if ((code = this->read_request(client_curr)) < 0)
                     {
                         if (code == -100)
@@ -181,15 +178,15 @@ int ServerManager::run_servers(char **env)
                     std::cout << "request:\n";
                     std::cout << client_curr->getRequest() << std::endl;
 
-                    (void)env;
-//                    Response rep;
-//                    rep.prepareResponse(client_curr->getRequest(), env);
-//                    rep.stringify();
+//                    (void)env;
+                    Response rep;
+                    rep.prepareResponse(client_curr->getRequest(), env);
+                    rep.stringify();
 
-//                    if (this->send_request(client_curr->getSocket(), rep.stringify()) == -1)
-//                        return (-1);
-                    if (this->send_request(client_curr->getSocket(), "omgwhatawoowww") == -1)
+                    if (this->send_request(client_curr->getSocket(), rep.stringify()) == -1)
                         return (-1);
+//                    if (this->send_request(client_curr->getSocket(), "omgwhatawoowww") == -1)
+//                        return (-1);
 
                     close(client_curr->getSocket());
                     logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
@@ -198,7 +195,6 @@ int ServerManager::run_servers(char **env)
             }
         }
     }
-    return (0);
 }
 
 std::list<Server *> &ServerManager::getServerList()
