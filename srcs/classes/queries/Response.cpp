@@ -127,21 +127,36 @@ void                                Response::setErrorStatus(int status_code)
     if (status_code == 403)
     {
         setStatus("403 Forbidden");
-        setCompletePath(HOME);
+        setCompletePath(getLocation().at("root"));
         this->_complete_path.insert(getCompletePath().length(), "/server/Forbidden.html");
     }
     else if (status_code == 404)
     {
         setStatus("404 Not Found");
-        setCompletePath(HOME);
+        setCompletePath(getLocation().at("root"));
         this->_complete_path.insert(getCompletePath().length(), "/server/NotFound.html");
     }
     else if (status_code == 500)
     {
         setStatus("500 Internal Server error");
-        setCompletePath(HOME);
+        setCompletePath(getLocation().at("root"));
         this->_complete_path.insert(getCompletePath().length(), "/server/InternalServerError.html");
     }
+}
+
+void    Response::fileExist(std::string file, std::map<std::string, std::string> map, Request request)
+{
+    std::ifstream ifs(file, std::ifstream::in);
+    if (ifs.good())
+    {
+        if (ifs.is_open())
+            fileExtension(&map, request);
+        else
+            setErrorStatus(500);
+    }
+    else
+        setErrorStatus(404);
+    ifs.close();
 }
 
 void 	Response::getHandler(Request request, int head, char **envp, ServerConfig server)
@@ -156,18 +171,10 @@ void 	Response::getHandler(Request request, int head, char **envp, ServerConfig 
             setErrorStatus(403);
     if (getLocation().at("methods").find(request.getMethod(), 0) == std::string::npos)
         setErrorStatus(403);
-    std::ifstream ifs(getCompletePath().c_str(), std::ifstream::in);
-    if (ifs.good())
-    {
-        if (ifs.is_open())
-            fileExtension(&map, request);
-        else
-            setErrorStatus(500);
-    }
-    else
-        setErrorStatus(404);
-    ifs.close();
+    fileExist(getCompletePath().c_str(), map, request);
 	addBody(request, envp);
+	if((int)getBody().length() > server.getMaxBodySize())
+        setBody(getBody().substr(0, server.getMaxBodySize()));
 	map["Content-Length"] = Logger::to_string(getBody().length());
 	if (head == 1)
 		setBody("");

@@ -47,6 +47,8 @@ private:
         void                                init_location(ServerConfig server, Request request);
 		//utils functions
 		bool								isCGI(std::string);
+        void                                fileExist(std::string file, std::map<std::string, std::string> map, Request request);
+
 
 public:
     const std::string &getPath() const;
