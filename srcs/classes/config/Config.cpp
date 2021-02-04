@@ -174,7 +174,6 @@ std::pair<std::string, std::string> Config::getPair(const std::string &line) {
 		pair.first = parts[0];
 		// pair.second vaut la partie 2 sans les whitespaces du début
 		pair.second = removeBeginWhitespaces(parts[1]);
->>>>>>> d927b2041320d1dbc18b89fb70b890b75199bb85
 	}
 	return pair;
 }
