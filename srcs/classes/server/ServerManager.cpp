@@ -98,10 +98,7 @@ int ServerManager::read_request(Client* client)
         if (read < 1)
         {
             if (errno == EWOULDBLOCK || errno == EAGAIN)
-            {
-//                std::cout << "EWOULDBLOCK || EAGAIN returned after recv" << std::endl;
-                return (-100);
-            }
+                return (-2);
             else if (read == 0)
                 std::cout << "0 returned after recv" << std::endl;
             else
@@ -166,12 +163,15 @@ int ServerManager::run_servers(char **env)
                     int code;
                     if ((code = this->read_request(client_curr)) < 0)
                     {
-                        if (code == -100)
+                        if (code == -2)
+                        {
+                            close(client_curr->getSocket());
+                            clients.erase(it);
                             break;
+                        }
                         return (-1);
                     }
-                    std::cout << "request:\n";
-                    std::cout << client_curr->getRequest() << std::endl;
+                    std::cout << "------------ REQUEST ------------\n" << client_curr->getRequest() << std::endl << "-------------- END --------------\n";
 
                     (void)env;
 //                    Response rep;
