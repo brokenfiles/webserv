@@ -81,8 +81,8 @@ Request	Parser::parse(std::string input_query) throw(std::exception)
 	Request			request;
 	size_t			nb = 0;
 
-	if (this->_checkFormat(input_query) == 0)
-		throw std::invalid_argument("Bad format");
+//	if (this->_checkFormat(input_query) == 0)
+//		throw std::invalid_argument("Bad format");
 	request.setMethod(getMethod(input_query));
 	request.setPath(getPath(input_query, request.getMethod()));
 	if (request.getMethod() == "GET")
