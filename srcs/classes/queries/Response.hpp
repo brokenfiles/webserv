@@ -6,7 +6,7 @@
 #define WEBSERV_RESPONSE_HPP
 #include "Query.hpp"
 #include "Request.hpp"
-#include "../../../includes/includes.h"
+#include "../parser/Parser.hpp"
 #include "../server/Server.hpp"
 #include "../config/Config.hpp"
 #include "../cgi/Cgi.hpp"
