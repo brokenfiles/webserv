@@ -7,10 +7,7 @@
 std::vector<std::string> LocationConfig::getMethods()
 {
 	if (this->configuration.find("methods") != this->configuration.end()) {
-		std::vector<std::string> methods = explode(this->configuration["methods"], ", ");
-		std::cout << methods.front() << std::endl;
-		std::cout << methods.back() << std::endl;
-//		return (explode(this->configuration["methods"], ", "));
+		return (explode(this->configuration["methods"], ", "));
 	}
 	return (std::vector<std::string>());
 }
