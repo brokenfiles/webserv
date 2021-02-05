@@ -59,9 +59,9 @@ std::string Response::sendResponse(Client *client)
 	return (this->stringify());
 }
 
-void getHandler(Client *client)
+void Response::getHandler(Client *client)
 {
-
+	(void)client;
 }
 
 /**

@@ -14,7 +14,7 @@ private:
 	/** le code qui est retourné par response */
 	std::string _statusCode;
 	/** les messages des status code */
-	std::map<int, std::pair<std::string, std::string>> _statusMessages;
+	std::map<int, std::pair<std::string, std::string> > _statusMessages;
 
 	std::string getDirName(const std::string& file);
 
@@ -29,21 +29,22 @@ public:
 	std::string stringify () const;
 	std::string currentDate ();
 	std::string toLower (std::string string);
+	void getHandler (Client *client);
 
 	/*
 	 * Getters
 	 */
 	const std::string &getStatusCode () const;
 	const std::string &getMessageCode (int code);
-	const std::string &getFileCode (int code);
 
+	const std::string &getFileCode (int code);
 	/**
 	 * Setters
 	 */
 	void setMessageCode (int code, const std::string& message);
 	void setFileCode (int code, const std::string& file);
-	void addError (int code, const std::string &message, const std::string& file);
 
+	void addError (int code, const std::string &message, const std::string& file);
 	/*
 	 * Exceptions
 	 */
