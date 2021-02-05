@@ -2,13 +2,13 @@
 #include "Request.hpp"
 
 
-Request::Request()
+Request::Request() : _path(), _method(), _queryString()
 {
 
 }
 
 
-Request::Request(std::string &req)
+Request::Request(std::string &req) : _path(), _method(), _queryString()
 {
     Parser parser;
 
@@ -66,27 +66,5 @@ std::ostream&	operator<<(std::ostream &o, const Request &q) {
 
 	o << q.getMethod() << " [" << q.getPath() << "]";
 	return (o);
-}
-
-int     Request::getPort() const
-{
-    int             port = 80;
-
-    try {
-        std::string     str = this->_headers.at("Host");
-        unsigned int    index = str.find(':', 0);
-        if (str != "")
-        {
-            if (str.find(':', 0) != std::string::npos)
-                port = std::atoi(str.substr(index + 1, (str.length() - index - 1)).c_str());
-            else
-                port = std::atoi(str.c_str());
-        }
-    }
-    catch (const std::out_of_range& oor) {
-        std::cerr << "Out of Range error: " << oor.what() << '\n';
-    }
-    std::cout << port << std::endl;
-    return (port);
 }
 
