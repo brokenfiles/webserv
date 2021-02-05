@@ -31,32 +31,13 @@ int ServerManager::setup_sockets(Config &conf)
     for (std::vector<ServerConfig>::iterator it_conf = conf.getServers().begin(); it_conf != conf.getServers().end(); it_conf++)
     {
         it_serv = servers.insert(it_serv, new Server());
-        Server* current = (*it_serv);
+        Server* server_curr = (*it_serv);
 
-        current->setServerConfig((*it_conf));
+        server_curr->setServerConfig((*it_conf));
+        if (server_curr->create_socket() < 0)
+            throw SetupSocketError();
 
-        if ((current->getServerSocket() = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-            return (logger.error("[SERVER]: socket: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-        if (fcntl(current->getServerSocket(), F_SETFL, O_NONBLOCK) < 0)
-            return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-        memset(&current->getServerAddr(), 0, sizeof(struct sockaddr_in));
-        current->getServerAddr().sin_family = AF_INET;
-        current->getServerAddr().sin_port = htons((*it_conf).getPort());
-        current->getServerAddr().sin_addr.s_addr = inet_addr((*it_conf).getHost().c_str());
-
-        if (bind(current->getServerSocket(), (const struct sockaddr *) &current->getServerAddr(), sizeof(current->getServerAddr())) < 0)
-            return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-        int opt = 1;
-        if ((setsockopt(current->getServerSocket(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))) < 0)
-            return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-        if (listen(current->getServerSocket(), 20) < 0)
-            return (logger.error("[SERVER]: listen" + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-        logger.info("[SERVER]: " + current->getServerConfig().getHost() + ":" + logger.to_string(current->getServerConfig().getPort()) + " is now listening", NO_PRINT_CLASS);
+        logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()) + " is now listening", NO_PRINT_CLASS);
     }
     return (0);
 }
@@ -85,44 +66,9 @@ int ServerManager::setup_fd(fd_set &fd_pool)
     return (higher_fd);
 }
 
-int ServerManager::read_request(Client* client)
-{
-    char buffer[BUFFER];
-    int read = BUFFER - 1;
-    std::string keeper("");
-
-    while (read == (BUFFER - 1))
-    {
-        memset(buffer, 0, BUFFER);
-        read = recv(client->getSocket(), buffer, BUFFER - 1, 0);
-        if (read < 1)
-        {
-            if (errno == EWOULDBLOCK || errno == EAGAIN)
-                return (-2);
-            else if (read == 0)
-                std::cout << "0 returned after recv" << std::endl;
-            else
-                return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS,-1));
-        }
-        keeper += buffer;
-    }
-    client->setRequest(keeper);
-    logger.info("[SERVER]: data received", NO_PRINT_CLASS);
-    return (0);
-}
-
-
-int ServerManager::send_request(int fd, std::string toSend)
-{
-    if (send(fd, toSend.c_str(), toSend.length(), 0) != (int) toSend.length())
-        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-    return (0);
-}
-
 int ServerManager::run_servers(char **env)
 {
     int higher_fd;
-
     fd_set fd_pool;
 
     while (1)
@@ -138,55 +84,44 @@ int ServerManager::run_servers(char **env)
             if (FD_ISSET(server_curr->getServerSocket(), &fd_pool))
             {
                 Client *newClient = new Client();
-                int size = sizeof(newClient->getAddr());
+                if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
+                    throw AcceptClientError();
 
-                if ((newClient->getSocket() = accept(server_curr->getServerSocket(), (struct sockaddr *) &newClient->getAddr(), (socklen_t *) &size)) < 0)
-                    return (logger.error("[SERVER]: accept: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-                if (newClient->getSocket() > higher_fd)
-                    higher_fd = newClient->getSocket();
-                FD_SET(newClient->getSocket(), &fd_pool);
-
-                if(fcntl(newClient->getSocket(), F_SETFL, fcntl(newClient->getSocket(), F_GETFL) | O_NONBLOCK) < 0) {
-                    return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-                }
-                logger.notice("[SERVER]: New Client connexion: " + logger.to_string(newClient->getSocket()) , NO_PRINT_CLASS);
+                logger.notice("[SERVER]: New Client connexion: " + logger.to_string(newClient->getSocket()),
+                              NO_PRINT_CLASS);
                 clients.push_front(newClient);
             }
+        }
 
-            for (std::list<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
+        for (std::list<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
+        {
+            Client *client_curr = (*it);
+
+            if (FD_ISSET(client_curr->getSocket(), &fd_pool))
             {
-                Client *client_curr = (*it);
-
-                if (FD_ISSET(client_curr->getSocket(), &fd_pool))
+                int ret_code;
+                if ((ret_code = client_curr->read_request()) < 0)
                 {
-                    int code;
-                    if ((code = this->read_request(client_curr)) < 0)
+                    if (ret_code == -2)
                     {
-                        if (code == -2)
-                        {
-                            close(client_curr->getSocket());
-                            clients.erase(it);
-                            break;
-                        }
-                        return (-1);
+                        client_curr->close_socket();
+                        it = clients.erase(it);
+                        logger.notice(std::string("[SERVER]: Empty Request: Ejecting: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
+                        continue;
                     }
-                    std::cout << "------------ REQUEST ------------\n" << client_curr->getRequest() << std::endl << "-------------- END --------------\n";
-
-                    (void)env;
-//                    Response rep;
-//                    rep.prepareResponse(client_curr->getRequest());
-//                    rep.stringify();
-//
-//                    if (this->send_request(client_curr->getSocket(), rep.stringify()) == -1)
-//                        return (-1);
-                    if (this->send_request(client_curr->getSocket(), "omgwhatawoowww") == -1)
-                        return (-1);
-
-                    close(client_curr->getSocket());
-                    logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
-                    it = clients.erase(it);
+                    throw ReadClientSocket();
                 }
+
+                client_curr->printRequest();
+                client_curr->parseRequest(env);
+
+                if (client_curr->send_request("omgwhatawoowww") == -1)
+                    throw SendClientSocket();
+
+                client_curr->close_socket();
+                it = clients.erase(it);
+
+                logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
             }
         }
     }

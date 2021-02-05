@@ -8,6 +8,10 @@
 #include <sstream>
 #include "time.h"
 
+#define COLOR_RESET  "\033[0m"
+#define RED_TEXT     "\033[0;31m"
+#define GREY_TEXT     "\033[1;30m"
+
 enum LogType
 {
     INFO,

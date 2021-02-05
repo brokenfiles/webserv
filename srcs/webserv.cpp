@@ -32,21 +32,16 @@ int main(int ac, char **av, char **env)
 	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
 	(void) av;
 	(void) ac;
-//	(void) envp;
 
-    serverManager.setup_sockets(config);
-    serverManager.run_servers(env);
-
-    std::cout << serverManager.getServerList().size() << std::endl;
-
-
-	/* SETUP SERVER SOCKET AND LISTENING */
-//	if (server.setup() == -1)
-//		return (1);
-
-	/* LOOP MULTIPLE CLIENTS */
-//	if (server.server_run(envp) == -1)
-//	    return (1);
+    try
+    {
+        serverManager.setup_sockets(config);
+        serverManager.run_servers(env);
+    }
+    catch (const std::exception &exception)
+    {
+        return (logger.error("[SERVER]: " + logger.to_string(exception.what()), NO_PRINT_CLASS, -1));
+    }
 
     return (0);
 }

@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client() : socket(-1), port(-1), ip(), request_send()
+Client::Client() : socket(-1), port(-1), ip(), _recvRequest(), _parsedRequest()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
 }
@@ -24,24 +24,58 @@ Client &Client::operator=(const Client &copy)
     return (*this);
 }
 
-std::string Client::getRequest(void)
+int Client::read_request(void)
 {
-    return (this->request_send);
+    char buffer[BUFFER];
+    int read = BUFFER - 1;
+    std::string keeper("");
+
+    while (read == (BUFFER - 1))
+    {
+        memset(buffer, 0, BUFFER);
+        read = recv(this->getSocket(), buffer, BUFFER - 1, 0);
+        if (read < 1)
+        {
+            if (errno == EWOULDBLOCK || errno == EAGAIN)
+                return (-2);
+            else if (read == 0)
+                std::cout << "0 returned after recv" << std::endl;
+            else
+                return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS,-1));
+        }
+        keeper += buffer;
+    }
+    this->setRequest(keeper);
+    logger.info("[SERVER]: data received", NO_PRINT_CLASS);
+    return (0);
 }
 
-std::string Client::getIP(void)
+int Client::send_request(const std::string &req)
 {
-    return (ip);
+    if (send(this->socket, req.c_str(), req.length(), 0) != (int) req.length())
+        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+    return (0);
 }
 
-int Client::getPort()
+void Client::parseRequest(char **env)
 {
-    return (port);
+    Response rep;
+
+    (void)env;
+//    rep.prepareResponse(this->getRequest(), env);
+//    this->_parsedRequest = rep.stringify();
 }
 
-void Client::setRequest(std::string& request)
+void Client::printRequest(void)
 {
-    request_send = request;
+    std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
+    std::cout << GREY_TEXT << getRequest() << COLOR_RESET << std::endl;
+    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+}
+
+void Client::close_socket()
+{
+    close(this->socket);
 }
 
 struct sockaddr_in &Client::getAddr()
@@ -52,5 +86,27 @@ int &Client::getSocket()
 {
     return (socket);
 }
+
+void Client::setRequest(std::string& request)
+{
+    _recvRequest = request;
+}
+
+std::string& Client::getRequest(void)
+{
+    return (this->_recvRequest);
+}
+
+std::string& Client::getIP(void)
+{
+    return (ip);
+}
+
+int& Client::getPort()
+{
+    return (port);
+}
+
+
 
 

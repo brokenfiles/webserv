@@ -1,6 +1,10 @@
 #ifndef TEST_SERV_CLIENT_HPP
 #define TEST_SERV_CLIENT_HPP
 
+#include "../logger/Logger.hpp"
+#include "../queries/Response.hpp"
+#include <errno.h>
+#include <unistd.h>
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -15,12 +19,18 @@ class Client
         Client(const Client &copy);
         Client &operator=(const Client &copy);
 
+        int send_request(const std::string &req);
+        int read_request(void);
+        void close_socket();
+        void printRequest(void);
+        void parseRequest(char **env);
+
         //getters
-        struct sockaddr_in& getAddr();
+        struct sockaddr_in &getAddr();
         int &getSocket();
-        std::string getRequest();
-        std::string getIP();
-        int getPort();
+        std::string &getRequest();
+        std::string &getIP();
+        int &getPort();
 
         //setters
         void setRequest(std::string& request);
@@ -31,7 +41,8 @@ class Client
 
         int port;
         std::string ip;
-        std::string request_send;
+        std::string _recvRequest;
+        std::string _parsedRequest;
 
 };
 
