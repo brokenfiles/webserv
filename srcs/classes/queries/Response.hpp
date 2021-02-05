@@ -5,6 +5,7 @@
 #include "Query.hpp"
 #include "../client/Client.hpp"
 #include "../config/LocationConfig.hpp"
+#include "../config/ServerConfig.hpp"
 
 class Client;
 
@@ -15,6 +16,8 @@ private:
 	std::string _statusCode;
 	/** les messages des status code */
 	std::map<int, std::pair<std::string, std::string> > _statusMessages;
+	/** la location de la requête dans le serveur */
+	LocationConfig _location;
 
 	std::string getDirName(const std::string& file);
 
@@ -30,20 +33,21 @@ public:
 	std::string currentDate ();
 	std::string toLower (std::string string);
 	void getHandler (Client *client);
+	void setDefaultHeaders (std::map<std::string, std::string> &headers, ServerConfig &config);
 
 	/*
 	 * Getters
 	 */
 	const std::string &getStatusCode () const;
-	const std::string &getMessageCode (int code);
 
+	const std::string &getMessageCode (int code);
 	const std::string &getFileCode (int code);
 	/**
 	 * Setters
 	 */
 	void setMessageCode (int code, const std::string& message);
-	void setFileCode (int code, const std::string& file);
 
+	void setFileCode (int code, const std::string& file);
 	void addError (int code, const std::string &message, const std::string& file);
 	/*
 	 * Exceptions

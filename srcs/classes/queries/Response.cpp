@@ -50,18 +50,21 @@ Response &Response::operator= (const Response &copy)
  */
 std::string Response::sendResponse(Client *client)
 {
-	LocationConfig location = this->find_location(client);
 	const std::string method = this->toLower(client->getObjRequest().getMethod());
+	this->_location = this->find_location(client);
 
+	/* On définie les headers par défaut */
+	this->setDefaultHeaders(this->_headers, client->getServerConfig());
 	if (method == "get" || method == "head") {
-
+		this->getHandler(client);
 	}
 	return (this->stringify());
 }
 
 void Response::getHandler(Client *client)
 {
-	(void)client;
+	std::string request_file = this->_location.getRootDir() + client->getObjRequest().getPath();
+	std::cout << "request_file : " << request_file << std::endl;
 }
 
 /**
@@ -80,6 +83,18 @@ std::string 	Response::stringify() const
 	string += this->getBody();
 
 	return (string);
+}
+
+/**
+ * Mets les headers à leur état initial et définie le status code à 200 par défaut
+ * @param headers une référence vers les headers
+ * @param server le serveur
+ */
+void Response::setDefaultHeaders(std::map<std::string, std::string> &headers, ServerConfig &server)
+{
+	this->_statusCode = "200 " + this->getMessageCode(200);
+	headers["Date"] = this->currentDate();
+	headers["Server"] = server.getServerName();
 }
 
 /**
