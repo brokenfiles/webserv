@@ -9,7 +9,9 @@ std::vector<std::string> LocationConfig::getMethods()
 	if (this->configuration.find("methods") != this->configuration.end()) {
 		return (explode(this->configuration["methods"], ", "));
 	}
-	return (std::vector<std::string>());
+	std::vector<std::string> default_methods;
+	default_methods.push_back("get");
+	return (default_methods);
 }
 
 std::string LocationConfig::getRootDir() {

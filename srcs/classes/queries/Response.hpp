@@ -34,19 +34,19 @@ public:
 	std::string toLower (std::string string);
 	void getHandler (Client *client);
 	void setDefaultHeaders (std::map<std::string, std::string> &headers, ServerConfig &config);
+	bool isMethodValid (const std::string &method);
 
 	/*
 	 * Getters
 	 */
 	const std::string &getStatusCode () const;
-
-	const std::string &getMessageCode (int code);
 	const std::string &getFileCode (int code);
+	std::string getMessageCode (int code);
+
 	/**
 	 * Setters
 	 */
 	void setMessageCode (int code, const std::string& message);
-
 	void setFileCode (int code, const std::string& file);
 	void addError (int code, const std::string &message, const std::string& file);
 	/*

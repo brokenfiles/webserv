@@ -55,16 +55,24 @@ std::string Response::sendResponse(Client *client)
 
 	/* On définie les headers par défaut */
 	this->setDefaultHeaders(this->_headers, client->getServerConfig());
-	if (method == "get" || method == "head") {
-		this->getHandler(client);
+
+	/* On check si la méthode est gérée par la location */
+	if (!this->isMethodValid(method)) {
+		/* la méthode est invalide */
+		this->_statusCode = this->getMessageCode(401);
+	} else {
+		/* la méthode est valide */
+		if (method == "get" || method == "head") {
+			this->getHandler(client);
+		}
 	}
+
 	return (this->stringify());
 }
 
 void Response::getHandler(Client *client)
 {
 	std::string request_file = this->_location.getRootDir() + client->getObjRequest().getPath();
-	std::cout << "request_file : " << request_file << std::endl;
 }
 
 /**
@@ -92,7 +100,7 @@ std::string 	Response::stringify() const
  */
 void Response::setDefaultHeaders(std::map<std::string, std::string> &headers, ServerConfig &server)
 {
-	this->_statusCode = "200 " + this->getMessageCode(200);
+	this->_statusCode = this->getMessageCode(200);
 	headers["Date"] = this->currentDate();
 	headers["Server"] = server.getServerName();
 }
@@ -117,6 +125,24 @@ LocationConfig &Response::find_location(Client *client)
 			return ((*it));
 	}
 	throw NoLocationException();
+}
+
+/**
+ * On check si la méthode est bien autorisée dans la location
+ * @param method la méthode
+ * @return vrai si la méthode est dans la location, non autrement
+ */
+bool Response::isMethodValid(const std::string &method)
+{
+	std::vector<std::string> methods = this->_location.getMethods();
+
+	for(std::vector<std::string>::iterator it = methods.begin(); it != methods.end(); it++) {
+		std::cout << "comparizon: " << this->toLower(*it) << " - " << this->toLower(method)<< std::endl;
+		if (this->toLower(*it) == this->toLower(method)) {
+			return (true);
+		}
+	}
+	return (false);
 }
 
 /**
@@ -170,9 +196,9 @@ const std::string &Response::getStatusCode () const
 	return _statusCode;
 }
 
-const std::string &Response::getMessageCode (int code)
+std::string Response::getMessageCode (int code)
 {
-	return (this->_statusMessages[code].first);
+	return (Logger::to_string(code) + " " + this->_statusMessages[code].first);
 }
 
 const std::string &Response::getFileCode (int code)

@@ -27,8 +27,6 @@ int main(int ac, char **av, char **env)
 		exit(1);
 	}
 
-	std::cout << config.getServers()[0].getLocations().front().getMethods().front() << std::endl;
-
 	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
 	(void) av;
 	(void) ac;
