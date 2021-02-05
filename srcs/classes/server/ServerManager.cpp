@@ -115,7 +115,7 @@ int ServerManager::run_servers(char **env)
                 client_curr->printRequest();
                 client_curr->parseRequest(env);
 
-                if (client_curr->send_request("omgwhatawoowww") == -1)
+                if (client_curr->send_response("omgwhatawoowww") == -1)
                     throw SendClientSocket();
 
                 client_curr->close_socket();

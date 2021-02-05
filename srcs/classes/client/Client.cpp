@@ -50,7 +50,7 @@ int Client::read_request(void)
     return (0);
 }
 
-int Client::send_request(const std::string &req)
+int Client::send_response(const std::string &req)
 {
     if (send(this->socket, req.c_str(), req.length(), 0) != (int) req.length())
         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
@@ -59,7 +59,7 @@ int Client::send_request(const std::string &req)
 
 void Client::parseRequest(char **env)
 {
-    Response rep;
+//    Response rep;
 
     (void)env;
 //    rep.prepareResponse(this->getRequest(), env);

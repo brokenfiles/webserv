@@ -2,6 +2,7 @@
 #define TEST_SERV_CLIENT_HPP
 
 #include "../logger/Logger.hpp"
+#include "../../../includes/includes.h"
 #include "../queries/Response.hpp"
 #include <errno.h>
 #include <unistd.h>
@@ -19,7 +20,7 @@ class Client
         Client(const Client &copy);
         Client &operator=(const Client &copy);
 
-        int send_request(const std::string &req);
+        int send_response(const std::string &req);
         int read_request(void);
         void close_socket();
         void printRequest(void);
