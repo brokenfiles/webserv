@@ -86,6 +86,7 @@ int ServerManager::run_servers(char **env)
                 Client *newClient = new Client();
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
+                newClient->getServerConfig() = server_curr->getServerConfig();
 
                 logger.notice("[SERVER]: New Client connexion: " + logger.to_string(newClient->getSocket()),
                               NO_PRINT_CLASS);

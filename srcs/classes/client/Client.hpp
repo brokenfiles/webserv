@@ -5,6 +5,7 @@
 #include "../../../includes/includes.h"
 #include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
+#include "../config/ServerConfig.hpp"
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
@@ -29,10 +30,14 @@ class Client
         //getters
         struct sockaddr_in &getAddr();
         int &getSocket();
+
         std::string &getStringRequest();
+        Request& getObjRequest();
+
         std::string &getIP();
         int &getPort();
-        Request& getObjRequest();
+
+        ServerConfig &getServerConfig();
 
         //setters
         void setRequest(std::string& request);
@@ -44,9 +49,9 @@ class Client
         int port;
         std::string ip;
         std::string _recvRequest;
-        Request request;
-        std::string _parsedRequest;
 
+        Request request;
+        ServerConfig serverConfig;
 };
 
 #endif

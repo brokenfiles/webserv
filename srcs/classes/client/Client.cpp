@@ -103,6 +103,11 @@ Request &Client::getObjRequest()
     return (request);
 }
 
+ServerConfig &Client::getServerConfig()
+{
+    return (serverConfig);
+}
+
 
 
 
