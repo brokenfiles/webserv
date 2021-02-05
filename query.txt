@@ -1,18 +1,7 @@
 HTTP/1.1 200 OK\r
 Content-Type: text/html; charset=utf-8\r
-Content-Length: 55743\r
-Connection: keep-alive\r
-Cache-Control: s-maxage=300, public, max-age=0\r
-Content-Language: en-US\r
 Date: Thu, 06 Dec 2018 17:37:18 GMT\r
-ETag: "2e77ad1dc6ab0b53a2996dfd4653c1c3"\r
-Server: meinheld/0.6.1\r
-Strict-Transport-Security: max-age=63072000\r
-X-Content-Type-Options: nosniff\r
-X-Frame-Options: DENY\r
-X-XSS-Protection: 1; mode=block\r
-Vary: Accept-Encoding,Cookie\r
-Age: 7\r\n\r\n
+Server: Webserv\r\n\r\n
 
 <!DOCTYPE html>
 <html lang="en">

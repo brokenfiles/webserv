@@ -14,8 +14,6 @@ class LocationConfig
 public:
 	std::map<std::string, std::string> configuration;
 
-
-
 	friend std::ostream &operator<<(std::ostream &os, LocationConfig &config);
 
 	std::vector<std::string> getMethods();

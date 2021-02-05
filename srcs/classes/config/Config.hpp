@@ -57,7 +57,6 @@ public:
 	{
 		virtual const char *what() const throw();
 	};
-	ServerConfig getBestServer (Request request);
 };
 
 #endif
