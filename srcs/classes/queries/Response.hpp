@@ -2,6 +2,9 @@
 #define WEBSERV_RESPONSE_HPP
 
 #include <iostream>
+#include "../client/Client.hpp"
+
+class Client;
 
 class Response
 {
@@ -11,6 +14,7 @@ class Response
         Response(const Response &copy);
         Response &operator=(const Response &copy);
 
+        std::string sendResponse(Client *client);
 };
 
 #endif

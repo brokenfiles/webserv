@@ -4,6 +4,7 @@
 #include "../logger/Logger.hpp"
 #include "../../../includes/includes.h"
 #include "../queries/Response.hpp"
+#include "../queries/Request.hpp"
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
@@ -24,14 +25,14 @@ class Client
         int read_request(void);
         void close_socket();
         void printRequest(void);
-        void parseRequest(char **env);
 
         //getters
         struct sockaddr_in &getAddr();
         int &getSocket();
-        std::string &getRequest();
+        std::string &getStringRequest();
         std::string &getIP();
         int &getPort();
+        Request& getObjRequest();
 
         //setters
         void setRequest(std::string& request);
@@ -43,6 +44,7 @@ class Client
         int port;
         std::string ip;
         std::string _recvRequest;
+        Request request;
         std::string _parsedRequest;
 
 };

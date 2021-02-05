@@ -1,9 +1,12 @@
 #ifndef WEBSERV_PARSER_HPP
 #define WEBSERV_PARSER_HPP
+
 #include "../../../includes/includes.h"
 #include "../queries/Request.hpp"
 #include <iostream>
 #include <map>
+
+class Request;
 
 class Parser {
 	private:

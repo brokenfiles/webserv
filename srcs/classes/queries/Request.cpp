@@ -2,6 +2,36 @@
 #include "Request.hpp"
 
 
+Request::Request()
+{
+
+}
+
+
+Request::Request(std::string &req)
+{
+    Parser parser;
+
+    *this = parser.parse(req);
+}
+
+Request::~Request()
+{
+
+}
+
+Request &Request::operator=(const Request& copy)
+{
+    if (this != &copy)
+    {
+        this->_path = copy._path;
+        this->_method = copy._method;
+        this->_queryString = copy._queryString;
+    }
+    return (*this);
+}
+
+
 const std::string &Request::getMethod() const
 {
     return _method;
@@ -34,15 +64,7 @@ void Request::setQueryString(const std::string &queryString)
 
 std::ostream&	operator<<(std::ostream &o, const Request &q) {
 
-	//std::map<std::string, std::string>::const_iterator	ite;
-
 	o << q.getMethod() << " [" << q.getPath() << "]";
-//	for(ite = q.getHeaders().begin(); ite != q.getHeaders().end(); ite++)
-//	{
-//			o << ite->first << ": ";
-//			o << ite->second << std::endl;
-//	}
-//	o << q.getBody();
 	return (o);
 }
 

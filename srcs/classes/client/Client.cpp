@@ -57,19 +57,10 @@ int Client::send_response(const std::string &req)
     return (0);
 }
 
-void Client::parseRequest(char **env)
-{
-//    Response rep;
-
-    (void)env;
-//    rep.prepareResponse(this->getRequest(), env);
-//    this->_parsedRequest = rep.stringify();
-}
-
 void Client::printRequest(void)
 {
     std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
-    std::cout << GREY_TEXT << getRequest() << COLOR_RESET << std::endl;
+    std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
     std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 }
 
@@ -92,7 +83,7 @@ void Client::setRequest(std::string& request)
     _recvRequest = request;
 }
 
-std::string& Client::getRequest(void)
+std::string& Client::getStringRequest(void)
 {
     return (this->_recvRequest);
 }
@@ -105,6 +96,11 @@ std::string& Client::getIP(void)
 int& Client::getPort()
 {
     return (port);
+}
+
+Request &Client::getObjRequest()
+{
+    return (request);
 }
 
 

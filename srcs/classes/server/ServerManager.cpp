@@ -96,6 +96,8 @@ int ServerManager::run_servers(char **env)
         for (std::list<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
         {
             Client *client_curr = (*it);
+            Response rep;
+            (void) env;
 
             if (FD_ISSET(client_curr->getSocket(), &fd_pool))
             {
@@ -113,10 +115,16 @@ int ServerManager::run_servers(char **env)
                 }
 
                 client_curr->printRequest();
-                client_curr->parseRequest(env);
 
-                if (client_curr->send_response("omgwhatawoowww") == -1)
-                    throw SendClientSocket();
+                Request req(client_curr->getStringRequest());
+                client_curr->getObjRequest() = req;
+
+
+
+                std::string response = rep.sendResponse(client_curr);
+
+                if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
+                    return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
                 client_curr->close_socket();
                 it = clients.erase(it);

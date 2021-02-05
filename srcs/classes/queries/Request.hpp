@@ -2,6 +2,7 @@
 # define WEBSERV_REQUEST_HPP
 
 # include "../../../includes/includes.h"
+# include "../parser/Parser.hpp"
 #include "Query.hpp"
 #include <map>
 
@@ -13,6 +14,12 @@ private:
 	std::string							_queryString;
 
 public:
+
+        Request();
+        Request(std::string &req);
+        ~Request();
+        Request& operator=(const Request& copy);
+
         //getters
         const std::string &getMethod() const;
         const std::string &getPath() const;
