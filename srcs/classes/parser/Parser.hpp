@@ -12,8 +12,11 @@ class Request;
 class Parser {
 
 	private:
-		void fillMethodAndPath(Request &req, std::string strRequest);
-        void fillHeaderAndBody(Request &req, std::string strRequest);
+        void fillMethod(Request&, std::string&);
+        void fillPath(Request&, std::string&);
+        void fillHeader(Request&, std::string&);
+        void fillBody(Request&, std::string&);
+        void fillQueryString(Request&);
 
 	public:
 		Parser();
