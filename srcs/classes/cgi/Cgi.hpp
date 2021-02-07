@@ -12,7 +12,11 @@
 #include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
 #include "../logger/Logger.hpp"
+#include "../client/Client.hpp"
 #define META_VARIABLES_NB 17
+
+class Client;
+class Response;
 
 class Cgi
 {
@@ -28,7 +32,7 @@ class Cgi
 		virtual ~Cgi();
 
 		//execute function
-		int		execute(Request request);
+		void		execute(Client *client, Response &response);
 
 		//getters and setters
 		std::map<std::string, std::string>		getEnv() const;

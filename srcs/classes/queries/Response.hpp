@@ -46,9 +46,12 @@ public:
 	 * Getters
 	 */
 	const std::string &getStatusCode () const;
-	const std::string &getFileCode (int code);
+	const std::map<int, std::pair<std::string, std::string> > &getStatusMessages () const;
 	std::string getMessageCode (int code);
 	std::string getPathWithSlash (std::string path);
+	const std::map<std::string, std::string> &getContentTypes () const;
+	const LocationConfig &getLocation () const;
+	const std::string &getFileCode (int code);
 
 	/**
 	 * Setters

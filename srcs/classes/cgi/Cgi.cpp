@@ -14,6 +14,69 @@ Cgi::~Cgi()
 
 }
 
+void	Cgi::execute(Client *client, Response &response)
+{
+	(void)client;
+	(void)response;
+	response.setBody("blablabla");
+/*
+	int												pid;
+	int												pipe_fd[2];
+	int												outfd[2];
+	int												save_in;
+	int												save_out;
+	char 											**env = convertEnv();
+	char 											buffer[BUFFER];
+	std::string										output = "";
+	std::string										file = "cgi/bin/cgi_tester";// + getType();
+	char											**argv = convertArgv(request, file);
+
+	pipe(pipe_fd);
+	pipe(outfd);
+	save_in = dup(STDIN_FILENO);
+	save_out = dup(STDOUT_FILENO);
+	if (dup2(outfd[1], 1) == -1)
+		return (-1);
+	pid = fork();
+	if (pid == -1)
+		return (-1);
+	else if (pid == 0)
+	{
+		close(outfd[1]);
+		if (dup2(outfd[0], 0) == -1)
+			return (-1);
+		if (dup2(pipe_fd[1], 1) == -1)
+			return (-1);
+		if (execve(file.c_str(), argv, env) == -1)
+			return (-1);
+	}
+	else
+	{
+		int 		ret;
+		int 		status;
+
+		close(outfd[0]);
+		if (request.getMethod() == "POST" && !getInputBody().empty())
+			write(outfd[1], getInputBody().c_str(), getInputBody().length());
+		close(outfd[1]);
+		close(pipe_fd[1]);
+		waitpid(-1, &status, 0);
+		while ((ret = read(pipe_fd[0], &buffer, BUFFER - 1)) != 0)
+		{
+			buffer[ret] = 0;
+			output += buffer;
+		}
+		if (getType() == "php")
+			output.erase(0, 66);
+		setOutputBody(output);
+		dup2(save_in, STDIN_FILENO);
+		dup2(save_out, STDOUT_FILENO);
+	}
+	freeAll(env, argv);
+	return (0);
+ */
+}
+
 /**
  * Cette fonction renvoie si la location contient un CGI, que la requête nécessite un appel vers un CGI
  * Et que le CGI est valide
@@ -162,65 +225,6 @@ void	Cgi::print_env(void)
 
 	for (ite = getEnv().begin(); ite != getEnv().end(); ite++)
 		std::cout << ite->first << "=" << ite->second <<std::endl;
-}
-
-int		Cgi::execute(Request request)
-{
-
-	int												pid;
-	int												pipe_fd[2];
-	int												outfd[2];
-	int												save_in;
-	int												save_out;
-	char 											**env = convertEnv();
-	char 											buffer[BUFFER];
-	std::string										output = "";
-	std::string										file = "cgi/bin/cgi_tester";// + getType();
-	char											**argv = convertArgv(request, file);
-
-	pipe(pipe_fd);
-	pipe(outfd);
-	save_in = dup(STDIN_FILENO);
-	save_out = dup(STDOUT_FILENO);
-	if (dup2(outfd[1], 1) == -1)
-		return (-1);
-	pid = fork();
-	if (pid == -1)
-		return (-1);
-	else if (pid == 0)
-	{
-		close(outfd[1]);
-		if (dup2(outfd[0], 0) == -1)
-			return (-1);
-		if (dup2(pipe_fd[1], 1) == -1)
-			return (-1);
-		if (execve(file.c_str(), argv, env) == -1)
-			return (-1);
-	}
-	else
-	{
-		int 		ret;
-		int 		status;
-
-		close(outfd[0]);
-		if (request.getMethod() == "POST" && !getInputBody().empty())
-			write(outfd[1], getInputBody().c_str(), getInputBody().length());
-		close(outfd[1]);
-		close(pipe_fd[1]);
-		waitpid(-1, &status, 0);
-		while ((ret = read(pipe_fd[0], &buffer, BUFFER - 1)) != 0)
-		{
-			buffer[ret] = 0;
-			output += buffer;
-		}
-		if (getType() == "php")
-			output.erase(0, 66);
-		setOutputBody(output);
-		dup2(save_in, STDIN_FILENO);
-		dup2(save_out, STDOUT_FILENO);
-	}
-	freeAll(env, argv);
-	return (0);
 }
 
 char**		Cgi::convertEnv(void)

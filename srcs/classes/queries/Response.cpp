@@ -48,12 +48,17 @@ std::string Response::sendResponse(Client *client)
 		/* la méthode est invalide */
 		this->_statusCode = this->getMessageCode(401);
 	} else {
+		Cgi cgi;
 		/* la méthode est valide */
 		if (method == "get" || method == "head") {
 			this->getHandler(client);
 			if (method == "head")
 				this->setBody("");
+		} else if (method == "put") {
+			this->getHandler(client);
 		}
+		// execute CGIs
+		cgi.execute(client, *this);
 	}
 
 	return (this->stringify());
@@ -312,6 +317,21 @@ void Response::addError (int code, const std::string &message, const std::string
 {
 	this->setMessageCode(code, message);
 	this->setFileCode(code, file);
+}
+
+const std::map<int, std::pair<std::string, std::string> > &Response::getStatusMessages () const
+{
+	return _statusMessages;
+}
+
+const std::map<std::string, std::string> &Response::getContentTypes () const
+{
+	return _contentTypes;
+}
+
+const LocationConfig &Response::getLocation () const
+{
+	return _location;
 }
 
 const char *Response::NoLocationException::what () const throw()
