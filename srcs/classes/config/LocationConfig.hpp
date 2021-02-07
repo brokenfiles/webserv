@@ -7,7 +7,7 @@
 
 #include <ostream>
 #include "../../../includes/includes.h"
-
+#define DEFAULT_INDEX "index.html"
 
 class LocationConfig
 {
@@ -30,6 +30,8 @@ public:
 
 	std::string getRootDir();
 
+	std::string getPath();
+
 	std::string getAutoindex();
 
 	std::string getUploadDir();
@@ -40,9 +42,12 @@ public:
 
 	std::string getCgiPath();
 
+	std::string getRawMethods ();
+
+	std::string getIndex ();
+
 	std::map<std::string, std::string> &getConfiguration ();
 
-	std::string getRawMethods ();
 };
 
 

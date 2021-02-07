@@ -1,6 +1,9 @@
 #include "../../../includes/includes.h"
 #include "Request.hpp"
-
+#include "../config/LocationConfig.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 Request::Request() : _path(), _method(), _queryString()
 {
@@ -40,6 +43,27 @@ const std::string &Request::getMethod() const
 const std::string &Request::getPath() const
 {
     return _path;
+}
+
+std::string Request::getDefaultPath(LocationConfig &location)
+{
+	std::string rootDir = location.getRootDir();
+	std::string rawPath = _path;
+	if (location.getPath() != "/") {
+		rawPath.erase(rawPath.find(location.getPath()), location.getPath().size());
+	}
+
+	std::string path = rootDir + rawPath;
+	struct stat path_stat;
+
+	stat(path.c_str(), &path_stat);
+	if (S_ISDIR(path_stat.st_mode)) {
+		if (path[path.size() - 1] == '/')
+			path += location.getIndex();
+		else
+			path += "/" + location.getIndex();
+	}
+	return path;
 }
 
 void Request::setMethod(const std::string &method)

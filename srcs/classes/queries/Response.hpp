@@ -16,6 +16,8 @@ private:
 	std::string _statusCode;
 	/** les messages des status code */
 	std::map<int, std::pair<std::string, std::string> > _statusMessages;
+	/** la correspondence entre extension et content type */
+	std::map<std::string, std::string> _contentTypes;
 	/** la location de la requête dans le serveur */
 	LocationConfig _location;
 
@@ -33,8 +35,11 @@ public:
 	std::string currentDate ();
 	std::string toLower (std::string string);
 	void getHandler (Client *client);
-	void setDefaultHeaders (std::map<std::string, std::string> &headers, ServerConfig &config);
+	void setDefaultHeaders (Client *client, ServerConfig &server);
 	bool isMethodValid (const std::string &method);
+	void setContentType (Client *client);
+	void setDefaultStatusCodes ();
+	void setDefaultExtensions ();
 
 	/*
 	 * Getters
@@ -42,6 +47,7 @@ public:
 	const std::string &getStatusCode () const;
 	const std::string &getFileCode (int code);
 	std::string getMessageCode (int code);
+	std::string getPathWithSlash (std::string path);
 
 	/**
 	 * Setters

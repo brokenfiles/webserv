@@ -6,21 +6,8 @@
 
 Response::Response()
 {
-	this->addError(200, "OK", "");
-	this->addError(201, "Created", "");
-	this->addError(202, "Accepted", "");
-	this->addError(300, "Multiple Choices", "");
-	this->addError(301, "Moved Permanently", "");
-	this->addError(302, "Found", "");
-	this->addError(310, "Too many Redirects", "");
-	this->addError(400, "Bad request", "/server/bad_request.html");
-	this->addError(401, "Unauthorized", "/server/unauthorized.html");
-	this->addError(403, "Forbidden", "/server/forbidden.html");
-	this->addError(404, "Not found", "/server/NotFound.html");
-	this->addError(500, "Internal Server Error", "/server/server_error.html");
-	this->addError(501, "Not implemented", "");
-	this->addError(502, "Bad Gateway", "");
-	this->addError(503, "Service Unavailable", "");
+	this->setDefaultStatusCodes();
+	this->setDefaultExtensions();
 }
 
 Response::~Response()
@@ -54,7 +41,7 @@ std::string Response::sendResponse(Client *client)
 	this->_location = this->find_location(client);
 
 	/* On définie les headers par défaut */
-	this->setDefaultHeaders(this->_headers, client->getServerConfig());
+	this->setDefaultHeaders(client, client->getServerConfig());
 
 	/* On check si la méthode est gérée par la location */
 	if (!this->isMethodValid(method)) {
@@ -64,15 +51,43 @@ std::string Response::sendResponse(Client *client)
 		/* la méthode est valide */
 		if (method == "get" || method == "head") {
 			this->getHandler(client);
+			if (method == "head")
+				this->setBody("");
 		}
 	}
 
 	return (this->stringify());
 }
 
+/**
+ * Fonction qui gère les reauêtes GET
+ * @param client
+ */
 void Response::getHandler(Client *client)
 {
-	std::string request_file = this->_location.getRootDir() + client->getObjRequest().getPath();
+	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
+//	std::cout << requestFile << std::endl;
+	// on ouvre in filestream
+	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
+	// on regarde si le fichier existe
+	if (fileStream.good()) {
+		// il existe
+		if (fileStream.is_open()) {
+			// on peut lire le fichier, on l'ajoute au body
+			// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
+			std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
+								 (std::istreambuf_iterator<char>()    ) );
+
+			this->setBody(fileContent);
+			fileStream.close();
+		} else {
+			// le fichier est inaccessible on retourne une erreur 403 forbidden
+			this->_statusCode = getMessageCode(403);
+		}
+	} else {
+		// il n'exite pas on retourne une erreur 404 not found
+		this->_statusCode = getMessageCode(404);
+	}
 }
 
 /**
@@ -95,14 +110,31 @@ std::string 	Response::stringify() const
 
 /**
  * Mets les headers à leur état initial et définie le status code à 200 par défaut
- * @param headers une référence vers les headers
- * @param server le serveur
+ * @param client
+ * @param server la configuration du serveur
  */
-void Response::setDefaultHeaders(std::map<std::string, std::string> &headers, ServerConfig &server)
+void Response::setDefaultHeaders(Client *client, ServerConfig &server)
 {
+	(void)server;
 	this->_statusCode = this->getMessageCode(200);
-	headers["Date"] = this->currentDate();
-	headers["Server"] = server.getServerName();
+	this->setContentType(client);
+	this->_headers["Date"] = this->currentDate();
+	this->_headers["Server"] = "Webserv";
+}
+
+void Response::setContentType(Client *client)
+{
+	std::string path = client->getObjRequest().getDefaultPath(this->_location);
+	size_t index = path.rfind('.');
+	if (index == std::string::npos)
+		index = 0;
+	std::string reqExtension = path.substr(index, path.size() - path.rfind('.'));
+
+	if (this->_contentTypes.find(reqExtension) != this->_contentTypes.end()) {
+		this->_headers["Content-Type"] = this->_contentTypes[reqExtension];
+	} else {
+		this->_headers["Content-Type"] = "text/html";
+	}
 }
 
 /**
@@ -114,12 +146,12 @@ LocationConfig &Response::find_location(Client *client)
 {
 	for (std::list<LocationConfig>::iterator ite = client->getServerConfig().getLocations().begin(); ite != client->getServerConfig().getLocations().end(); ite++)
 	{
-		if ((*ite).getConfiguration()["path"] == getDirName(client->getObjRequest().getPath()))
+		if (this->getPathWithSlash((*ite).getPath()) == this->getPathWithSlash(getDirName(client->getObjRequest().getPath())))
 			return ((*ite));
 	}
 	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
 	{
-		if ((*it).getConfiguration()["path"] == "/")
+		if ((*it).getPath() == "/")
 			return ((*it));
 	}
 	throw NoLocationException();
@@ -140,6 +172,14 @@ bool Response::isMethodValid(const std::string &method)
 		}
 	}
 	return (false);
+}
+
+std::string Response::getPathWithSlash(std::string path) {
+	if (path.size() > 0 && path[path.size() - 1] != '/') {
+		return (path += '/');
+	} else {
+		return (path);
+	}
 }
 
 /**
@@ -181,16 +221,62 @@ std::string Response::toLower(std::string string) {
 std::string Response::getDirName (const std::string& file)
 {
 	char separator = '/';
-	size_t i = file.rfind(separator, file.length());
-	if (i != std::string::npos) {
-		return(file.substr(0, i));
+	std::string fileSlash = file;
+	if (file.find('.') == std::string::npos) {
+		fileSlash = this->getPathWithSlash(file);
 	}
-	return("");
+	size_t firstSlash = fileSlash.find(separator);
+	size_t secondSlash = fileSlash.find(separator, 1);
+	if (firstSlash == std::string::npos || secondSlash == std::string::npos) {
+		return ("");
+	}
+	return(fileSlash.substr(firstSlash, secondSlash - firstSlash));
 }
 
 const std::string &Response::getStatusCode () const
 {
 	return _statusCode;
+}
+
+void Response::setDefaultStatusCodes()
+{
+	this->addError(200, "OK", "");
+	this->addError(201, "Created", "");
+	this->addError(202, "Accepted", "");
+	this->addError(300, "Multiple Choices", "");
+	this->addError(301, "Moved Permanently", "");
+	this->addError(302, "Found", "");
+	this->addError(310, "Too many Redirects", "");
+	this->addError(400, "Bad request", "/server/bad_request.html");
+	this->addError(401, "Unauthorized", "/server/unauthorized.html");
+	this->addError(403, "Forbidden", "/server/forbidden.html");
+	this->addError(404, "Not found", "/server/NotFound.html");
+	this->addError(413, "Request Entity Too Large", "/server/NotFound.html");
+	this->addError(500, "Internal Server Error", "/server/server_error.html");
+	this->addError(501, "Not implemented", "");
+	this->addError(502, "Bad Gateway", "");
+	this->addError(503, "Service Unavailable", "");
+}
+
+void Response::setDefaultExtensions()
+{
+	this->_contentTypes[".html"] = "text/html";
+	this->_contentTypes[".htm"] = "text/html";
+	this->_contentTypes[".php"] = "text/html";
+	this->_contentTypes[".bla"] = "text/html";
+	this->_contentTypes[".css"] = "text/css";
+	this->_contentTypes[".gif"] = "image/gif";
+	this->_contentTypes[".ico"] = "image/x-icon";
+	this->_contentTypes[".jpeg"] = "image/jpeg";
+	this->_contentTypes[".jpg"] = "image/jpeg";
+	this->_contentTypes[".js"] = "application/javascript";
+	this->_contentTypes[".json"] = "application/json";
+	this->_contentTypes[".png"] = "image/png";
+	this->_contentTypes[".pdf"] = "application/pdf";
+	this->_contentTypes[".svg"] = "image/svg+xml";
+	this->_contentTypes[".woff"] = "font/woff";
+	this->_contentTypes[".woff2"] = "font/woff2";
+	this->_contentTypes[".xhtml"] = "application/xhtml+xml";
 }
 
 std::string Response::getMessageCode (int code)

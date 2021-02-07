@@ -23,9 +23,7 @@ std::vector<std::string> LocationConfig::getMethods()
 	if (this->configuration.find("methods") != this->configuration.end()) {
 		return (explode(this->configuration["methods"], ", "));
 	}
-	std::vector<std::string> default_methods;
-//	default_methods.push_back("get");
-	return (default_methods);
+	return (explode("GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH", ", "));
 }
 
 std::string LocationConfig::getRawMethods()
@@ -41,6 +39,13 @@ std::string LocationConfig::getRootDir() {
 		return (this->configuration["root"]);
 	}
 	return ("");
+}
+
+std::string LocationConfig::getIndex() {
+	if (this->configuration.find("index") != this->configuration.end()) {
+		return (this->configuration["index"]);
+	}
+	return (DEFAULT_INDEX);
 }
 
 std::string LocationConfig::getAutoindex() {
@@ -76,6 +81,14 @@ std::string LocationConfig::getCgiPath() {
 		return (this->configuration["cgi_path"]);
 	}
 	return ("");
+}
+
+std::string LocationConfig::getPath ()
+{
+	if (this->configuration.find("path") != this->configuration.end()) {
+		return (this->configuration["path"]);
+	}
+	return ("/");
 }
 
 std::vector<std::string> LocationConfig::explode(const std::string& s, const std::string& charset)

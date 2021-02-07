@@ -1,43 +1,45 @@
 #include "Query.hpp"
+#include "../logger/Logger.hpp"
 
-
-Query::Query()
+Query::Query ()
 {
 
 }
 
-Query::Query(const Query &query) {
-    *this = query;
+Query::Query (const Query &query)
+{
+	*this = query;
 }
 
-Query::~Query()
+Query::~Query ()
 {
 
 }
 
-Query & Query::operator=(const Query &q) {
-    this->_headers = q.getHeaders();
-    this->_body = q.getBody();
-    return (*this);
+Query &Query::operator= (const Query &q)
+{
+	this->_headers = q.getHeaders();
+	this->_body    = q.getBody();
+	return (*this);
 }
 
-
-const std::string &Query::getBody() const
+const std::string &Query::getBody () const
 {
-    return _body;
+	return _body;
 }
 
-void Query::setBody(const std::string &body)
+void Query::setHeaders (const std::map<std::string, std::string> &headers)
 {
-    _body = body;
+	_headers = headers;
 }
 
-void Query::setHeaders(const std::map<std::string, std::string> &headers)
+void Query::setBody (const std::string& body)
 {
-    _headers = headers;
+	this->_body = body;
+	this->_headers["Content-Length"] = Logger::to_string(body.length());
 }
 
-const std::map<std::string, std::string> &Query::getHeaders() const
+const std::map<std::string, std::string> &Query::getHeaders () const
 {
-    return _headers;
+	return _headers;
 }
