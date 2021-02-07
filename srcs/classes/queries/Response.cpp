@@ -55,10 +55,16 @@ std::string Response::sendResponse(Client *client)
 			if (method == "head")
 				this->setBody("");
 		} else if (method == "put") {
-			this->getHandler(client);
+			this->putHandler(client);
 		}
 		// execute CGIs
-		cgi.execute(client, *this);
+		if (Cgi::isCGI(client->getObjRequest(), this->_location))
+			cgi.execute(client, *this);
+	}
+	// display error codes
+	// si le premier char de l'erreur n'est pas égal à 2, c'est une erreur : afficher l'erreur
+	if (this->_statusCode[0] != '2') {
+		this->displayErrors();
 	}
 
 	return (this->stringify());
@@ -82,6 +88,33 @@ void Response::getHandler(Client *client)
 			// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
 			std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
 								 (std::istreambuf_iterator<char>()    ) );
+
+			this->setBody(fileContent);
+			fileStream.close();
+		} else {
+			// le fichier est inaccessible on retourne une erreur 403 forbidden
+			this->_statusCode = getMessageCode(403);
+		}
+	} else {
+		// il n'exite pas on retourne une erreur 404 not found
+		this->_statusCode = getMessageCode(404);
+	}
+}
+
+void Response::putHandler(Client *client)
+{
+	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
+//	std::cout << requestFile << std::endl;
+	// on ouvre in filestream
+	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
+	// on regarde si le fichier existe
+	if (fileStream.good()) {
+		// il existe
+		if (fileStream.is_open()) {
+			// on peut lire le fichier, on l'ajoute au body
+			// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
+			std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
+									 (std::istreambuf_iterator<char>()    ) );
 
 			this->setBody(fileContent);
 			fileStream.close();
@@ -247,6 +280,30 @@ std::string Response::getDirName (const std::string& file)
 	return(fileSlash.substr(firstSlash, secondSlash - firstSlash));
 }
 
+void Response::displayErrors ()
+{
+	std::map<int, std::pair<std::string, std::string> >::iterator begin = this->_statusMessages.begin();
+	while (begin != this->_statusMessages.end()) {
+		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode) {
+			std::ifstream fileStream(begin->second.second.c_str(), std::ifstream::in);
+			// on regarde si le fichier existe
+			if (fileStream.good()) {
+				// il existe
+				if (fileStream.is_open()) {
+					// on peut lire le fichier, on l'ajoute au body
+					// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
+					std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
+											 (std::istreambuf_iterator<char>()    ) );
+
+					this->setBody(fileContent);
+					fileStream.close();
+				}
+			}
+		}
+		begin++;
+	}
+}
+
 const std::string &Response::getStatusCode () const
 {
 	return _statusCode;
@@ -261,12 +318,12 @@ void Response::setDefaultStatusCodes()
 	this->addError(301, "Moved Permanently", "");
 	this->addError(302, "Found", "");
 	this->addError(310, "Too many Redirects", "");
-	this->addError(400, "Bad request", "/server/bad_request.html");
-	this->addError(401, "Unauthorized", "/server/unauthorized.html");
-	this->addError(403, "Forbidden", "/server/forbidden.html");
-	this->addError(404, "Not found", "/server/NotFound.html");
-	this->addError(413, "Request Entity Too Large", "/server/NotFound.html");
-	this->addError(500, "Internal Server Error", "/server/server_error.html");
+	this->addError(400, "Bad request", "srcs/home/server/bad_request.html");
+	this->addError(401, "Unauthorized", "srcs/home/server/unauthorized.html");
+	this->addError(403, "Forbidden", "srcs/home/server/forbidden.html");
+	this->addError(404, "Not found", "srcs/home/server/NotFound.html");
+	this->addError(413, "Request Entity Too Large", "srcs/home/server/NotFound.html");
+	this->addError(500, "Internal Server Error", "srcs/home/server/server_error.html");
 	this->addError(501, "Not implemented", "");
 	this->addError(502, "Bad Gateway", "");
 	this->addError(503, "Service Unavailable", "");

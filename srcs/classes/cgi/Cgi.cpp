@@ -18,7 +18,7 @@ void	Cgi::execute(Client *client, Response &response)
 {
 	(void)client;
 	(void)response;
-	response.setBody("blablabla");
+//	response.setBody("blablabla");
 /*
 	int												pid;
 	int												pipe_fd[2];

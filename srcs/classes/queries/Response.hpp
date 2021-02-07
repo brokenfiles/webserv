@@ -35,12 +35,17 @@ public:
 	std::string stringify () const;
 	std::string currentDate ();
 	std::string toLower (std::string string);
-	void getHandler (Client *client);
 	void setDefaultHeaders (Client *client, ServerConfig &server);
 	bool isMethodValid (const std::string &method);
 	void setContentType (Client *client);
 	void setDefaultStatusCodes ();
 	void setDefaultExtensions ();
+
+	/*
+	 * Methods Handlers
+	 */
+	void getHandler (Client *client);
+	void putHandler (Client *client);
 
 	/*
 	 * Getters
@@ -66,6 +71,7 @@ public:
 	{
 		virtual const char *what () const throw();
 	};
+	void displayErrors ();
 };
 
 #endif

@@ -12,34 +12,32 @@
 
 Logger logger;
 
-int main(int ac, char **av, char **env)
+int main (int ac, char **av, char **env)
 {
-	Config config;
-	Parser parser;
-	Query query;
-    ServerManager serverManager;
+	(void) av;
+	(void) ac;
+	Config        config;
+	ServerManager serverManager;
 
-	try {
+	try
+	{
 		config.parseConfig("srcs/webserv.conf");
 		config.checkConfig();
-	} catch (const std::exception &exception) {
+	} catch (const std::exception &exception)
+	{
 		std::cerr << exception.what() << std::endl;
 		exit(1);
 	}
 
-	logger.warning("Don't forget to setup the server connexion properly \033[35;1m[srcs/includes/includes.h]", NO_PRINT_CLASS);
-	(void) av;
-	(void) ac;
+	try
+	{
+		serverManager.setup_sockets(config);
+		serverManager.run_servers(env);
+	}
+	catch (const std::exception &exception)
+	{
+		return (logger.error("[SERVER]: " + logger.to_string(exception.what()), NO_PRINT_CLASS, -1));
+	}
 
-    try
-    {
-        serverManager.setup_sockets(config);
-        serverManager.run_servers(env);
-    }
-    catch (const std::exception &exception)
-    {
-        return (logger.error("[SERVER]: " + logger.to_string(exception.what()), NO_PRINT_CLASS, -1));
-    }
-
-    return (0);
+	return (0);
 }
