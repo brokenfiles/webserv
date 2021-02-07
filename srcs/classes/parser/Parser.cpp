@@ -17,9 +17,16 @@ Request	Parser::parse(std::string strRequest)
 	//get frontLine of strRequest (Method + Path)
     std::string frontLine = strRequest.substr(0, strRequest.find('\n'));
 
-    this->fillMethod(req, frontLine);
-    this->fillPath(req, frontLine);
+    try
+    {
+        this->fillMethod(req, frontLine);
+    }
+    catch (const std::exception &e)
+    {
+        logger.error("[SERVER]: " + logger.to_string(e.what()), NO_PRINT_CLASS, -1);
 
+    }
+        this->fillPath(req, frontLine);
     //remove frontLine from strRequest (useless now because already parsed)
     strRequest.erase(0, frontLine.length() + 1);
 
@@ -38,7 +45,7 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
     std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
 
     //Check la reqMethod
-    for (size_t i = 0; i < methods->length(); i++)
+    for (size_t i = 0; i < 9; i++)
     {
         if (methods[i] == reqMethod)
         {

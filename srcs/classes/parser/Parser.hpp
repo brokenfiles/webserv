@@ -2,6 +2,7 @@
 #define WEBSERV_PARSER_HPP
 
 #include "../../../includes/includes.h"
+#include "../logger/Logger.hpp"
 #include "../queries/Request.hpp"
 #include <iostream>
 #include <string>
