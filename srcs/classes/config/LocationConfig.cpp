@@ -4,14 +4,36 @@
 
 #include "LocationConfig.hpp"
 
+LocationConfig::LocationConfig ()
+{}
+
+LocationConfig::LocationConfig (const LocationConfig &copy)
+{
+	*this = copy;
+}
+
+LocationConfig &LocationConfig::operator= (const LocationConfig &copy)
+{
+	this->configuration = copy.configuration;
+	return (*this);
+}
+
 std::vector<std::string> LocationConfig::getMethods()
 {
 	if (this->configuration.find("methods") != this->configuration.end()) {
 		return (explode(this->configuration["methods"], ", "));
 	}
 	std::vector<std::string> default_methods;
-	default_methods.push_back("get");
+//	default_methods.push_back("get");
 	return (default_methods);
+}
+
+std::string LocationConfig::getRawMethods()
+{
+	if (this->configuration.find("methods") != this->configuration.end()) {
+		return (this->configuration["methods"]);
+	}
+	return ("No methods found");
 }
 
 std::string LocationConfig::getRootDir() {
@@ -76,6 +98,11 @@ std::vector<std::string> LocationConfig::explode(const std::string& s, const std
 		v.push_back(buff);
 
 	return v;
+}
+
+std::map<std::string, std::string> &LocationConfig::getConfiguration ()
+{
+	return configuration;
 }
 
 std::ostream &operator<<(std::ostream &os, LocationConfig &location)

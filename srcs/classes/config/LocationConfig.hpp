@@ -11,8 +11,16 @@
 
 class LocationConfig
 {
-public:
+private:
 	std::map<std::string, std::string> configuration;
+
+public:
+
+	LocationConfig();
+
+	LocationConfig(const LocationConfig &copy);
+
+	LocationConfig &operator=(const LocationConfig &copy);
 
 	friend std::ostream &operator<<(std::ostream &os, LocationConfig &config);
 
@@ -31,6 +39,10 @@ public:
 	std::string getExtension();
 
 	std::string getCgiPath();
+
+	std::map<std::string, std::string> &getConfiguration ();
+
+	std::string getRawMethods ();
 };
 
 

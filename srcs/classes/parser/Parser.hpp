@@ -4,26 +4,35 @@
 #include "../../../includes/includes.h"
 #include "../queries/Request.hpp"
 #include <iostream>
+#include <string>
 #include <map>
 
 class Request;
 
 class Parser {
+
 	private:
-		//methodes qui recuperent les infos dans une requete
-		int 									_checkFormat(std::string query);
-		std::string 							getMethod(std::string query);
-		std::map<std::string, std::string>		getHeaders(std::string &query);
-		std::string 							getPath(std::string query, std::string method);
-		std::string 							getBody(std::string query, Request request);
+        void fillMethod(Request&, std::string&);
+        void fillPath(Request&, std::string&);
+        void fillHeader(Request&, std::string&);
+        void fillBody(Request&, std::string&);
+        void fillQueryString(Request&);
 
 	public:
 		Parser();
-		virtual ~Parser();
+		~Parser();
 
-		Request	parse(std::string input_query) throw(std::exception);
+        Request	parse(std::string strRequest);
+
+        class BadRequestMethod : public std::exception
+        {
+            public:
+                virtual const char* what() const throw()
+                {
+                    return ("Bad Request Method");
+                }
+        };
 };
 
 
-
-#endif //WEBSERV_PARSER_HPP
+#endif

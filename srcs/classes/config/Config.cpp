@@ -117,7 +117,7 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 								// si il est trouvé on enlève l'espace et le {
 								path = path.substr(0, nextSpace);
 								// on défini le path dans currentLocation
-								currentLocation.configuration["path"] = path;
+								currentLocation.getConfiguration()["path"] = path;
 							}
 						}
 					}
@@ -142,7 +142,7 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 						server.configuration.insert(pair);
 					// sinon ça veut dire qu'on est dans une location (scopeLevel = 2)
 					else
-						currentLocation.configuration.insert(pair);
+						currentLocation.getConfiguration().insert(pair);
 				} catch (const std::exception &e) {
 					std::cout << e.what() << std::endl;
 					exit(1);

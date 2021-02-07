@@ -1,98 +1,113 @@
 #include "Parser.hpp"
-#include <vector>
-#include <list>
 
-Parser::Parser(void) {}
-
-Parser::~Parser(void) {}
-
-int 		Parser::_checkFormat(std::string query)
+Parser::Parser(void)
 {
-	if (query.length() == 0)
-		return (0);
-	return (1);
+
 }
 
-std::string 	Parser::getMethod(std::string query)
+Parser::~Parser(void)
 {
-	std::list<std::string> allowedMethods;
 
-	allowedMethods.push_back("GET");
-	allowedMethods.push_back("HEAD");
-	allowedMethods.push_back("POST");
-	allowedMethods.push_back("PUT");
-	allowedMethods.push_back("DELETE");
-	allowedMethods.push_back("CONNECT");
-	allowedMethods.push_back("OPTIONS");
-	allowedMethods.push_back("TRACE");
-	allowedMethods.push_back("PATCH");
-
-	typedef std::list<std::string>::iterator iterator;
-	iterator begin = allowedMethods.begin();
-	while (begin != allowedMethods.end())
-	{
-		if (*begin == query.substr(0, query.find(' ')))
-			return (*begin);
-		begin++;
-	}
-	return (NULL);
 }
 
-std::map<std::string, std::string>	Parser::getHeaders(std::string &query)
+Request	Parser::parse(std::string strRequest)
 {
-	std::map<std::string, std::string>	map;
-	std::size_t							r = 0;
-	unsigned int 						tmp = 0;
+	Request req;
 
-	while (query.find('\n') != std::string::npos)
-	{
-		r = query.find('\n');
-		if (query.find('\n') == 1)
-			break ;
-		if (tmp > 0)
-			map[query.substr(0, query.find(':'))] = query.substr(query.find(':') + 2, r - 2 - query.find(':'));
-		query.erase(0, r + 1);
-		tmp++;
-	}
-	return (map);
+	//get frontLine of strRequest (Method + Path)
+    std::string frontLine = strRequest.substr(0, strRequest.find('\n'));
+
+    this->fillMethod(req, frontLine);
+    this->fillPath(req, frontLine);
+
+    //remove frontLine from strRequest (useless now because already parsed)
+    strRequest.erase(0, frontLine.length() + 1);
+
+    this->fillHeader(req, strRequest);
+    this->fillBody(req, strRequest);
+
+    //Parsing to get QueryString
+    this->fillQueryString(req);
+
+	return (req);
 }
 
-std::string 	Parser::getPath(std::string query, std::string method)
+void Parser::fillMethod(Request &req, std::string &frontLine)
 {
-	int 	i = 0;
+    std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
+    std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
 
-	query.erase(0, method.length() + 1);
-	i = query.find(' ');
-	return (query.substr(0, i));
+    //Check la reqMethod
+    for (size_t i = 0; i < methods->length(); i++)
+    {
+        if (methods[i] == reqMethod)
+        {
+            req.setMethod(reqMethod);
+            break;
+        }
+    }
+
+    //TODO (si request vide (ex: Telnet))
+    if (req.getMethod() == "")
+        throw BadRequestMethod();
 }
 
-std::string 	Parser::getBody(std::string query, Request request)
+void Parser::fillPath(Request &req, std::string &frontLine)
 {
-	query.erase(0, 2);
-	if (request.getMethod() == "POST")// && request.getHeaders().find("Content-Type")->second == "application/x-www-form-urlencoded")
-		request.setQueryString(query);
-	else
-		request.setQueryString("");
-	return (query);
+    //get full path (ex: /index.htlm?oui=ahahah)
+    size_t start = frontLine.find("/");
+    size_t path_length = frontLine.find(" ", start);
+
+    std::string fullPath = frontLine.substr(start, path_length - start);
+
+    req.setPath(fullPath);
 }
 
-Request	Parser::parse(std::string input_query) throw(std::exception)
+void Parser::fillHeader(Request& req, std::string& strRequest)
 {
-	Request			request;
-	size_t			nb = 0;
+    std::map<std::string, std::string> map;
 
-//	if (this->_checkFormat(input_query) == 0)
-//		throw std::invalid_argument("Bad format");
-	request.setMethod(getMethod(input_query));
-	request.setPath(getPath(input_query, request.getMethod()));
-	if (request.getMethod() == "GET")
-	{
-		nb = request.getPath().find('?', 0);
-		if (nb != std::string::npos)
-			request.setQueryString(request.getPath().substr(nb + 1, request.getPath().length() - nb - 1));
-		request.setPath(request.getPath().substr(0, nb));
-	}
-	request.setHeaders(getHeaders(input_query));
-	request.setBody(getBody(input_query, request));
-	return (request);
+    size_t x;
+
+    //récupère ligne par ligne, stock "key:value" dans map, et erase la ligne
+    while ((x = strRequest.find('\n')) != std::string::npos)
+    {
+        if (x == 1)
+        {
+            strRequest.erase(0, 2);
+            break;
+        }
+        std::string line = strRequest.substr(0, x);
+        map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 2 - line.find(':'));
+        strRequest.erase(0, x + 1);
+    }
+    req.setHeaders(map);
+}
+
+void Parser::fillBody(Request& req, std::string& strRequest)
+{
+    req.setBody(strRequest);
+}
+
+void Parser::fillQueryString(Request &req)
+{
+    size_t breakPoint;
+
+    if (req.getMethod() == "GET" && (breakPoint = req.getPath().find('?', 0)) != std::string::npos)
+    {
+        //On récupère dans setQueryString ce qu'il y a après le '?' (ex: GET /index.html?plop=plup), puis setPath sans le QueryString
+        req.setQueryString(req.getPath().substr(breakPoint + 1, req.getPath().length() - breakPoint - 1));
+        req.setPath(req.getPath().substr(0, breakPoint));
+    }
+    else if (req.getMethod() == "POST") // && request.getHeaders().find("Content-Type")->second == "application/x-www-form-urlencoded")
+    {
+        //POST donc QueryString = Body (must be check with tim)
+        req.setQueryString(req.getBody());
+    }
+    else
+    {
+        //Sinon pas de QueryString
+        req.setQueryString("");
+    }
+
 }

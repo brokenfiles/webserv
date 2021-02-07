@@ -112,16 +112,14 @@ void Response::setDefaultHeaders(std::map<std::string, std::string> &headers, Se
  */
 LocationConfig &Response::find_location(Client *client)
 {
-	std::list<LocationConfig> location_list = client->getServerConfig().getLocations();
-
-	for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
+	for (std::list<LocationConfig>::iterator ite = client->getServerConfig().getLocations().begin(); ite != client->getServerConfig().getLocations().end(); ite++)
 	{
-		if ((*ite).configuration["path"] == getDirName(client->getObjRequest().getPath()))
+		if ((*ite).getConfiguration()["path"] == getDirName(client->getObjRequest().getPath()))
 			return ((*ite));
 	}
-	for (std::list<LocationConfig>::iterator it = location_list.begin(); it != location_list.end(); it++)
+	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
 	{
-		if ((*it).configuration["path"] == "/")
+		if ((*it).getConfiguration()["path"] == "/")
 			return ((*it));
 	}
 	throw NoLocationException();
@@ -137,7 +135,6 @@ bool Response::isMethodValid(const std::string &method)
 	std::vector<std::string> methods = this->_location.getMethods();
 
 	for(std::vector<std::string>::iterator it = methods.begin(); it != methods.end(); it++) {
-		std::cout << "comparizon: " << this->toLower(*it) << " - " << this->toLower(method)<< std::endl;
 		if (this->toLower(*it) == this->toLower(method)) {
 			return (true);
 		}

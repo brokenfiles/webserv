@@ -90,12 +90,12 @@ std::map<std::string, std::string> Response::find_location(ServerConfig server)
 
     for (std::list<LocationConfig>::iterator ite = location_list.begin(); ite != location_list.end(); ite++)
     {
-        if ((*ite).configuration["path"] == getPath())
+        if ((*ite).getConfiguration()["path"] == getPath())
             return ((*ite).configuration);
 	}
 	for (std::list<LocationConfig>::iterator it = location_list.begin(); it != location_list.end(); it++)
 	{
-		if ((*it).configuration["path"] == "/")
+		if ((*it).getConfiguration() == "/")
 			return ((*it).configuration);
 	}
     return (location);
