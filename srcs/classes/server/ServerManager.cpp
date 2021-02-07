@@ -123,11 +123,11 @@ int ServerManager::run_servers(char **env)
                 std::string response = rep.sendResponse(client_curr);
 
 
-//                if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
-//                    return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-                if (send(client_curr->getSocket(), "cc", 2, 0) != (int) 2)
+                if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
                     return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+
+//                if (send(client_curr->getSocket(), response.c_str(), 2, 0) != (int) 2)
+//                    return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
                 client_curr->close_socket();
                 it = clients.erase(it);
