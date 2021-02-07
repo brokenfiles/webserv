@@ -69,16 +69,16 @@ std::string LocationConfig::getUploadDir() {
 	return ("");
 }
 
-std::string LocationConfig::getExtension() {
-	if (this->configuration.find("extension") != this->configuration.end()) {
-		return (this->configuration["extension"]);
+std::string LocationConfig::getCgiExtension() {
+	if (this->configuration.find("cgi_extension") != this->configuration.end()) {
+		return (this->configuration["cgi_extension"]);
 	}
 	return ("");
 }
 
-std::string LocationConfig::getCgiPath() {
-	if (this->configuration.find("cgi_path") != this->configuration.end()) {
-		return (this->configuration["cgi_path"]);
+std::string LocationConfig::getCgiBin() {
+	if (this->configuration.find("cgi_bin") != this->configuration.end()) {
+		return (this->configuration["cgi_bin"]);
 	}
 	return ("");
 }

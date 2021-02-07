@@ -41,6 +41,7 @@ class Cgi
 		void									setOutputBody(const std::string &outputBody);
 		unsigned int							getEnvNumber() const;
 		void									setEnvNumber(unsigned int envNumber);
+		static bool isCGI(Request request, LocationConfig location);
 
 		//utils functions
 		void				parse(std::string body, std::string path, Request request, char **envp);

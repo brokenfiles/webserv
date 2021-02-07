@@ -122,6 +122,10 @@ void Response::setDefaultHeaders(Client *client, ServerConfig &server)
 	this->_headers["Server"] = "Webserv";
 }
 
+/**
+ * Définie le content type par rapport à l'extension du fichier
+ * @param client
+ */
 void Response::setContentType(Client *client)
 {
 	std::string path = client->getObjRequest().getDefaultPath(this->_location);
@@ -174,6 +178,11 @@ bool Response::isMethodValid(const std::string &method)
 	return (false);
 }
 
+/**
+ * retourne le chemin avec un slash
+ * @param path
+ * @return
+ */
 std::string Response::getPathWithSlash(std::string path) {
 	if (path.size() > 0 && path[path.size() - 1] != '/') {
 		return (path += '/');

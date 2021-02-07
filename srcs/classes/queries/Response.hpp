@@ -6,6 +6,7 @@
 #include "../client/Client.hpp"
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
+#include "../cgi/Cgi.hpp"
 
 class Client;
 

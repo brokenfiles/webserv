@@ -38,9 +38,9 @@ public:
 
 	std::string getDefaultDir();
 
-	std::string getExtension();
+	std::string getCgiExtension();
 
-	std::string getCgiPath();
+	std::string getCgiBin();
 
 	std::string getRawMethods ();
 

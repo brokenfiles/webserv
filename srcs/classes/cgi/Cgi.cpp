@@ -14,6 +14,30 @@ Cgi::~Cgi()
 
 }
 
+/**
+ * Cette fonction renvoie si la location contient un CGI, que la requête nécessite un appel vers un CGI
+ * Et que le CGI est valide
+ * @param request
+ * @param location
+ * @return oui si la location contient un CGI valide et que la requête appelle un CGI
+ */
+bool Cgi::isCGI (Request request, LocationConfig location)
+{
+	std::string cgiBin = location.getCgiBin(), cgiExtension = location.getCgiExtension();
+	if (!cgiBin.empty() && !cgiExtension.empty()) {
+		std::string path = request.getDefaultPath(location);
+		size_t dotIndex = path.rfind('.');
+		if (dotIndex != std::string::npos) {
+			std::string extension = path.substr(dotIndex, path.size() - dotIndex);
+			/* on check si le cgibin existe */
+			std::ifstream file(cgiBin.c_str(), std::ifstream::in);
+			if (file.good() && file.is_open())
+				return (cgiExtension == extension);
+		}
+	}
+	return (false);
+}
+
 void Cgi::setEnv(const std::map<std::string, std::string> &env)
 {
 	_env = env;
