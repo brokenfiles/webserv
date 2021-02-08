@@ -40,15 +40,14 @@ public:
 	void setContentType (Client *client);
 	void setDefaultStatusCodes ();
 	void setDefaultExtensions ();
-
 	void replace(std::string &fileContent, std::string replace, std::string newString);
 
-
-        /*
+	/*
 	 * Methods Handlers
 	 */
 	void getHandler (Client *client);
 	void putHandler (Client *client);
+	void deleteHandler (Client *client);
 
 	/*
 	 * Getters

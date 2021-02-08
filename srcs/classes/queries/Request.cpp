@@ -28,6 +28,8 @@ Request &Request::operator=(const Request& copy)
     if (this != &copy)
     {
         this->_path = copy._path;
+        this->_body = copy._body;
+        this->_headers = copy._headers;
         this->_method = copy._method;
         this->_queryString = copy._queryString;
     }
