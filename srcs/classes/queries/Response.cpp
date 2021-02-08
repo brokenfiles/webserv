@@ -48,22 +48,26 @@ std::string Response::sendResponse(Client *client)
 		/* la méthode est invalide */
 		this->_statusCode = this->getMessageCode(401);
 	} else {
-		Cgi cgi;
-		/* la méthode est valide */
-		if (method == "get" || method == "head") {
-			this->getHandler(client);
-			if (method == "head")
-				this->setBody("");
-		} else if (method == "put") {
-			this->putHandler(client);
-		}
-		// execute CGIs
-		if (Cgi::isCGI(client->getObjRequest(), this->_location))
+		if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
+			/* la méthode est valide */
+			if (method == "get" || method == "head") {
+				this->getHandler(client);
+				if (method == "head")
+					this->setBody("");
+			} else if (method == "put") {
+				this->putHandler(client);
+			} else if (method == "delete") {
+				this->deleteHandler(client);
+			}
+		} else {
+			Cgi cgi;
+			// execute CGIs
 			cgi.execute(client, *this);
+		}
 	}
 	// display error codes
 	// si le premier char de l'erreur n'est pas égal à 2, c'est une erreur : afficher l'erreur
-	if (this->_statusCode[0] != '2') {
+	if (this->_statusCode.find("200") == std::string::npos) {
 		this->displayErrors();
 	}
 
@@ -77,7 +81,6 @@ std::string Response::sendResponse(Client *client)
 void Response::getHandler(Client *client)
 {
 	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
-//	std::cout << requestFile << std::endl;
 	// on ouvre in filestream
 	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
 	// on regarde si le fichier existe
@@ -103,28 +106,27 @@ void Response::getHandler(Client *client)
 
 void Response::putHandler(Client *client)
 {
-	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
-//	std::cout << requestFile << std::endl;
+	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
+	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
-	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
+	std::ofstream fileStream(requestFile.c_str());
 	// on regarde si le fichier existe
-	if (fileStream.good()) {
+	if (fileStream.is_open()) {
 		// il existe
-		if (fileStream.is_open()) {
-			// on peut lire le fichier, on l'ajoute au body
-			// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
-			std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
-									 (std::istreambuf_iterator<char>()    ) );
-
-			this->setBody(fileContent);
-			fileStream.close();
-		} else {
-			// le fichier est inaccessible on retourne une erreur 403 forbidden
-			this->_statusCode = getMessageCode(403);
-		}
+		fileStream << client->getObjRequest().getBody();
+		// on retourne un 204 si le fichier existait avant sinon un 201
+		this->_statusCode = getMessageCode(fileExists ? 204 : 201);
 	} else {
-		// il n'exite pas on retourne une erreur 404 not found
-		this->_statusCode = getMessageCode(404);
+		// il n'exite pas on retourne une erreur 401 unauthorized
+		this->_statusCode = getMessageCode(403);
+	}
+}
+
+void Response::deleteHandler(Client *client)
+{
+	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
+	if (std::remove(requestFile.c_str()) == 0) {
+
 	}
 }
 
@@ -331,6 +333,7 @@ void Response::setDefaultStatusCodes()
 	this->addError(200, "OK", "");
 	this->addError(201, "Created", "");
 	this->addError(202, "Accepted", "");
+	this->addError(204, "No Content", "");
 	this->addError(300, "Multiple Choices", "");
 	this->addError(301, "Moved Permanently", "");
 	this->addError(302, "Found", "");
