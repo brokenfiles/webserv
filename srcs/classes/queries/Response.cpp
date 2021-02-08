@@ -280,20 +280,37 @@ std::string Response::getDirName (const std::string& file)
 	return(fileSlash.substr(firstSlash, secondSlash - firstSlash));
 }
 
+void Response::replace(std::string &fileContent, std::string replace, std::string newString)
+{
+    size_t pos = 0;
+
+    while ((pos = fileContent.find(replace)) != std::string::npos)
+    {
+        fileContent.replace(pos, replace.length(), newString);
+        pos += newString.length();
+    }
+}
+
 void Response::displayErrors ()
 {
 	std::map<int, std::pair<std::string, std::string> >::iterator begin = this->_statusMessages.begin();
-	while (begin != this->_statusMessages.end()) {
-		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode) {
-			std::ifstream fileStream(begin->second.second.c_str(), std::ifstream::in);
+	while (begin != this->_statusMessages.end())
+	{
+		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode)
+		{
+			std::ifstream fileStream("srcs/home/server/ErrorTemplate.html", std::ifstream::in);
 			// on regarde si le fichier existe
-			if (fileStream.good()) {
+			if (fileStream.good())
+			{
 				// il existe
-				if (fileStream.is_open()) {
+				if (fileStream.is_open())
+				{
 					// on peut lire le fichier, on l'ajoute au body
 					// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
-					std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
-											 (std::istreambuf_iterator<char>()    ) );
+					std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ), (std::istreambuf_iterator<char>()));
+
+					this->replace(fileContent, "ErrorStatus", begin->second.first);
+					this->replace(fileContent, "ErrorCode", logger.to_string(begin->first));
 
 					this->setBody(fileContent);
 					fileStream.close();
@@ -321,10 +338,10 @@ void Response::setDefaultStatusCodes()
 	this->addError(400, "Bad request", "srcs/home/server/bad_request.html");
 	this->addError(401, "Unauthorized", "srcs/home/server/unauthorized.html");
 	this->addError(403, "Forbidden", "srcs/home/server/forbidden.html");
-	this->addError(404, "Not found", "srcs/home/server/NotFound.html");
+	this->addError(404, "Not Found", "srcs/home/server/NotFound.html");
 	this->addError(413, "Request Entity Too Large", "srcs/home/server/NotFound.html");
 	this->addError(500, "Internal Server Error", "srcs/home/server/server_error.html");
-	this->addError(501, "Not implemented", "");
+	this->addError(501, "Not Implemented", "");
 	this->addError(502, "Bad Gateway", "");
 	this->addError(503, "Service Unavailable", "");
 }

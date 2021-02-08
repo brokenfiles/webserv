@@ -41,7 +41,10 @@ public:
 	void setDefaultStatusCodes ();
 	void setDefaultExtensions ();
 
-	/*
+	void replace(std::string &fileContent, std::string replace, std::string newString);
+
+
+        /*
 	 * Methods Handlers
 	 */
 	void getHandler (Client *client);
