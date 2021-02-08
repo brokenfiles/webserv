@@ -54,11 +54,11 @@ public:
 	 * Getters
 	 */
 	const std::string &getStatusCode () const;
-	const std::map<int, std::pair<std::string, std::string> > &getStatusMessages () const;
+	std::map<int, std::pair<std::string, std::string> > &getStatusMessages ();
 	std::string getMessageCode (int code);
 	std::string getPathWithSlash (std::string path);
-	const std::map<std::string, std::string> &getContentTypes () const;
-	const LocationConfig &getLocation () const;
+	std::map<std::string, std::string> &getContentTypes ();
+	LocationConfig &getLocation ();
 	const std::string &getFileCode (int code);
 
 	/**

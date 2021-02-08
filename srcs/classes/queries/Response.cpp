@@ -1,5 +1,5 @@
-#include <lastlog.h>
 #include <algorithm>
+#include <sys/time.h>
 #include "Response.hpp"
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
@@ -393,17 +393,17 @@ void Response::addError (int code, const std::string &message, const std::string
 	this->setFileCode(code, file);
 }
 
-const std::map<int, std::pair<std::string, std::string> > &Response::getStatusMessages () const
+std::map<int, std::pair<std::string, std::string> > &Response::getStatusMessages ()
 {
 	return _statusMessages;
 }
 
-const std::map<std::string, std::string> &Response::getContentTypes () const
+std::map<std::string, std::string> &Response::getContentTypes ()
 {
 	return _contentTypes;
 }
 
-const LocationConfig &Response::getLocation () const
+LocationConfig &Response::getLocation ()
 {
 	return _location;
 }
