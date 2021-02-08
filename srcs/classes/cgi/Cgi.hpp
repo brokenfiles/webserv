@@ -21,8 +21,8 @@ class Response;
 class Cgi
 {
 private:
-        char                                **_metaVarArray;
-        char                                **_argv;
+        std::map<std::string, std::string>  _metaVarMap;
+        std::vector<std::string>            _argv;
         std::string                         _requestFile;
         std::string                         _cgiBin;
 public:
@@ -34,13 +34,9 @@ public:
 
 		//getters and setters
 		const std::string                       &getRequestFile() const;
-        char                                    **getArgv() const;
-        void                                    setArgv(char **argv);
         void                                    setRequestFile(const std::string &requestFile);
         void                                    setCgiBin(const std::string &cgiBin);
         const std::string                       &getCgiBin() const;
-        char                                    **getMetaVarArray() const;
-        void                                    setMetaVarArray(char **metaVarArray);
         static bool                             isCGI(Request request, LocationConfig location);
 
 		//meta var functions
@@ -48,8 +44,22 @@ public:
 		std::string			        setQueryString(std::string path);
 
     void addArgv(Response &response);
+
+    char **vecToArray(std::vector<std::string> &vec);
+
+    char **mapToArray(std::map<std::string, std::string> map);
 };
 
-char		*ft_strdup(const char *str);
+typedef struct s_execCGI
+{
+    int			pid;
+    int			pipe_fd[2];
+    int			outfd[2];
+    int			save_in;
+    int			save_out;
+    int         ret;
+    char 		buffer[BUFFER];
+    std::string	output;
+}               t_execCGI;
 
 #endif //WEBSERV_CGI_HPP
