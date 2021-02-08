@@ -24,9 +24,10 @@ Request	Parser::parse(std::string strRequest)
     catch (const std::exception &e)
     {
         logger.error("[SERVER]: " + logger.to_string(e.what()), NO_PRINT_CLASS, -1);
-
     }
-        this->fillPath(req, frontLine);
+    this->fillPath(req, frontLine);
+
+
     //remove frontLine from strRequest (useless now because already parsed)
     strRequest.erase(0, frontLine.length() + 1);
 
