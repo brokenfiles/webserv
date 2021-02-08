@@ -45,17 +45,16 @@ void	Cgi::execute(Client *client, Response &response)
 	save_out = dup(STDOUT_FILENO);
 	dup2(outfd[1], 1);
 	pid = fork();
-	if (pid == 0)
+    if (pid == 0)
 	{
-		close(outfd[1]);
+        close(outfd[1]);
 		dup2(outfd[0], 0);
 		dup2(pipe_fd[1], 1);
-		execve(getArgv()[0], getArgv(), getMetaVarArray());
+        execve(getArgv()[0], getArgv(), getMetaVarArray());
 	}
-	else
+	else if (pid > 0)
 	{
 		int 		ret;
-
 		close(outfd[0]);
 		if (client->getObjRequest().getMethod() == "POST" && !response.getBody().empty())
 			write(outfd[1], response.getBody().c_str(), response.getBody().length());
@@ -83,7 +82,6 @@ void Cgi::addArgv(Response &response)
 {
     //on crée un array et on le rempli avec les META-VARIABLES
     char** argv = new char*[3];
-
     for (int i = 0; i < 3; i++)
         argv[i] = new char;
     argv[0] = (char*)response.getLocation().getCgiBin().c_str();
