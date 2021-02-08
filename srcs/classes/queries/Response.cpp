@@ -414,6 +414,11 @@ LocationConfig &Response::getLocation ()
 	return _location;
 }
 
+void Response::setStatusCode(const std::string &statusCode)
+{
+	_statusCode = statusCode;
+}
+
 const char *Response::NoLocationException::what () const throw()
 {
 	return "Aucune location trouvée pour le serveur";

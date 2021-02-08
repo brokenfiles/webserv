@@ -22,8 +22,19 @@ Cgi::~Cgi()
  */
 void	Cgi::execute(Client *client, Response &response)
 {
-    //on set le nom du fichier qui doit etre executé dans le cgi
-    setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
+	//on set le nom du fichier qui doit etre executé dans le cgi
+	setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
+
+	// on ouvre in filestream
+	std::ifstream fileStream(getRequestFile().c_str());
+
+	// on regarde si le fichier existe
+	if (!fileStream.is_open())
+	{
+		// il n'exite pas on retourne une erreur 403
+		response.setStatusCode("404 Not Found");
+		return ;
+	}
 
     //on ajoute les META-VARIABLES
     addMetaVariables(client->getObjRequest(), response, client);
@@ -67,7 +78,7 @@ void	Cgi::execute(Client *client, Response &response)
 		close(var.outfd[1]);
 		close(var.pipe_fd[1]);
 
-		//on lit le reour du CGI et on le stock var.output
+		//on lit le retour du CGI et on le stock var.output
 		while ((var.ret = read(var.pipe_fd[0], &var.buffer, BUFFER - 1)) != 0)
 		{
             var.buffer[var.ret] = 0;
@@ -140,6 +151,8 @@ void Cgi::addMetaVariables(Request request, Response &response, Client *client)
 
 	//cette variable est necessaire pour lancer php-cgi
     this->_metaVarMap["REDIRECT_STATUS"] = "200";
+
+    //TODO gérer l'initialisation de variables dans la conf
 }
 
 /**
@@ -203,10 +216,6 @@ bool Cgi::isCGI (Request request, LocationConfig location)
 		}
 	}
 	return (false);
-}
-
-std::string		Cgi::setQueryString(std::string str) {
-	return (str);
 }
 
 const std::string &Cgi::getRequestFile() const {

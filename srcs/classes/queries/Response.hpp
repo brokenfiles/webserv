@@ -66,6 +66,7 @@ public:
 	void setMessageCode (int code, const std::string& message);
 	void setFileCode (int code, const std::string& file);
 	void addError (int code, const std::string &message, const std::string& file);
+	void setStatusCode(const std::string &statusCode);
 	/*
 	 * Exceptions
 	 */
