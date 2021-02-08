@@ -46,7 +46,7 @@ std::string Response::sendResponse(Client *client)
 	/* On check si la méthode est gérée par la location */
 	if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
-		this->_statusCode = this->getMessageCode(401);
+		this->_statusCode = this->getMessageCode(405);
 	} else {
 		if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
 			/* la méthode est valide */
@@ -117,7 +117,7 @@ void Response::putHandler(Client *client)
 		// on retourne un 204 si le fichier existait avant sinon un 201
 		this->_statusCode = getMessageCode(fileExists ? 204 : 201);
 	} else {
-		// il n'exite pas on retourne une erreur 401 unauthorized
+		// il n'exite pas on retourne une erreur 403
 		this->_statusCode = getMessageCode(403);
 	}
 }
@@ -126,7 +126,9 @@ void Response::deleteHandler(Client *client)
 {
 	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
 	if (std::remove(requestFile.c_str()) == 0) {
-
+		this->_statusCode = getMessageCode(200);
+	} else {
+		this->_statusCode = getMessageCode(404);
 	}
 }
 
@@ -338,12 +340,13 @@ void Response::setDefaultStatusCodes()
 	this->addError(301, "Moved Permanently", "");
 	this->addError(302, "Found", "");
 	this->addError(310, "Too many Redirects", "");
-	this->addError(400, "Bad request", "srcs/home/server/bad_request.html");
-	this->addError(401, "Unauthorized", "srcs/home/server/unauthorized.html");
-	this->addError(403, "Forbidden", "srcs/home/server/forbidden.html");
-	this->addError(404, "Not Found", "srcs/home/server/NotFound.html");
-	this->addError(413, "Request Entity Too Large", "srcs/home/server/NotFound.html");
-	this->addError(500, "Internal Server Error", "srcs/home/server/server_error.html");
+	this->addError(400, "Bad request", "");
+	this->addError(401, "Unauthorized", "");
+	this->addError(403, "Forbidden", "");
+	this->addError(404, "Not Found", "");
+	this->addError(405, "Method Not Allowed", "");
+	this->addError(413, "Request Entity Too Large", "");
+	this->addError(500, "Internal Server Error", "");
 	this->addError(501, "Not Implemented", "");
 	this->addError(502, "Bad Gateway", "");
 	this->addError(503, "Service Unavailable", "");
