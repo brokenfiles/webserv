@@ -19,7 +19,7 @@
 </header>
 <div class="content">
     <h5 class="titre"><?php echo 'get= ' . $_GET["salut"]?></h5>
-	<h5><?= phpinfo()?></h5>
+	<h5><?= var_dump(getenv())?></h5>
 </div>
 <script type="text/javascript" src="app.js"></script>
 </body>

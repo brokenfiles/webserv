@@ -18,12 +18,23 @@
 class Client;
 class Response;
 
+/**
+ * Cette classe gère l'execution des programes CGI
+ */
 class Cgi
 {
 private:
+
+		//une map contenant les variables d'environement passées au CGI lors de l'execution
         std::map<std::string, std::string>  _metaVarMap;
+
+		//un vector contenant le binaire à utiliser et le fichier à executer
         std::vector<std::string>            _argv;
+
+        //le fichier à executer
         std::string                         _requestFile;
+
+        //le binaire à utiliser pour l'execution
         std::string                         _cgiBin;
 public:
         Cgi();
@@ -41,15 +52,14 @@ public:
 
 		//meta var functions
         void addMetaVariables(Request request, Response &response, Client *pClient);
-		std::string			        setQueryString(std::string path);
+		void addArgv(Response &response);
+		char **vecToArray(std::vector<std::string> &vec);
+		char **mapToArray(std::map<std::string, std::string> &map);
 
-    void addArgv(Response &response);
-
-    char **vecToArray(std::vector<std::string> &vec);
-
-    char **mapToArray(std::map<std::string, std::string> &map);
 };
 
+
+//structure contenant toutes les variables necessaires à l'execution du CGI
 typedef struct s_execCGI
 {
     int			pid;

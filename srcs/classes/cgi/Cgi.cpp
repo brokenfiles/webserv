@@ -33,6 +33,7 @@ void	Cgi::execute(Client *client, Response &response)
 
 	t_execCGI   var;
 
+	//on recupere argv et les variables d'environement
     var.argv = vecToArray(this->_argv);
     var.metaVarArray = mapToArray(this->_metaVarMap);
 
@@ -41,10 +42,12 @@ void	Cgi::execute(Client *client, Response &response)
     var.save_in = dup(STDIN_FILENO);
     var.save_out = dup(STDOUT_FILENO);
     dup2(var.outfd[1], 1);
+
 	//on cree un nouveau processus
     var.pid = fork();
     if (var.pid == 0)
-	{   //processus fils
+	{
+    	//processus fils
         close(var.outfd[1]);
 		dup2(var.outfd[0], 0);
 		dup2(var.pipe_fd[1], 1);
@@ -75,6 +78,7 @@ void	Cgi::execute(Client *client, Response &response)
 		if (response.getLocation().getCgiExtension() == ".php")
 		  var.output.erase(0, 82);
 
+		//on remet STDIN et STDOUT sur leurs fd respectifs
 		dup2(var.save_in, STDIN_FILENO);
 		dup2(var.save_out, STDOUT_FILENO);
 
@@ -110,34 +114,32 @@ void Cgi::addArgv(Response &response)
  */
 void Cgi::addMetaVariables(Request request, Response &response, Client *client)
 {
-    this->_metaVarMap["PATH_INFO"] = getRequestFile();
-    this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
-    this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
-    this->_metaVarMap["REQUEST_URI"] = request.getPath();
-    this->_metaVarMap["QUERY_STRING"] = setQueryString(request.getQueryString());
+	this->_metaVarMap["AUTH_TYPE"] = "NULL";
+	this->_metaVarMap["CONTENT_LENGTH"] = response.getBody().length();
+	if (request.getHeaders().find("Content-Type") == request.getHeaders().end())
+		this->_metaVarMap["CONTENT_TYPE"] = "";
+	else
+		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
+	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
+	this->_metaVarMap["PATH_INFO"] = client->getServerConfig().getServerName() + ":" + Logger::to_string(client->getPort()) + getRequestFile();
+	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
+	this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
+	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
+	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
+	this->_metaVarMap["REQUEST_URI"] = getRequestFile();
+	if (request.getMethod() == "GET" && !request.getQueryString().empty())
+		this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
+	this->_metaVarMap["SCRIPT_NAME"] = getRequestFile();
+	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
+	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
+	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
+	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
+
+	this->_metaVarMap["REMOTE_IDENT"] = "login_user";
+	this->_metaVarMap["REMOTE_USER"] = "user";
+
+	//cette variable est necessaire pour lancer php-cgi
     this->_metaVarMap["REDIRECT_STATUS"] = "200";
-    this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
-    this->_metaVarMap["SERVER_NAME"] = "localhost";
-    this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getPort());
-    this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-    this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
-    this->_metaVarMap["REMOTE_ADDR"] = "127.0.0.1";
-    this->_metaVarMap["REMOTE_IDENT"] = "login_user";
-    this->_metaVarMap["REMOTE_USER"] = "user";
-    //this->_metaVarMap["HTTP_ACCEPT"] = request.getHeaders().at("Accept");
-    //this->_metaVarMap["HTTP_ACCEPT_LANGUAGE"] = request.getHeaders().at("Accept-Language");
-    //this->_metaVarMap["HTTP_USER_AGENT"] = request.getHeaders().at("User-Agent");
-    this->_metaVarMap["SCRIPT_NAME"] = request.getPath().substr(1, request.getPath().length() - 1);
-    if (request.getHeaders().find("Content-Type") == request.getHeaders().end())
-        this->_metaVarMap["CONTENT_TYPE"] = "";
-    else
-        this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
-    if (request.getHeaders().find("Content-Length") == request.getHeaders().end())
-        this->_metaVarMap["CONTENT_TYPE"] = "0";
-    else
-        this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(response.getBody().length());
-    if (request.getMethod() == "GET" && !this->_metaVarMap["QUERY_STRING"].empty())
-        this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
 }
 
 /**
