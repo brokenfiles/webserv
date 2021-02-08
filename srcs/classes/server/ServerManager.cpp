@@ -71,12 +71,25 @@ int ServerManager::run_servers(char **env)
     int higher_fd;
     fd_set fd_pool;
 
+    struct timeval timeout = { 10, 0 };
+
     while (1)
     {
         higher_fd = this->setup_fd(fd_pool);
 
-        if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
-            return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+        int x;
+
+        if ((x = select(higher_fd + 1, &fd_pool, NULL, NULL, &timeout)) <= 0)
+        {
+            if (x == 0)
+            {
+                std::cout << "TIMEOUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+                #include <stdlib.h>
+                exit(0);
+            }
+            else
+                return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+        }
 
         for (ServerManager::it_t serv_it = this->servers.begin(); serv_it != this->servers.end(); serv_it++)
         {
@@ -106,8 +119,8 @@ int ServerManager::run_servers(char **env)
                 {
                     if (ret_code == -2)
                     {
-                        client_curr->close_socket();
-                        it = clients.erase(it);
+//                        client_curr->close_socket();
+//                        it = clients.erase(it);
                         logger.notice(std::string("[SERVER]: Empty Request: Ejecting: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
                         continue;
                     }

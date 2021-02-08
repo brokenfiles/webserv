@@ -36,10 +36,8 @@ int Client::read_request(void)
         read = recv(this->getSocket(), buffer, BUFFER - 1, 0);
         if (read < 1)
         {
-            if (errno == EWOULDBLOCK || errno == EAGAIN)
+            if (errno == EWOULDBLOCK || errno == EAGAIN || read == 0)
                 return (-2);
-            else if (read == 0)
-                std::cout << "0 returned after recv" << std::endl;
             else
                 return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS,-1));
         }
