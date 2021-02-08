@@ -20,45 +20,34 @@ class Response;
 
 class Cgi
 {
-	private:
-		std::map<std::string, std::string>	_env;
-		std::string 						_type;
-		std::string							_input_body;
-		std::string							_output_body;
-		unsigned int						_env_number;
-
-	public:
-		Cgi();
+private:
+        char                                **_metaVarArray;
+        char                                **_argv;
+        std::string                         _requestFile;
+        std::string                         _cgiBin;
+public:
+        Cgi();
 		virtual ~Cgi();
 
 		//execute function
 		void		execute(Client *client, Response &response);
 
 		//getters and setters
-		std::map<std::string, std::string>		getEnv() const;
-		const std::string						&getType() const;
-		void									setType(const std::string &type);
-		void									setEnv(const std::map<std::string, std::string> &env);
-		const std::string						&getInputBody() const;
-		void									setInputBody(const std::string &inputBody);
-		const std::string						&getOutputBody() const;
-		void									setOutputBody(const std::string &outputBody);
-		unsigned int							getEnvNumber() const;
-		void									setEnvNumber(unsigned int envNumber);
-		static bool isCGI(Request request, LocationConfig location);
+		const std::string                       &getRequestFile() const;
+        char                                    **getArgv() const;
+        void                                    setArgv(char **argv);
+        void                                    setRequestFile(const std::string &requestFile);
+        void                                    setCgiBin(const std::string &cgiBin);
+        const std::string                       &getCgiBin() const;
+        char                                    **getMetaVarArray() const;
+        void                                    setMetaVarArray(char **metaVarArray);
+        static bool                             isCGI(Request request, LocationConfig location);
 
-		//utils functions
-		void				parse(std::string body, std::string path, Request request, char **envp);
-		void				freeAll(char **env, char **argv);
-		char**				convertArgv(Request request, std::string file);
+		//meta var functions
+		void				        addMetaVariables(Request request, Response &response);
+		std::string			        setQueryString(std::string path);
 
-		//env var functions
-		void				initEnv(char **envp, Request request);
-		void				addMetaVariables(std::map<std::string, std::string> *env, Request request);
-		std::string			setQueryString(std::string path);
-		char**				convertEnv(void);
-		void				print_env(void);
-
+    void addArgv(Response &response);
 };
 
 char		*ft_strdup(const char *str);
