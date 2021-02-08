@@ -26,21 +26,21 @@ void	Cgi::execute(Client *client, Response &response)
     setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
 
     //on ajoute les META-VARIABLES
-    addMetaVariables(client->getObjRequest(), response);
+    addMetaVariables(client->getObjRequest(), response, client);
 
     //on ajoute le nom du binaire et celui du fichier dans argv, qui sera passé au CGI dans un execve
     addArgv(response);
 
-    char            **argv = vecToArray(this->_argv);
-    char            **metaVarArray = mapToArray(this->_metaVarMap);
 	t_execCGI   var;
 
-	pipe(var.pipe_fd);
-	pipe(var.outfd);
+    var.argv = vecToArray(this->_argv);
+    var.metaVarArray = mapToArray(this->_metaVarMap);
+
+    pipe(var.pipe_fd);
+    pipe(var.outfd);
     var.save_in = dup(STDIN_FILENO);
     var.save_out = dup(STDOUT_FILENO);
-	dup2(var.outfd[1], 1);
-
+    dup2(var.outfd[1], 1);
 	//on cree un nouveau processus
     var.pid = fork();
     if (var.pid == 0)
@@ -50,7 +50,7 @@ void	Cgi::execute(Client *client, Response &response)
 		dup2(var.pipe_fd[1], 1);
 
 		//on execute le CGI
-        execve(argv[0], argv, metaVarArray);
+        execve(var.argv[0], var.argv, var.metaVarArray);
 	}
 	else if (var.pid > 0)
 	{
@@ -72,14 +72,20 @@ void	Cgi::execute(Client *client, Response &response)
 		}
 
 		//si on utilise php-cgi on coupe le debut de la sortie car php-cgi rajoute des infos qui se retrouvent dans la page html
-		if (response.getLocation().getCgiExtension() == "php")
-		  var.output.erase(0, 66);
+		if (response.getLocation().getCgiExtension() == ".php")
+		  var.output.erase(0, 82);
 
 		dup2(var.save_in, STDIN_FILENO);
 		dup2(var.save_out, STDOUT_FILENO);
 
 		//on remplace le body de la reponse par le retour du CGI
         response.setBody(var.output);
+
+        //on free l'array de variables d'environement
+        for (size_t i = 0; i < this->_metaVarMap.size(); ++i) {
+            free(var.metaVarArray[i]);
+        }
+        free(var.metaVarArray);
     }
 }
 
@@ -102,7 +108,7 @@ void Cgi::addArgv(Response &response)
  * elles sont stockées dans une map de la classe CGI
  * @param request : la requete faite par le client
  */
-void		Cgi::addMetaVariables(Request request, Response &response)
+void Cgi::addMetaVariables(Request request, Response &response, Client *client)
 {
     this->_metaVarMap["PATH_INFO"] = getRequestFile();
     this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
@@ -112,7 +118,7 @@ void		Cgi::addMetaVariables(Request request, Response &response)
     this->_metaVarMap["REDIRECT_STATUS"] = "200";
     this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
     this->_metaVarMap["SERVER_NAME"] = "localhost";
-    this->_metaVarMap["SERVER_PORT"] = Logger::to_string(PORT);
+    this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getPort());
     this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
     this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
     this->_metaVarMap["REMOTE_ADDR"] = "127.0.0.1";
@@ -155,19 +161,18 @@ char    **Cgi::vecToArray(std::vector<std::string> &vec)
  * @param map : la map a convertir
  * @return un array contenant les valeurs de la map
  */
-char    **Cgi::mapToArray(std::map<std::string, std::string> map)
+char    **Cgi::mapToArray(std::map<std::string, std::string> &map)
 {
-    char** env = new char*[map.size()];
-    std::string         tmp;
+    int												i = 0;
+    std::string										tmp;
+    char 											**env;
 
-    int i = 0;
-    for (std::map<std::string, std::string>::iterator ite = map.begin(); ite != map.end(); ite++)
+    if (!(env = (char**)malloc(sizeof(char*) * (map.size() + 1))))
+        return NULL;
+    for (std::map<std::string, std::string>::iterator it = this->_metaVarMap.begin(); it != this->_metaVarMap.end(); it++)
     {
-        tmp = "";
-        tmp.insert(0, ite->first);
-        tmp.insert(tmp.length(), "=");
-        tmp.insert(tmp.length(), ite->second);
-        env[i] = (char*)tmp.c_str();
+        tmp = "" + it->first + "=" + it->second;
+        env[i] = ft_strdup(tmp.c_str());
         i++;
     }
     env[i] = NULL;

@@ -40,14 +40,14 @@ public:
         static bool                             isCGI(Request request, LocationConfig location);
 
 		//meta var functions
-		void				        addMetaVariables(Request request, Response &response);
+        void addMetaVariables(Request request, Response &response, Client *pClient);
 		std::string			        setQueryString(std::string path);
 
     void addArgv(Response &response);
 
     char **vecToArray(std::vector<std::string> &vec);
 
-    char **mapToArray(std::map<std::string, std::string> map);
+    char **mapToArray(std::map<std::string, std::string> &map);
 };
 
 typedef struct s_execCGI
@@ -59,7 +59,11 @@ typedef struct s_execCGI
     int			save_out;
     int         ret;
     char 		buffer[BUFFER];
+    char        **argv;
+    char        **metaVarArray;
     std::string	output;
 }               t_execCGI;
+
+char		*ft_strdup(const char *str);
 
 #endif //WEBSERV_CGI_HPP
