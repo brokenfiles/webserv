@@ -32,7 +32,7 @@ void	Cgi::execute(Client *client, Response &response)
 	if (!fileStream.is_open())
 	{
 		// il n'exite pas on retourne une erreur 403
-		response.setStatusCode("404 Not Found");
+		response.setStatusCode(response.getMessageCode(404));
 		return ;
 	}
 
@@ -132,19 +132,26 @@ void Cgi::addMetaVariables(Request request, Response &response, Client *client)
 	else
 		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-	this->_metaVarMap["PATH_INFO"] = client->getServerConfig().getServerName() + ":" + Logger::to_string(client->getPort()) + getRequestFile();
+	this->_metaVarMap["PATH_INFO"] = request.getPath();
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
 	this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
+
+	std::cout << getRequestFile() << std::endl;
+	std::cout << request.getPath() << std::endl;
+
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
 	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
-	this->_metaVarMap["REQUEST_URI"] = getRequestFile();
+	this->_metaVarMap["REQUEST_URI"] = request.getPath();
 	if (request.getMethod() == "GET" && !request.getQueryString().empty())
 		this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
-	this->_metaVarMap["SCRIPT_NAME"] = getRequestFile();
+	this->_metaVarMap["SCRIPT_NAME"] = response.getLocation().getCgiBin();
 	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
 	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
 	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
+	this->_metaVarMap["HTTP_ACCEPT"] = "*/*";
+	this->_metaVarMap["HTTP_CONNECTION"] = "keep-alive";
+	this->_metaVarMap["HTTP_HOST"] = "localhost:8089";
 
 	this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
