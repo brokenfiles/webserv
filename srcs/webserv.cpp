@@ -12,18 +12,23 @@
 
 Logger logger;
 
-int main (int ac, char **av, char **env)
+int main (int ac, char **av)
 {
-	(void) av;
-	(void) ac;
 	Config        config;
-	ServerManager serverManager;
+    std::string configFile;
+    ServerManager serverManager;
+
+	if (ac == 2)
+        configFile = av[1];
+	else
+	    configFile = "srcs/webserv.conf";
 
 	try
 	{
-		config.parseConfig("srcs/webserv.conf");
+		config.parseConfig(configFile);
 		config.checkConfig();
-	} catch (const std::exception &exception)
+	}
+	catch (const std::exception &exception)
 	{
 		std::cerr << exception.what() << std::endl;
 		exit(1);
@@ -32,7 +37,7 @@ int main (int ac, char **av, char **env)
 	try
 	{
 		serverManager.setup_sockets(config);
-		serverManager.run_servers(env);
+		serverManager.run_servers();
 	}
 	catch (const std::exception &exception)
 	{

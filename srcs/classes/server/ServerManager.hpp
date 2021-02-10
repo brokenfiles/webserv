@@ -21,7 +21,7 @@ class ServerManager
 
         int setup_sockets(Config &conf);
         int setup_fd(fd_set &fd_pool);
-        int run_servers(char **env);
+        int run_servers();
 
         std::list<Server*>& getServerList();
 

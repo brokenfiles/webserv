@@ -39,13 +39,15 @@ class Client
 
         ServerConfig &getServerConfig();
 
-        bool isAvailable();
+        bool &isAvailable();
+        bool &isValidRequest();
 
         //setters
         void setRequest(std::string& request);
 
     private:
         bool connected;
+        bool validRequest;
 
         struct sockaddr_in client_addr;
         int socket;

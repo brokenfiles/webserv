@@ -4,6 +4,7 @@ Client::Client() : socket(-1), port(-1), ip(), _recvRequest()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
     this->connected = true;
+    this->validRequest = false;
 }
 
 Client::~Client()
@@ -43,6 +44,7 @@ int Client::read_request(void)
         recvCheck = true;
     }
 
+
     if (!(recvCheck) || read == 0)
     {
         this->connected = false;
@@ -52,8 +54,19 @@ int Client::read_request(void)
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
     }
 
+    std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
+    for (size_t i = 0; i < 9; i++)
+    {
+        size_t pos = keeper.find(methods[i].c_str(), 0, methods[i].size());
+        if (pos != std::string::npos)
+        {
+            logger.info("[SERVER]: Method " + methods[i] + " found, perform parsing.", NO_PRINT_CLASS);
+            this->validRequest = true;
+        }
+    }
+
     this->setRequest(keeper);
-    logger.info("[SERVER]: data received", NO_PRINT_CLASS);
+    logger.info("[SERVER]: Data received. Valid request: " + logger.to_string(this->validRequest) + ".", NO_PRINT_CLASS);
     this->printRequest();
 
     return (0);
@@ -116,9 +129,13 @@ ServerConfig &Client::getServerConfig()
 {
     return (serverConfig);
 }
-bool Client::isAvailable()
+bool &Client::isAvailable()
 {
-    return this->connected;
+    return (this->connected);
+}
+bool &Client::isValidRequest()
+{
+    return (this->validRequest);
 }
 
 
