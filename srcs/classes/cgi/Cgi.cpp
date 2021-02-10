@@ -60,7 +60,7 @@ void	Cgi::execute(Client *client, Response &response)
 	{
     	//processus fils
         close(var.outfd[1]);
-		dup2(var.outfd[0], 0);
+        dup2(var.outfd[0], 0);
 		dup2(var.pipe_fd[1], 1);
 
 		//on execute le CGI
@@ -68,7 +68,7 @@ void	Cgi::execute(Client *client, Response &response)
 	}
 	else if (var.pid > 0)
 	{
-	    //processus pere
+        //processus pere
 		close(var.outfd[0]);
 
 		//si c'est un requete POST et que la request contient un body, on ecrit ce body sur STDIN du processus fils
@@ -78,7 +78,7 @@ void	Cgi::execute(Client *client, Response &response)
 		close(var.outfd[1]);
 		close(var.pipe_fd[1]);
 
-		//on lit le retour du CGI et on le stock var.output
+        //on lit le retour du CGI et on le stock var.output
 		while ((var.ret = read(var.pipe_fd[0], &var.buffer, BUFFER - 1)) != 0)
 		{
             var.buffer[var.ret] = 0;
@@ -126,19 +126,17 @@ void Cgi::addArgv(Response &response)
 void Cgi::addMetaVariables(Request request, Response &response, Client *client)
 {
 	this->_metaVarMap["AUTH_TYPE"] = "NULL";
-	this->_metaVarMap["CONTENT_LENGTH"] = response.getBody().length();
-	if (request.getHeaders().find("Content-Type") == request.getHeaders().end())
-		this->_metaVarMap["CONTENT_TYPE"] = "";
-	else
+	if (!request.getBody().empty())
+	    this->_metaVarMap["CONTENT_LENGTH"] = request.getBody().length();
+	if (request.getHeaders().find("Content-Type") != request.getHeaders().end())
 		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
 	this->_metaVarMap["PATH_INFO"] = request.getPath();
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
-	this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
-
-	std::cout << getRequestFile() << std::endl;
-	std::cout << request.getPath() << std::endl;
-
+	if (request.getQueryString().empty())
+	    this->_metaVarMap["QUERY_STRING"] = "";
+	else
+	    this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
 	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
 	this->_metaVarMap["REQUEST_URI"] = request.getPath();
@@ -151,7 +149,7 @@ void Cgi::addMetaVariables(Request request, Response &response, Client *client)
 	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
 	this->_metaVarMap["HTTP_ACCEPT"] = "*/*";
 	this->_metaVarMap["HTTP_CONNECTION"] = "keep-alive";
-	this->_metaVarMap["HTTP_HOST"] = "localhost:8089";
+	this->_metaVarMap["HTTP_HOST"] = "localhost:8080";
 
 	this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
