@@ -3,6 +3,7 @@
 Client::Client() : socket(-1), port(-1), ip(), _recvRequest()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
+    this->connected = true;
 }
 
 Client::~Client()
@@ -27,24 +28,34 @@ Client &Client::operator=(const Client &copy)
 int Client::read_request(void)
 {
     char buffer[BUFFER];
-    int read = BUFFER - 1;
     std::string keeper("");
+    bool recvCheck(false);
+    int read;
 
-    while (read == (BUFFER - 1))
+//    c->resetTimeOut();
+
+    memset((void*)buffer, 0, BUFFER);
+
+    while ((read = recv(this->getSocket(), buffer, BUFFER, 0)) > 0)
     {
-        memset(buffer, 0, BUFFER);
-        read = recv(this->getSocket(), buffer, BUFFER - 1, 0);
-        if (read < 1)
-        {
-            if (errno == EWOULDBLOCK || errno == EAGAIN || read == 0)
-                return (-2);
-            else
-                return (logger.error("[SERVER]: Could'nt read request: " + std::string(strerror(errno)), NO_PRINT_CLASS,-1));
-        }
+        buffer[read] = '\0';
         keeper += buffer;
+        recvCheck = true;
     }
+
+    if (!(recvCheck) || read == 0)
+    {
+        this->connected = false;
+        if (read == 0)
+            return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
+        else if (recvCheck == false)
+            return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
+    }
+
     this->setRequest(keeper);
     logger.info("[SERVER]: data received", NO_PRINT_CLASS);
+    this->printRequest();
+
     return (0);
 }
 
@@ -104,6 +115,10 @@ Request &Client::getObjRequest()
 ServerConfig &Client::getServerConfig()
 {
     return (serverConfig);
+}
+bool Client::isAvailable()
+{
+    return this->connected;
 }
 
 

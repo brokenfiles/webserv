@@ -46,6 +46,7 @@ int ServerManager::setup_fd(fd_set &fd_pool)
 {
     int higher_fd;
 
+
     FD_ZERO(&fd_pool);
     higher_fd = -1;
 
@@ -71,25 +72,22 @@ int ServerManager::run_servers(char **env)
     int higher_fd;
     fd_set fd_pool;
 
-//    struct timeval timeout = { 10, 0 };
+    fd_set read_pool;
+    fd_set write_pool;
+
+    FD_ZERO(&read_pool);
+    FD_ZERO(&write_pool);
 
     while (1)
     {
         higher_fd = this->setup_fd(fd_pool);
 
-        int x;
-
-        if ((x = select(higher_fd + 1, &fd_pool, NULL, NULL, NULL)) < 0)
+        if (select(higher_fd + 1, &fd_pool, NULL, NULL, NULL) < 0)
         {
-            if (x == 0)
-            {
-                std::cout << "TIMEOUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-//                #include <stdlib.h>
-//                exit(0);
-            }
-            else
-                return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+            return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
         }
+
+
 
         for (ServerManager::it_t serv_it = this->servers.begin(); serv_it != this->servers.end(); serv_it++)
         {
@@ -97,15 +95,17 @@ int ServerManager::run_servers(char **env)
             if (FD_ISSET(server_curr->getServerSocket(), &fd_pool))
             {
                 Client *newClient = new Client();
+                newClient->getServerConfig() = server_curr->getServerConfig();
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
-                newClient->getServerConfig() = server_curr->getServerConfig();
 
-                logger.notice("[SERVER]: New Client connexion: " + logger.to_string(newClient->getSocket()),
-                              NO_PRINT_CLASS);
+//                FD_SET(newClient->getSocket(), &fd_backup);
+
+                logger.notice("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()), NO_PRINT_CLASS);
                 clients.push_front(newClient);
             }
         }
+        std::cout << "cul\n";
 
         for (std::list<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
         {
@@ -114,39 +114,46 @@ int ServerManager::run_servers(char **env)
 
             if (FD_ISSET(client_curr->getSocket(), &fd_pool))
             {
-                int ret_code;
-                if ((ret_code = client_curr->read_request()) < 0)
+                int rcode = 0;
+
+                if ((rcode = client_curr->read_request()) < 0)
                 {
-                    if (ret_code == -2)
+                    if (rcode == -1)
                     {
-//                        client_curr->close_socket();
-//                        it = clients.erase(it);
-//                        logger.notice(std::string("[SERVER]: Empty Request: Ejecting: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
-                        break;
+                        FD_CLR(client_curr->getSocket(), &fd_pool);
+                        client_curr->close_socket();
+                        it = clients.erase(it);
+                        logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
                     }
-                    throw ReadClientSocket();
+                    continue;
                 }
 
-                client_curr->printRequest();
-                Request req(client_curr->getStringRequest());
-                Response rep;
+                try
+                {
+                    Request req(client_curr->getStringRequest());
+                    Response rep;
 
-                client_curr->getObjRequest() = req;
+                    client_curr->getObjRequest() = req;
 
-                std::string response = rep.sendResponse(client_curr);
+                    std::string response = rep.sendResponse(client_curr);
+                    if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
+                        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+                }
+                catch (const std::exception &e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
 
-
-                if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
-                    return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-//                if (send(client_curr->getSocket(), response.c_str(), 2, 0) != (int) 2)
-//                    return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
-                client_curr->close_socket();
-                it = clients.erase(it);
-
-                logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
+                if (!client_curr->isAvailable())
+                {
+                    FD_CLR(client_curr->getSocket(), &fd_pool);
+                    client_curr->close_socket();
+                    it = clients.erase(it);
+                    logger.notice(std::string("[SERVER]: Disconnecting from client sock: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
+                }
             }
+            else
+                logger.warning(std::string("[SERVER]: Client Loop: FD NOT SET"), NO_PRINT_CLASS);
         }
     }
 }

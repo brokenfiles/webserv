@@ -23,6 +23,8 @@ class ServerManager
         int setup_fd(fd_set &fd_pool);
         int run_servers(char **env);
 
+        std::list<Server*>& getServerList();
+
         class SetupSocketError : public std::exception
         {
             public:
@@ -59,10 +61,8 @@ class ServerManager
                 }
         };
 
-
-        std::list<Server*>& getServerList();
-
     private:
+
         std::list<Server*> servers;
         std::list<Client*> clients;
 };
