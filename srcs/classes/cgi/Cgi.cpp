@@ -54,7 +54,7 @@ void	Cgi::execute(Client *client, Response &response)
     var.save_out = dup(STDOUT_FILENO);
     dup2(var.outfd[1], 1);
 
-	//on cree un nouveau processus
+	//on fork le processus en 2
     var.pid = fork();
     if (var.pid == 0)
 	{
@@ -65,6 +65,7 @@ void	Cgi::execute(Client *client, Response &response)
 
 		//on execute le CGI
         execve(var.argv[0], var.argv, var.metaVarArray);
+        close(var.outfd[0]);
 	}
 	else if (var.pid > 0)
 	{
@@ -74,10 +75,9 @@ void	Cgi::execute(Client *client, Response &response)
 		//si c'est un requete POST et que la request contient un body, on ecrit ce body sur STDIN du processus fils
 		//if (client->getObjRequest().getMethod() == "post" && !response.getBody().empty())
 		//{
-		    std::cerr << client->getObjRequest().getBody() << std::endl;
-            write(var.outfd[1], client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().length());
-            write(var.outfd[1], reinterpret_cast<const void *>(EOF), 1);
-            //}
+		write(var.outfd[1], client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().length());
+		write(var.outfd[1], (const void*)EOF, 1);
+        //}
 
 		close(var.outfd[1]);
 		close(var.pipe_fd[1]);
@@ -105,6 +105,7 @@ void	Cgi::execute(Client *client, Response &response)
             free(var.metaVarArray[i]);
         }
         free(var.metaVarArray);
+        close(var.pipe_fd[0]);
     }
 }
 
@@ -130,9 +131,7 @@ void Cgi::addArgv(Response &response)
 void Cgi::addMetaVariables(Response &response, Client *client)
 {
 	this->_metaVarMap["AUTH_TYPE"] = "NULL";
-	if (!client->getObjRequest().getBody().empty())
-	    this->_metaVarMap["CONTENT_LENGTH"] = client->getObjRequest().getBody().length();
-    this->_metaVarMap["CONTENT_LENGTH"] = "9";//client->getObjRequest().getBody().length();
+	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(client->getObjRequest().getBody().size());
     if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
 		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
@@ -140,8 +139,9 @@ void Cgi::addMetaVariables(Response &response, Client *client)
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
 	if (client->getObjRequest().getQueryString().empty())
 	    this->_metaVarMap["QUERY_STRING"] = "";
-	else
+	else if (client->getObjRequest().getMethod() == "get")
 	    this->_metaVarMap["QUERY_STRING"] = client->getObjRequest().getQueryString();
+	this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
 	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
 	this->_metaVarMap["REQUEST_URI"] = client->getObjRequest().getPath();
@@ -159,7 +159,7 @@ void Cgi::addMetaVariables(Response &response, Client *client)
     if (client->getObjRequest().getHeaders().find("User-Agent") != client->getObjRequest().getHeaders().end())
         this->_metaVarMap["HTTP_USER_AGENT"] = client->getObjRequest().getHeaders().at("User-Agent");
     if (client->getObjRequest().getHeaders().find("Host") != client->getObjRequest().getHeaders().end())
-        this->_metaVarMap["HTTP_HOST"] = "localhost:8080";//client->getObjRequest().getHeaders().at("Host");
+        this->_metaVarMap["HTTP_HOST"] = client->getObjRequest().getHeaders().at("Host");
     this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
 
