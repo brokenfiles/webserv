@@ -18,9 +18,11 @@
     </div>
 </header>
 <div class="content">
-    <h5 class="titre"><?php echo 'post= ' . $_POST["name"]?></h5>
-    <p><?php var_dump(getenv())?></p>
-</div>
+<form method='post' action='index.php'>
+    <input type='text' name='name'>
+    <input type='submit'>
+</form>
+></div>
 <script type="text/javascript" src="app.js"></script>
 </body>
 </html>

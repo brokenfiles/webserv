@@ -51,7 +51,7 @@ public:
         static bool                             isCGI(Request request, LocationConfig location);
 
 		//meta var functions
-        void addMetaVariables(Request request, Response &response, Client *pClient);
+        void addMetaVariables(Response &response, Client *pClient);
 		void addArgv(Response &response);
 		char **vecToArray(std::vector<std::string> &vec);
 		char **mapToArray(std::map<std::string, std::string> &map);

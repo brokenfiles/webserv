@@ -22,7 +22,7 @@ Cgi::~Cgi()
  */
 void	Cgi::execute(Client *client, Response &response)
 {
-	//on set le nom du fichier qui doit etre executé dans le cgi
+    //on set le nom du fichier qui doit etre executé dans le cgi
 	setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
 
 	// on ouvre in filestream
@@ -37,7 +37,7 @@ void	Cgi::execute(Client *client, Response &response)
 	}
 
     //on ajoute les META-VARIABLES
-    addMetaVariables(client->getObjRequest(), response, client);
+    addMetaVariables(response, client);
 
     //on ajoute le nom du binaire et celui du fichier dans argv, qui sera passé au CGI dans un execve
     addArgv(response);
@@ -72,8 +72,12 @@ void	Cgi::execute(Client *client, Response &response)
 		close(var.outfd[0]);
 
 		//si c'est un requete POST et que la request contient un body, on ecrit ce body sur STDIN du processus fils
-		if (client->getObjRequest().getMethod() == "POST" && !response.getBody().empty())
-			write(var.outfd[1], response.getBody().c_str(), response.getBody().length());
+		//if (client->getObjRequest().getMethod() == "post" && !response.getBody().empty())
+		//{
+		    std::cerr << client->getObjRequest().getBody() << std::endl;
+            write(var.outfd[1], client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().length());
+            write(var.outfd[1], reinterpret_cast<const void *>(EOF), 1);
+            //}
 
 		close(var.outfd[1]);
 		close(var.pipe_fd[1]);
@@ -123,35 +127,40 @@ void Cgi::addArgv(Response &response)
  * elles sont stockées dans une map de la classe CGI
  * @param request : la requete faite par le client
  */
-void Cgi::addMetaVariables(Request request, Response &response, Client *client)
+void Cgi::addMetaVariables(Response &response, Client *client)
 {
 	this->_metaVarMap["AUTH_TYPE"] = "NULL";
-	if (!request.getBody().empty())
-	    this->_metaVarMap["CONTENT_LENGTH"] = request.getBody().length();
-	if (request.getHeaders().find("Content-Type") != request.getHeaders().end())
-		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
+	if (!client->getObjRequest().getBody().empty())
+	    this->_metaVarMap["CONTENT_LENGTH"] = client->getObjRequest().getBody().length();
+    this->_metaVarMap["CONTENT_LENGTH"] = "9";//client->getObjRequest().getBody().length();
+    if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
+		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-	this->_metaVarMap["PATH_INFO"] = request.getPath();
+	this->_metaVarMap["PATH_INFO"] = client->getObjRequest().getPath();
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
-	if (request.getQueryString().empty())
+	if (client->getObjRequest().getQueryString().empty())
 	    this->_metaVarMap["QUERY_STRING"] = "";
 	else
-	    this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
+	    this->_metaVarMap["QUERY_STRING"] = client->getObjRequest().getQueryString();
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
-	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
-	this->_metaVarMap["REQUEST_URI"] = request.getPath();
-	if (request.getMethod() == "GET" && !request.getQueryString().empty())
-		this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
+	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
+	this->_metaVarMap["REQUEST_URI"] = client->getObjRequest().getPath();
+	if (client->getObjRequest().getMethod() == "GET" && !client->getObjRequest().getQueryString().empty())
+		this->_metaVarMap["REQUEST_URI"] += "?" + client->getObjRequest().getQueryString();
 	this->_metaVarMap["SCRIPT_NAME"] = response.getLocation().getCgiBin();
 	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
 	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
 	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
-	this->_metaVarMap["HTTP_ACCEPT"] = "*/*";
-	this->_metaVarMap["HTTP_CONNECTION"] = "keep-alive";
-	this->_metaVarMap["HTTP_HOST"] = "localhost:8080";
-
-	this->_metaVarMap["REMOTE_IDENT"] = "login_user";
+    if (client->getObjRequest().getHeaders().find("Accept") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_ACCEPT"] = client->getObjRequest().getHeaders().at("Accept");
+    if (client->getObjRequest().getHeaders().find("Connection") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_CONNECTION"] = client->getObjRequest().getHeaders().at("Connection");
+    if (client->getObjRequest().getHeaders().find("User-Agent") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_USER_AGENT"] = client->getObjRequest().getHeaders().at("User-Agent");
+    if (client->getObjRequest().getHeaders().find("Host") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_HOST"] = "localhost:8080";//client->getObjRequest().getHeaders().at("Host");
+    this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
 
 	//cette variable est necessaire pour lancer php-cgi
