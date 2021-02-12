@@ -48,6 +48,7 @@ int Client::read_request(void)
     if (!(recvCheck) || read == 0)
     {
         this->connected = false;
+        this->validRequest = false;
         if (read == 0)
             return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
         else if (recvCheck == false)

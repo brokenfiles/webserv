@@ -8,6 +8,7 @@
 #include "../queries/Response.hpp"
 #include "Server.hpp"
 #include <list>
+#include <stack>
 
 class ServerManager
 {
@@ -20,7 +21,7 @@ class ServerManager
         ServerManager &operator=(const ServerManager &copy);
 
         int setup_sockets(Config &conf);
-        int setup_fd(fd_set &fd_pool);
+        int setup_fd();
         int run_servers();
 
         std::list<Server*>& getServerList();
@@ -62,6 +63,13 @@ class ServerManager
         };
 
     private:
+
+        fd_set read_pool;
+        fd_set write_pool;
+        fd_set read_backup;
+        fd_set write_backup;
+
+        std::list<int> fd_av;
 
         std::list<Server*> servers;
         std::list<Client*> clients;
