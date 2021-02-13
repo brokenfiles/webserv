@@ -144,6 +144,7 @@ std::string 	Response::stringify() const
 	string = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
 		string += it->first + ": " + it->second + "\n";
+	string += getCookies();
 	string += "\r\n";
 	string += this->getBody();
 
@@ -177,9 +178,9 @@ void Response::setContentType(Client *client)
 	std::string reqExtension = path.substr(index, path.size() - path.rfind('.'));
 
 	if (this->_contentTypes.find(reqExtension) != this->_contentTypes.end()) {
-		this->_headers["Content-Type"] = this->_contentTypes[reqExtension];
+		this->_headers["Content-type"] = this->_contentTypes[reqExtension];
 	} else {
-		this->_headers["Content-Type"] = "text/html";
+		this->_headers["Content-type"] = "text/html";
 	}
 }
 

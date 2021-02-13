@@ -21,7 +21,7 @@ int main (int ac, char **av)
 	if (ac == 2)
         configFile = av[1];
 	else
-	    configFile = "srcs/webserv.conf";
+	    configFile = "conf/webserv.conf";
 
 	try
 	{
