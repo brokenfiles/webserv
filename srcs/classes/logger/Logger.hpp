@@ -18,7 +18,8 @@ enum LogType
     WARNING,
     NOTICE,
     ERROR,
-    SUCCESS
+    SUCCESS,
+    CONNECT
 };
 
 class NoPrintClass {
@@ -41,7 +42,6 @@ class Logger
 {
 
     private:
-        // si vrai on ne print rien, autrement on print les logs
         bool silent;
 
     public:
@@ -65,6 +65,16 @@ class Logger
             this->silent = logger.silent;
         }
 
+        void silence_mode(bool x)
+        {
+            silent = x;
+        }
+
+        bool isSilent()
+        {
+            return (silent);
+        }
+
         template<class Cls>
         int info(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
         {
@@ -75,6 +85,12 @@ class Logger
         int warning(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
         {
             return this->message(WARNING, message, print_class, return_value);
+        }
+
+        template<class Cls>
+        int connect(const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
+        {
+            return this->message(CONNECT, message, print_class, return_value);
         }
 
         template<class Cls>
@@ -98,10 +114,8 @@ class Logger
         template<class Cls>
         int message(LogType type, const std::string &message, Cls print_class, int return_value = DEFAULT_RETURN)
         {
-            if (this->silent)
-            {
+            if (this->silent && type == NOTICE)
                 return return_value;
-            }
 
             std::string prefix    = this->get_prefix(type);
             std::string timestamp = this->get_current_timestamp();
@@ -172,6 +186,10 @@ class Logger
             else if (type == ERROR)
             {
                 return "\033[31m[ERROR]";
+            }
+            else if (type == CONNECT)
+            {
+                return "\033[1;35m[CONNECT]";
             }
             else
             {

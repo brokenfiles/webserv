@@ -210,6 +210,7 @@ char    **Cgi::vecToArray(std::vector<std::string> &vec)
  * @param map : la map a convertir
  * @return un array contenant les valeurs de la map
  */
+
 char    **Cgi::mapToArray(std::map<std::string, std::string> &map)
 {
     int												i = 0;

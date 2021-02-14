@@ -7,9 +7,6 @@
 #include "../srcs/classes/client/Client.hpp"
 #include "classes/config/Config.hpp"
 
-#define TRUE 1
-#define FALSE 0
-
 Logger logger;
 
 int main (int ac, char **av)
@@ -17,11 +14,25 @@ int main (int ac, char **av)
 	Config        config;
     std::string configFile;
     ServerManager serverManager;
+    std::string intput;
 
 	if (ac == 2)
         configFile = av[1];
 	else
 	    configFile = "conf/webserv.conf";
+
+	logger.warning("Run Webserv in silent mode? : [y\\n]", NO_PRINT_CLASS);
+    std::getline(std::cin, intput);
+    if (intput == "n" || intput == "N")
+    {
+        logger.notice("SILENT MODE: OFF", NO_PRINT_CLASS);
+        logger.silence_mode(false);
+    }
+    else
+    {
+        logger.notice("SILENT MODE: ON", NO_PRINT_CLASS);
+        logger.silence_mode(true);
+    }
 
 	try
 	{

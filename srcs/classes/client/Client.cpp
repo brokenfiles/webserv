@@ -61,13 +61,13 @@ int Client::read_request(void)
         size_t pos = keeper.find(methods[i].c_str(), 0, methods[i].size());
         if (pos != std::string::npos)
         {
-            logger.info("[SERVER]: Method " + methods[i] + " found, perform parsing.", NO_PRINT_CLASS);
+            logger.notice("[SERVER]: Method " + methods[i] + " found, perform parsing.", NO_PRINT_CLASS);
             this->validRequest = true;
         }
     }
 
     this->setRequest(keeper);
-    logger.info("[SERVER]: Data received. Valid request: " + logger.to_string(this->validRequest) + ".", NO_PRINT_CLASS);
+    logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".", NO_PRINT_CLASS);
     this->printRequest();
 
     return (0);
@@ -82,9 +82,12 @@ int Client::send_response(const std::string &req)
 
 void Client::printRequest(void)
 {
-    std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
-    std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
-    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+    if (!logger.isSilent())
+    {
+        std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
+        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
+        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+    }
 }
 
 void Client::close_socket()
