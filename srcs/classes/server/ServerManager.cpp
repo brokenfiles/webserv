@@ -164,7 +164,6 @@ int ServerManager::run_servers()
 
                 if (client_curr->isValidRequest())
                     FD_SET(client_curr->getSocket(), &this->write_backup);
-                break;
             }
             else
                 logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - read_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"), NO_PRINT_CLASS);
@@ -185,7 +184,6 @@ int ServerManager::run_servers()
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);
-                break;
             }
             else
                 logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - write_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"), NO_PRINT_CLASS);
