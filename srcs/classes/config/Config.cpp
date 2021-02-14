@@ -166,7 +166,10 @@ std::pair<std::string, std::string> Config::getPair(const std::string &line) {
 	std::vector<std::string> parts = explode(line, ' ');
 	if (parts.size() == 2) {
 		// on check si il y a bien le point virgule sinon on throw une erreur
+		if (parts[1].at(parts[1].size() - 1) == '\r')
+			parts[1].erase(parts[1].size() - 1, 1);
 		if (parts[1].at(parts[1].size() - 1) != ';') {
+			std::cerr << "Ligne en cause : " << line << std::endl;
 			throw NoSemicolonException();
 		}
 		// suppression du point virgule
@@ -238,9 +241,6 @@ void Config::checkConfig() {
 			throw MissingFieldException();
 		}
 		if (server.configuration.find("server_name") == server.configuration.end()) {
-			throw MissingFieldException();
-		}
-		if (server.configuration.find("root") == server.configuration.end()) {
 			throw MissingFieldException();
 		}
 		begin++;

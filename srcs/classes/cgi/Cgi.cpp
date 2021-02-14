@@ -103,10 +103,12 @@ void	Cgi::execute(Client *client, Response &response)
 				std::map<std::string, std::string>::const_iterator begin = query.getHeaders().begin();
 				std::map<std::string, std::string> headers = response.getHeaders();
 				if (query.getHeaders().find("Status") != query.getHeaders().end()) {
+					std::cerr << "cgi status set : " << query.getHeaders().at("Status") << std::endl;
 					response.setStatusCode(query.getHeaders().at("Status"));
 					begin++;
 				}
 				for (; begin != query.getHeaders().end(); begin++) {
+					std::cerr << "cgi header set : " << begin->first << " = " << begin->second << std::endl;
 					headers[begin->first] = begin->second;
 				}
 				response.setHeaders(headers);
