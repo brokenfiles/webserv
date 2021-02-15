@@ -8,8 +8,6 @@
 #include "../config/ServerConfig.hpp"
 #include "../cgi/Cgi.hpp"
 
-class Client;
-
 class Response : public Query
 {
 private:

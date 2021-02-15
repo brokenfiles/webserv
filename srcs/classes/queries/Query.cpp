@@ -43,3 +43,30 @@ const std::map<std::string, std::string> &Query::getHeaders () const
 {
 	return _headers;
 }
+
+std::string Query::getCookies () const
+{
+	std::string cookieStr = "";
+
+	std::list<std::string>::const_iterator begin = this->_cookies.begin();
+	while (begin != this->_cookies.end()) {
+		cookieStr += "Set-Cookie: " + *begin + "\n";
+		begin++;
+	}
+	return cookieStr;
+}
+
+void Query::addCookie (const std::string &cookie)
+{
+	this->_cookies.push_back(cookie);
+}
+
+void Query::setCookies (std::list<std::string> cookies)
+{
+	this->_cookies = cookies;
+}
+
+std::list<std::string> Query::getRawCookies ()
+{
+	return this->_cookies;
+}

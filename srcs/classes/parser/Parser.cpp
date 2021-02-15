@@ -40,6 +40,15 @@ Request	Parser::parse(std::string strRequest)
 	return (req);
 }
 
+Query	Parser::parseResponse(std::string strResponse)
+{
+	Query req;
+
+	this->fillHeader(req, strResponse);
+
+	return (req);
+}
+
 void Parser::fillMethod(Request &req, std::string &frontLine)
 {
     std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
@@ -71,7 +80,7 @@ void Parser::fillPath(Request &req, std::string &frontLine)
     req.setPath(fullPath);
 }
 
-void Parser::fillHeader(Request& req, std::string& strRequest)
+void Parser::fillHeader(Query& req, std::string& strRequest)
 {
     std::map<std::string, std::string> map;
 
@@ -86,7 +95,11 @@ void Parser::fillHeader(Request& req, std::string& strRequest)
             break;
         }
         std::string line = strRequest.substr(0, x);
-        map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 2 - line.find(':'));
+        if (line.substr(0, line.find(':')) == "Set-Cookie") {
+        	req.addCookie(line.substr(line.find(':') + 2, x - 2 - line.find(':')));
+        } else {
+			map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 2 - line.find(':'));
+		}
         strRequest.erase(0, x + 1);
     }
     req.setHeaders(map);
@@ -101,16 +114,11 @@ void Parser::fillQueryString(Request &req)
 {
     size_t breakPoint;
 
-    if (req.getMethod() == "GET" && (breakPoint = req.getPath().find('?', 0)) != std::string::npos)
+    if ((breakPoint = req.getPath().find('?', 0)) != std::string::npos)
     {
         //On récupère dans setQueryString ce qu'il y a après le '?' (ex: GET /index.html?plop=plup), puis setPath sans le QueryString
         req.setQueryString(req.getPath().substr(breakPoint + 1, req.getPath().length() - breakPoint - 1));
         req.setPath(req.getPath().substr(0, breakPoint));
-    }
-    else if (req.getMethod() == "POST") // && request.getHeaders().find("Content-Type")->second == "application/x-www-form-urlencoded")
-    {
-        //POST donc QueryString = Body (must be check with tim)
-        req.setQueryString(req.getBody());
     }
     else
     {

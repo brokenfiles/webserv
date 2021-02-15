@@ -16,48 +16,48 @@
 
 class Client
 {
-    public:
-        Client();
-        ~Client();
-        Client(const Client &copy);
-        Client &operator=(const Client &copy);
+public:
+	Client();
+	~Client();
+	Client(const Client &copy);
+	Client &operator=(const Client &copy);
 
-        int send_response(const std::string &req);
-        int read_request(void);
-        void close_socket();
-        void printRequest(void);
+	int send_response(const std::string &req);
+	int read_request(void);
+	void close_socket();
+	void printRequest(void);
 
-        //getters
-        struct sockaddr_in &getAddr();
-        int &getSocket();
+	//getters
+	struct sockaddr_in &getAddr();
+	int &getSocket();
 
-        std::string &getStringRequest();
-        Request& getObjRequest();
+	std::string &getStringRequest();
+	Request& getObjRequest();
 
-        std::string &getIP();
-        int &getPort();
+	std::string &getIP();
+	int &getPort();
 
-        ServerConfig &getServerConfig();
+	ServerConfig &getServerConfig();
 
-        bool &isAvailable();
-        bool &isValidRequest();
+	bool &isAvailable();
+	bool &isValidRequest();
 
-        //setters
-        void setRequest(std::string& request);
+	//setters
+	void setRequest(std::string& request);
 
-    private:
-        bool connected;
-        bool validRequest;
+private:
+	bool connected;
+	bool validRequest;
 
-        struct sockaddr_in client_addr;
-        int socket;
+	struct sockaddr_in client_addr;
+	int socket;
 
-        int port;
-        std::string ip;
-        std::string _recvRequest;
+	int port;
+	std::string ip;
+	std::string _recvRequest;
 
-        Request request;
-        ServerConfig serverConfig;
+	Request request;
+	ServerConfig serverConfig;
 };
 
 #endif

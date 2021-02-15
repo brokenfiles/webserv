@@ -22,22 +22,26 @@ Cgi::~Cgi()
  */
 void	Cgi::execute(Client *client, Response &response)
 {
-	//on set le nom du fichier qui doit etre executé dans le cgi
+    //on set le nom du fichier qui doit etre executé dans le cgi
 	setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
 
-	// on ouvre in filestream
-	std::ifstream fileStream(getRequestFile().c_str());
-
-	// on regarde si le fichier existe
-	if (!fileStream.is_open())
+	//si le fichier demandé est un .bla on execute le cgi meme si il n'existe pas
+	if (response.getLocation().getCgiExtension() != ".bla")
 	{
-		// il n'exite pas on retourne une erreur 403
-		response.setStatusCode("404 Not Found");
-		return ;
+		// on ouvre in filestream
+		std::ifstream fileStream(getRequestFile().c_str());
+
+		// on regarde si le fichier existe
+		if (!fileStream.is_open())
+		{
+			// il n'exite pas on retourne une erreur 404
+			response.setStatusCode(response.getMessageCode(404));
+			return;
+		}
 	}
 
     //on ajoute les META-VARIABLES
-    addMetaVariables(client->getObjRequest(), response, client);
+    addMetaVariables(response, client);
 
     //on ajoute le nom du binaire et celui du fichier dans argv, qui sera passé au CGI dans un execve
     addArgv(response);
@@ -54,41 +58,63 @@ void	Cgi::execute(Client *client, Response &response)
     var.save_out = dup(STDOUT_FILENO);
     dup2(var.outfd[1], 1);
 
-	//on cree un nouveau processus
+	//on fork le processus en 2
     var.pid = fork();
     if (var.pid == 0)
 	{
     	//processus fils
         close(var.outfd[1]);
-		dup2(var.outfd[0], 0);
+        dup2(var.outfd[0], 0);
 		dup2(var.pipe_fd[1], 1);
 
 		//on execute le CGI
         execve(var.argv[0], var.argv, var.metaVarArray);
+        close(var.outfd[0]);
 	}
 	else if (var.pid > 0)
 	{
-	    //processus pere
+        //processus pere
 		close(var.outfd[0]);
 
-		//si c'est un requete POST et que la request contient un body, on ecrit ce body sur STDIN du processus fils
-		if (client->getObjRequest().getMethod() == "POST" && !response.getBody().empty())
-			write(var.outfd[1], response.getBody().c_str(), response.getBody().length());
+		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
+		if (client->getObjRequest().getMethod() == "POST")
+			write(var.outfd[1], client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().length());
 
 		close(var.outfd[1]);
 		close(var.pipe_fd[1]);
 
-		//on lit le retour du CGI et on le stock var.output
+        //on lit le retour du CGI et on le stock var.output
 		while ((var.ret = read(var.pipe_fd[0], &var.buffer, BUFFER - 1)) != 0)
 		{
             var.buffer[var.ret] = 0;
             var.output += var.buffer;
 		}
 
-		//si on utilise php-cgi on coupe le debut de la sortie car php-cgi rajoute des infos qui se retrouvent dans la page html
-		if (response.getLocation().getCgiExtension() == ".php")
-		  var.output.erase(0, 82);
+		//on récupère le code de retour du CGI et des headers
+		if (response.getLocation().getCgiExtension() != ".bla" || client->getObjRequest().getMethod() != "GET")
+		{	//TODO récupérer le status code et les eventuels headers
+			Parser parser;
+			std::string tmp = var.output.substr(0, var.output.find("\r\n\r\n", 0));
+			var.output.erase(0, var.output.find("\r\n\r\n", 0));
+			Query query = parser.parseResponse(tmp + "\n");
 
+			response.setCookies(query.getRawCookies());
+			if (!query.getHeaders().empty()) {
+				std::map<std::string, std::string>::const_iterator begin = query.getHeaders().begin();
+				std::map<std::string, std::string> headers = response.getHeaders();
+				if (query.getHeaders().find("Status") != query.getHeaders().end()) {
+					std::cerr << "cgi status set : " << query.getHeaders().at("Status") << std::endl;
+					response.setStatusCode(query.getHeaders().at("Status"));
+					begin++;
+				}
+				for (; begin != query.getHeaders().end(); begin++) {
+					std::cerr << "cgi header set : " << begin->first << " = " << begin->second << std::endl;
+					headers[begin->first] = begin->second;
+				}
+				response.setHeaders(headers);
+			}
+
+		}
 		//on remet STDIN et STDOUT sur leurs fd respectifs
 		dup2(var.save_in, STDIN_FILENO);
 		dup2(var.save_out, STDOUT_FILENO);
@@ -101,6 +127,7 @@ void	Cgi::execute(Client *client, Response &response)
             free(var.metaVarArray[i]);
         }
         free(var.metaVarArray);
+        close(var.pipe_fd[0]);
     }
 }
 
@@ -123,30 +150,39 @@ void Cgi::addArgv(Response &response)
  * elles sont stockées dans une map de la classe CGI
  * @param request : la requete faite par le client
  */
-void Cgi::addMetaVariables(Request request, Response &response, Client *client)
+void Cgi::addMetaVariables(Response &response, Client *client)
 {
 	this->_metaVarMap["AUTH_TYPE"] = "NULL";
-	this->_metaVarMap["CONTENT_LENGTH"] = response.getBody().length();
-	if (request.getHeaders().find("Content-Type") == request.getHeaders().end())
-		this->_metaVarMap["CONTENT_TYPE"] = "";
-	else
-		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
-	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-	this->_metaVarMap["PATH_INFO"] = client->getServerConfig().getServerName() + ":" + Logger::to_string(client->getPort()) + getRequestFile();
-	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
-	this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
-	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
-	this->_metaVarMap["REQUEST_URI"] = getRequestFile();
-	if (request.getMethod() == "GET" && !request.getQueryString().empty())
-		this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
-	this->_metaVarMap["SCRIPT_NAME"] = getRequestFile();
+	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
+	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(client->getObjRequest().getBody().size());
+    if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
+		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second.substr(0, client->getObjRequest().getHeaders().find("Content-Type")->second.length() - 1);
+	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
+	this->_metaVarMap["PATH_INFO"] = client->getObjRequest().getPath();
+	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
+	if (client->getObjRequest().getQueryString().empty())
+	    this->_metaVarMap["QUERY_STRING"] = "";
+	else
+	    this->_metaVarMap["QUERY_STRING"] = client->getObjRequest().getQueryString();
+	this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
+	this->_metaVarMap["REQUEST_URI"] = client->getObjRequest().getPath();
+	if (!client->getObjRequest().getQueryString().empty())
+		this->_metaVarMap["REQUEST_URI"] += "?" + client->getObjRequest().getQueryString();
+	this->_metaVarMap["SCRIPT_NAME"] = response.getLocation().getCgiBin();
 	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
 	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
 	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
-
-	this->_metaVarMap["REMOTE_IDENT"] = "login_user";
+	if (client->getObjRequest().getHeaders().find("Cookie") != client->getObjRequest().getHeaders().end())
+		this->_metaVarMap["HTTP_COOKIE"] = client->getObjRequest().getHeaders().at("Cookie");
+    if (client->getObjRequest().getHeaders().find("Accept") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_ACCEPT"] = client->getObjRequest().getHeaders().at("Accept");
+    if (client->getObjRequest().getHeaders().find("Connection") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_CONNECTION"] = client->getObjRequest().getHeaders().at("Connection");
+    if (client->getObjRequest().getHeaders().find("User-Agent") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_USER_AGENT"] = client->getObjRequest().getHeaders().at("User-Agent");
+    this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
 
 	//cette variable est necessaire pour lancer php-cgi
