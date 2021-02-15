@@ -78,7 +78,7 @@ int ServerManager::setup_fd()
     stream << "FD SERVER SOCKET [";
     for (it_t serv = servers.begin(); serv != servers.end(); serv++)
     {
-        if (!(serv._M_node->_M_next == servers.end()._M_node))
+        if (serv._M_node->_M_next != servers.end()._M_node)
             stream << (*serv)->getServerSocket() << ", ";
         else
             stream << (*serv)->getServerSocket();
@@ -90,7 +90,7 @@ int ServerManager::setup_fd()
     stream << "FD CLIENT READ_POOL [";
     for (size_t i = 0; i < read_stack.size(); i++)
     {
-        if (!((i + 1) == read_stack.size()))
+        if ((i + 1) != read_stack.size())
             stream << read_stack[i] << ", ";
         else
             stream << read_stack[i];
@@ -102,7 +102,7 @@ int ServerManager::setup_fd()
     stream << "FD CLIENT WRITE_POOL [";
     for (size_t i = 0; i < write_stack.size(); i++)
     {
-        if (!((i + 1) == write_stack.size()))
+        if ((i + 1) != write_stack.size())
             stream << write_stack[i] << ", ";
         else
             stream << write_stack[i];

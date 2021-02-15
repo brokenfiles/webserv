@@ -51,9 +51,15 @@ int Client::read_request(void)
         this->validRequest = false;
         if (read == 0)
             return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
-        else if (recvCheck == false)
+        else
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
     }
+
+    this->setRequest(keeper);
+    if (this->getStringRequest().empty())
+        return (-1);
+
+    std::cout << this->getStringRequest().size() << std::endl;
 
     std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
     for (size_t i = 0; i < 9; i++)
@@ -67,6 +73,10 @@ int Client::read_request(void)
     }
 
     this->setRequest(keeper);
+
+    if (this->getStringRequest().empty())
+        this->isAvailable() = false;
+
     logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".", NO_PRINT_CLASS);
     this->printRequest();
 
