@@ -56,6 +56,8 @@ std::string Response::sendResponse(Client *client)
 					this->setBody("");
 			} else if (method == "put") {
 				this->putHandler(client);
+			} else if (method == "post") {
+				this->postHandler(client);
 			} else if (method == "delete") {
 				this->deleteHandler(client);
 			}
@@ -117,6 +119,27 @@ void Response::putHandler(Client *client)
 		fileStream << client->getObjRequest().getBody();
 		// on retourne un 200 si le fichier existait avant sinon un 201
 		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
+		fileStream.close();
+	} else {
+		// il n'exite pas on retourne une erreur 403
+		this->_statusCode = getMessageCode(403);
+	}
+}
+
+void Response::postHandler(Client *client)
+{
+	std::string requestFile = this->_location.getUploadDir() +
+							  Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
+	bool fileExists = std::ifstream(requestFile.c_str()).good();
+	// on ouvre in filestream
+	std::ofstream fileStream(requestFile.c_str());
+	// on regarde si le fichier existe
+	if (fileStream.is_open()) {
+		// il existe
+		fileStream << client->getObjRequest().getBody();
+		// on retourne un 200 si le fichier existait avant sinon un 201
+		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
+		fileStream.close();
 	} else {
 		// il n'exite pas on retourne une erreur 403
 		this->_statusCode = getMessageCode(403);
