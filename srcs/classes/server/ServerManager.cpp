@@ -119,7 +119,7 @@ int ServerManager::run_servers()
 
     while (1)
     {
-//        usleep(500000);
+        usleep(1000000);
         higher_fd = this->setup_fd();
 
         if (select(higher_fd + 1, &this->read_pool, &this->write_pool, NULL, NULL) < 0)
@@ -179,6 +179,12 @@ int ServerManager::run_servers()
                     client_curr->getObjRequest() = req;
 
                     std::string response = rep.sendResponse(client_curr);
+
+                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
+                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+
+
                     if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + req.getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
