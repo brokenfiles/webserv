@@ -119,6 +119,7 @@ int ServerManager::run_servers()
 
     while (1)
     {
+//        usleep(500000);
         higher_fd = this->setup_fd();
 
         if (select(higher_fd + 1, &this->read_pool, &this->write_pool, NULL, NULL) < 0)
@@ -180,7 +181,7 @@ int ServerManager::run_servers()
                     std::string response = rep.sendResponse(client_curr);
                     if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + req.getPath(), NO_PRINT_CLASS);
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + req.getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);

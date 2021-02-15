@@ -303,7 +303,7 @@ void Response::displayErrors ()
 	{
 		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode)
 		{
-			std::ifstream fileStream("srcs/home/server/ErrorTemplate.html", std::ifstream::in);
+			std::ifstream fileStream("www/server/ErrorTemplate.html", std::ifstream::in);
 			// on regarde si le fichier existe
 			if (fileStream.good())
 			{

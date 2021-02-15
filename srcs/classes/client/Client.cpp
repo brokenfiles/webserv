@@ -55,12 +55,6 @@ int Client::read_request(void)
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
     }
 
-    this->setRequest(keeper);
-    if (this->getStringRequest().empty())
-        return (-1);
-
-    std::cout << this->getStringRequest().size() << std::endl;
-
     std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
     for (size_t i = 0; i < 9; i++)
     {
@@ -74,10 +68,11 @@ int Client::read_request(void)
 
     this->setRequest(keeper);
 
-    if (this->getStringRequest().empty())
-        this->isAvailable() = false;
 
-    logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".", NO_PRINT_CLASS);
+//    if (!this->isValidRequest())
+//        return (-1);
+
+    logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
     this->printRequest();
 
     return (0);
@@ -92,12 +87,12 @@ int Client::send_response(const std::string &req)
 
 void Client::printRequest(void)
 {
-    if (!logger.isSilent())
-    {
+//    if (!logger.isSilent())
+//    {
         std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
         std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
         std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-    }
+//    }
 }
 
 void Client::close_socket()
