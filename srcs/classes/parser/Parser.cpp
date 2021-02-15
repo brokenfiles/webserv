@@ -54,6 +54,8 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
     std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
     std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
 
+    std::cout << "-------" << reqMethod << "-------" << std::endl;
+
     //Check la reqMethod
     for (size_t i = 0; i < 9; i++)
     {
@@ -64,7 +66,6 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
         }
     }
 
-    //TODO (si request vide (ex: Telnet))
     if (req.getMethod() == "")
         throw BadRequestMethod();
 }

@@ -110,8 +110,6 @@ void Response::putHandler(Client *client)
 			Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
 	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
-    std::cout << requestFile << std::endl;
-
     std::ofstream fileStream(requestFile.c_str());
 	// on regarde si le fichier existe
 	if (fileStream.is_open()) {
