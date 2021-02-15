@@ -50,10 +50,7 @@ const std::string &Request::getPath() const
 std::string Request::getDefaultPath(LocationConfig &location)
 {
 	std::string rootDir = location.getRootDir();
-	std::string rawPath = _path;
-	if (location.getPath() != "/") {
-		rawPath.erase(rawPath.find(location.getPath()), location.getPath().size());
-	}
+	std::string rawPath = getPathWithoutLocation(_path, location);
 
 	std::string path = rootDir + rawPath;
 	struct stat path_stat;
@@ -66,6 +63,15 @@ std::string Request::getDefaultPath(LocationConfig &location)
 			path += "/" + location.getIndex();
 	}
 	return path;
+}
+
+std::string Request::getPathWithoutLocation(const std::string &rawPath, LocationConfig &location) {
+	std::string path = rawPath;
+
+	if (location.getPath() != "/") {
+		path.erase(path.find(location.getPath()), location.getPath().size());
+	}
+	return (path);
 }
 
 void Request::setMethod(const std::string &method)

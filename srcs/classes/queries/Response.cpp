@@ -106,7 +106,8 @@ void Response::getHandler(Client *client)
 
 void Response::putHandler(Client *client)
 {
-	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
+	std::string requestFile = this->_location.getUploadDir() +
+			Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
 	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
     std::cout << requestFile << std::endl;
