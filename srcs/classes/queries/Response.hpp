@@ -45,6 +45,7 @@ public:
 	 */
 	void getHandler (Client *client);
 	void putHandler (Client *client);
+	void postHandler (Client *client);
 	void deleteHandler (Client *client);
 
 	/*
