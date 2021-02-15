@@ -106,7 +106,8 @@ void Response::getHandler(Client *client)
 
 void Response::putHandler(Client *client)
 {
-	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
+	std::string requestFile = this->_location.getUploadDir() +
+			Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
 	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
 	std::ofstream fileStream(requestFile.c_str());
@@ -114,8 +115,8 @@ void Response::putHandler(Client *client)
 	if (fileStream.is_open()) {
 		// il existe
 		fileStream << client->getObjRequest().getBody();
-		// on retourne un 204 si le fichier existait avant sinon un 201
-		this->_statusCode = getMessageCode(fileExists ? 204 : 201);
+		// on retourne un 200 si le fichier existait avant sinon un 201
+		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
 	} else {
 		// il n'exite pas on retourne une erreur 403
 		this->_statusCode = getMessageCode(403);
