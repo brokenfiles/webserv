@@ -57,7 +57,6 @@ int Client::read_request(void)
 
     if (keeper.find("\r\n\r\n") != std::string::npos)
     {
-        logger.success("", NO_PRINT_CLASS);
         std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
         for (size_t i = 0; i < 9; i++)
         {
@@ -69,14 +68,15 @@ int Client::read_request(void)
             }
         }
         this->setRequest(keeper);
+        this->printRequest();
         this->_recvRequest_backup.clear();
+        logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
+        return (0);
     }
     else
         this->_recvRequest_backup = keeper;
 
-    logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
-    this->printRequest();
-
+    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".", NO_PRINT_CLASS);
     return (0);
 }
 

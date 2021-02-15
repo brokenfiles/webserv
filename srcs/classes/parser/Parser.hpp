@@ -34,6 +34,8 @@ public:
 			return ("Bad Request Method");
 		}
 	};
+
+        void parseHeader(std::string keeper);
 };
 
 #endif
