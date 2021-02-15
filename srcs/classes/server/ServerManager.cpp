@@ -78,7 +78,7 @@ int ServerManager::setup_fd()
     stream << "FD SERVER SOCKET [";
     for (it_t serv = servers.begin(); serv != servers.end(); serv++)
     {
-        if (!(serv._M_node->_M_next == servers.end()._M_node))
+        if (serv._M_node->_M_next != servers.end()._M_node)
             stream << (*serv)->getServerSocket() << ", ";
         else
             stream << (*serv)->getServerSocket();
@@ -90,7 +90,7 @@ int ServerManager::setup_fd()
     stream << "FD CLIENT READ_POOL [";
     for (size_t i = 0; i < read_stack.size(); i++)
     {
-        if (!((i + 1) == read_stack.size()))
+        if ((i + 1) != read_stack.size())
             stream << read_stack[i] << ", ";
         else
             stream << read_stack[i];
@@ -102,7 +102,7 @@ int ServerManager::setup_fd()
     stream << "FD CLIENT WRITE_POOL [";
     for (size_t i = 0; i < write_stack.size(); i++)
     {
-        if (!((i + 1) == write_stack.size()))
+        if ((i + 1) != write_stack.size())
             stream << write_stack[i] << ", ";
         else
             stream << write_stack[i];
@@ -119,6 +119,7 @@ int ServerManager::run_servers()
 
     while (1)
     {
+        usleep(1000000);
         higher_fd = this->setup_fd();
 
         if (select(higher_fd + 1, &this->read_pool, &this->write_pool, NULL, NULL) < 0)
@@ -178,9 +179,15 @@ int ServerManager::run_servers()
                     client_curr->getObjRequest() = req;
 
                     std::string response = rep.sendResponse(client_curr);
+
+                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
+                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+
+
                     if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + req.getPath(), NO_PRINT_CLASS);
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + req.getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);

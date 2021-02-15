@@ -51,7 +51,7 @@ int Client::read_request(void)
         this->validRequest = false;
         if (read == 0)
             return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
-        else if (recvCheck == false)
+        else
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
     }
 
@@ -67,7 +67,12 @@ int Client::read_request(void)
     }
 
     this->setRequest(keeper);
-    logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".", NO_PRINT_CLASS);
+
+
+//    if (!this->isValidRequest())
+//        return (-1);
+
+    logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
     this->printRequest();
 
     return (0);
@@ -82,12 +87,12 @@ int Client::send_response(const std::string &req)
 
 void Client::printRequest(void)
 {
-    if (!logger.isSilent())
-    {
+//    if (!logger.isSilent())
+//    {
         std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
         std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
         std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-    }
+//    }
 }
 
 void Client::close_socket()

@@ -60,12 +60,12 @@ int Server::create_socket()
     this->getServerAddr().sin_port = htons(serverConfig.getPort());
     this->getServerAddr().sin_addr.s_addr = inet_addr(serverConfig.getHost().c_str());
 
-    if (bind(this->getServerSocket(), (const struct sockaddr *) &this->getServerAddr(), sizeof(this->getServerAddr())) < 0)
-        return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-
     int opt = 1;
     if ((setsockopt(this->getServerSocket(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))) < 0)
         return (logger.error("[SERVER]: setsockopt: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+
+    if (bind(this->getServerSocket(), (const struct sockaddr *) &this->getServerAddr(), sizeof(this->getServerAddr())) < 0)
+        return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
 
     if (listen(this->getServerSocket(), 20) < 0)
         return (logger.error("[SERVER]: listen" + std::string(strerror(errno)), NO_PRINT_CLASS, -1));

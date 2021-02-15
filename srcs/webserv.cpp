@@ -23,16 +23,10 @@ int main (int ac, char **av)
 
 	logger.warning("Run Webserv in silent mode? : [y\\n]", NO_PRINT_CLASS);
     std::getline(std::cin, intput);
-    if (intput == "n" || intput == "N")
-    {
-        logger.notice("SILENT MODE: OFF", NO_PRINT_CLASS);
-        logger.silence_mode(false);
-    }
-    else
-    {
-        logger.notice("SILENT MODE: ON", NO_PRINT_CLASS);
-        logger.silence_mode(true);
-    }
+    bool state = !(intput == "n" || intput == "N");
+    logger.notice("SILENT MODE: " + logger.to_string(state) , NO_PRINT_CLASS);
+    logger.notice("Loading configuration: " + configFile , NO_PRINT_CLASS);
+    logger.silence_mode(state);
 
 	try
 	{
