@@ -187,6 +187,7 @@ void Response::setDefaultHeaders(Client *client, ServerConfig &server)
 	this->setContentType(client);
 	this->_headers["Date"] = this->currentDate();
 	this->_headers["Server"] = "Webserv";
+	this->_headers["Content-Length"] = "0";
 }
 
 /**
