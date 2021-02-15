@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client() : socket(-1), port(-1), ip(), _recvRequest()
+Client::Client() : socket(-1), port(-1), ip(), _recvRequest(), _recvRequest_backup()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
     this->connected = true;
@@ -33,7 +33,8 @@ int Client::read_request(void)
     bool recvCheck(false);
     int read;
 
-//    c->resetTimeOut();
+    if (!this->_recvRequest_backup.empty())
+        keeper = this->_recvRequest_backup;
 
     memset((void*)buffer, 0, BUFFER);
 
@@ -43,7 +44,6 @@ int Client::read_request(void)
         keeper += buffer;
         recvCheck = true;
     }
-
 
     if (!(recvCheck) || read == 0)
     {
@@ -55,22 +55,24 @@ int Client::read_request(void)
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
     }
 
-    std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
-    for (size_t i = 0; i < 9; i++)
+    if (keeper.find("\r\n\r\n") != std::string::npos)
     {
-        size_t pos = keeper.find(methods[i].c_str(), 0, methods[i].size());
-        if (pos != std::string::npos)
+        logger.success("", NO_PRINT_CLASS);
+        std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
+        for (size_t i = 0; i < 9; i++)
         {
-            logger.notice("[SERVER]: Method " + methods[i] + " found, perform parsing.", NO_PRINT_CLASS);
-            this->validRequest = true;
+            size_t pos = keeper.find(methods[i].c_str(), 0, methods[i].size());
+            if (pos != std::string::npos)
+            {
+                logger.notice("[SERVER]: Method " + methods[i] + " found, perform parsing.", NO_PRINT_CLASS);
+                this->validRequest = true;
+            }
         }
+        this->setRequest(keeper);
+        this->_recvRequest_backup.clear();
     }
-
-    this->setRequest(keeper);
-
-
-//    if (!this->isValidRequest())
-//        return (-1);
+    else
+        this->_recvRequest_backup = keeper;
 
     logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
     this->printRequest();

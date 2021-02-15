@@ -119,7 +119,6 @@ int ServerManager::run_servers()
 
     while (1)
     {
-        usleep(1000000);
         higher_fd = this->setup_fd();
 
         if (select(higher_fd + 1, &this->read_pool, &this->write_pool, NULL, NULL) < 0)
@@ -179,6 +178,7 @@ int ServerManager::run_servers()
                     client_curr->getObjRequest() = req;
 
                     std::string response = rep.sendResponse(client_curr);
+
 
                     std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
                     std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;

@@ -55,6 +55,7 @@ private:
 	int port;
 	std::string ip;
 	std::string _recvRequest;
+	std::string _recvRequest_backup;
 
 	Request request;
 	ServerConfig serverConfig;
