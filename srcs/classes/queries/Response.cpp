@@ -51,23 +51,32 @@ std::string Response::sendResponse(Client *client)
 		/* la méthode est invalide */
 		this->_statusCode = this->getMessageCode(405);
 	} else {
-		if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
-			/* la méthode est valide */
-			if (method == "get" || method == "head") {
-				this->getHandler(client);
-				if (method == "head")
-					this->setBody("");
-			} else if (method == "put") {
-				this->putHandler(client);
-			} else if (method == "post") {
-				this->postHandler(client);
-			} else if (method == "delete") {
-				this->deleteHandler(client);
+		// handle max body size
+		if (client->getServerConfig().getMaxBodySize() != DEFAULT_MAX_BODY_SIZE) {
+			if ((int)client->getObjRequest().getBody().size() > client->getServerConfig().getMaxBodySize()) {
+				this->_statusCode = getMessageCode(413);
 			}
-		} else {
-			Cgi cgi;
-			// execute CGIs
-			cgi.execute(client, *this);
+		}
+		// on vérifie que le status code est à 200
+		if (this->_statusCode == getMessageCode(200)) {
+			if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
+				/* la méthode est valide */
+				if (method == "get" || method == "head") {
+					this->getHandler(client);
+					if (method == "head")
+						this->setBody("");
+				} else if (method == "put") {
+					this->putHandler(client);
+				} else if (method == "post") {
+					this->postHandler(client);
+				} else if (method == "delete") {
+					this->deleteHandler(client);
+				}
+			} else {
+				Cgi cgi;
+				// execute CGIs
+				cgi.execute(client, *this);
+			}
 		}
 	}
 	// display error codes
@@ -133,17 +142,18 @@ void Response::postHandler(Client *client)
 {
 	std::string requestFile = this->_location.getUploadDir() +
 							  Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
+	int fd;
 	struct stat sb;
 	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
 	// on ouvre le fichier (on le créé si il n'existe pas ou on l'ouvre en concat)
-	if (int fd = open(requestFile.c_str(), (fileExists ? O_APPEND : O_CREAT) | O_WRONLY, 0666) == -1) {
+	if ((fd = open(requestFile.c_str(), (fileExists ? O_APPEND : O_CREAT) | O_WRONLY, 0666)) == -1) {
 		this->_statusCode = getMessageCode(500);
 	} else {
 		// on écrit dans le fichier
 		int ret = write(fd, client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().size());
 		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret), NO_PRINT_CLASS);
 		// si ret est <= 0, il y a eu une erreur, on retourne une erreur 500
-		if (ret <= 0)
+		if (ret < 0)
 			this->_statusCode = getMessageCode(500);
 		else {
 			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
