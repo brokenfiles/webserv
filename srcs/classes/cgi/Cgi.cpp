@@ -246,6 +246,8 @@ bool Cgi::isCGI (Request request, LocationConfig location)
 		size_t dotIndex = path.rfind('.');
 		if (dotIndex != std::string::npos) {
 			std::string extension = path.substr(dotIndex, path.size() - dotIndex);
+			if (extension == ".bla" && request.getMethod() == "GET")
+				return (false);
 			/* on check si le cgibin existe */
 			std::ifstream file(cgiBin.c_str(), std::ifstream::in);
 			if (file.good() && file.is_open())
