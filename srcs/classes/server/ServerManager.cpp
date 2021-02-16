@@ -130,7 +130,9 @@ int ServerManager::run_servers()
             Server *server_curr = (*serv_it);
             if (FD_ISSET(server_curr->getServerSocket(), &this->read_pool))
             {
+
                 Client *newClient = new Client();
+
                 newClient->getServerConfig() = server_curr->getServerConfig();
 
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
@@ -172,22 +174,17 @@ int ServerManager::run_servers()
             {
                 if (client_curr->isValidRequest() && client_curr->isAvailable())
                 {
-                    Request req(client_curr->getStringRequest());
                     Response rep;
-
-                    client_curr->getObjRequest() = req;
-
                     std::string response = rep.sendResponse(client_curr);
 
-
-                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-
+//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
+//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 
                     if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + req.getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
+
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);

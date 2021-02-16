@@ -14,6 +14,9 @@ private:
 	std::string _method;
 	std::string _queryString;
 
+	bool headerFilled;
+	bool bodyFilled;
+
 public:
 
 	Request ();
@@ -27,7 +30,11 @@ public:
 	const std::string &getQueryString () const;
 	std::string getDefaultPath (LocationConfig &location);
 
+	bool &isHeaderParsed();
+	bool &isBodyParsed();
+
 	//setters
+    void setBody (const std::string& body);
 	void setPath (const std::string &path);
 	void setMethod (const std::string &method);
 	void setQueryString (const std::string &queryString);

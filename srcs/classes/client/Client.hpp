@@ -5,7 +5,7 @@
 #include "../../../includes/includes.h"
 #include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
-#include "../parser/Parser.hpp"
+//#include "../parser/Parser.hpp"
 #include "../config/ServerConfig.hpp"
 #include <errno.h>
 #include <unistd.h>
@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <cstring>
+#include <sstream>
 
 class Parser;
 
@@ -50,6 +51,8 @@ class Client
 
     private:
         Parser parser;
+        Request request;
+        ServerConfig serverConfig;
 
 	    bool connected;
 	    bool validRequest;
@@ -62,8 +65,6 @@ class Client
 	    std::string _recvRequest;
 	    std::string _recvRequest_backup;
 
-	    Request request;
-	    ServerConfig serverConfig;
 };
 
 #endif

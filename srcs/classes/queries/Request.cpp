@@ -5,17 +5,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-Request::Request() : _path(), _method(), _queryString()
+Request::Request() : _path(), _method(), _queryString(), headerFilled(false), bodyFilled(false)
 {
 
 }
 
 
-Request::Request(std::string &req) : _path(), _method(), _queryString()
+Request::Request(std::string &req) : _path(), _method(), _queryString(), headerFilled(false), bodyFilled(false)
 {
-    Parser parser;
-
-    *this = parser.parse(req);
+	(void)req;
 }
 
 Request::~Request()
@@ -32,6 +30,8 @@ Request &Request::operator=(const Request& copy)
         this->_headers = copy._headers;
         this->_method = copy._method;
         this->_queryString = copy._queryString;
+        this->headerFilled = copy.headerFilled;
+        this->bodyFilled = copy.bodyFilled;
     }
     return (*this);
 }
@@ -92,6 +92,24 @@ const std::string &Request::getQueryString() const
 void Request::setQueryString(const std::string &queryString)
 {
 	_queryString = queryString;
+}
+
+bool &Request::isHeaderParsed()
+{
+	return (headerFilled);
+}
+bool &Request::isBodyParsed()
+{
+	return (bodyFilled);
+}
+void Request::setBody(const std::string &body)
+{
+    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
+    std::cout << ">" << body << "< size:" << body.size() << std::endl;
+    std::cout << "-------------------------------------------------------\n";
+
+    Query::setBody(body);
+    this->isBodyParsed() = true;
 }
 
 std::ostream&	operator<<(std::ostream &o, const Request &q) {
