@@ -22,7 +22,7 @@ public:
 	const std::map<std::string, std::string> &getHeaders () const;
 	//setters
 	void setHeaders (const std::map<std::string, std::string> &headers);
-	void setBody (const std::string &body);
+	virtual void setBody (const std::string &body);
 
 	void addCookie(const std::string &cookie);
 	std::string getCookies() const;

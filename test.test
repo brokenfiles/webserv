@@ -1,0 +1,27 @@
+[37m[16/02/21 00:31:24] [1m[33m[WARNING] Run Webserv in silent mode? : [y\n][0m
+[37m[16/02/21 00:31:26] [0;36m[NOTICE] SILENT MODE: 1[0m
+[37m[16/02/21 00:31:26] [0;36m[NOTICE] Loading configuration: conf/webserv.conf[0m
+[37m[16/02/21 00:31:26] [33m[INFO] [SERVER]: 127.0.0.1 listen on port 8888.[0m
+[37m[16/02/21 00:31:26] [33m[INFO] [SERVER]: 127.0.0.1 listen on port 8080.[0m
+
+[37m[16/02/21 00:31:30] [33m[INFO] [SERVER]: ~ NEW SELECT CALL ~[0m
+[37m[16/02/21 00:31:30] [1;35m[CONNECT] [SERVER]: New Client: 5. Server: 127.0.0.1:8080[0m
+[37m[16/02/21 00:31:30] [33m[INFO] [SERVER]: ~ NEW SELECT CALL ~[0m
+before reading request
+-----------------
+GET /maxou.html HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.26.10
+Accept: */*
+Postman-Token: 757b5456-b16f-4558-b7bd-4d3c04a867c2
+Host: 127.0.0.1:8080
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+-----------------
+0
+
+

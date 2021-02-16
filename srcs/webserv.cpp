@@ -19,7 +19,7 @@ int main (int ac, char **av)
 	if (ac == 2)
         configFile = av[1];
 	else
-	    configFile = "conf/webserv.conf";
+	    configFile = "conf/max.conf";
 
 	logger.warning("Run Webserv in silent mode? : [y\\n]", NO_PRINT_CLASS);
     std::getline(std::cin, intput);
