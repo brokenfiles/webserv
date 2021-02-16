@@ -177,7 +177,7 @@ void Response::deleteHandler(Client *client)
 
 void Response::removeDir(const std::string &path)
 {
-
+	(void)path;
 }
 
 void Response::handleAcceptLanguage(Client *client)
