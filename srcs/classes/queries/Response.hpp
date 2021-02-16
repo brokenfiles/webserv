@@ -21,6 +21,7 @@ private:
 	LocationConfig _location;
 
 	std::string getDirName(const std::string& file);
+	void removeDir (const std::string &path);
 
 public:
 	Response ();
@@ -47,6 +48,7 @@ public:
 	void putHandler (Client *client);
 	void postHandler (Client *client);
 	void deleteHandler (Client *client);
+	void handleAcceptLanguage (Client *client);
 
 	/*
 	 * Getters

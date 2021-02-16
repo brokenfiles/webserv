@@ -1,5 +1,8 @@
 #include <algorithm>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "Response.hpp"
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
@@ -130,30 +133,59 @@ void Response::postHandler(Client *client)
 {
 	std::string requestFile = this->_location.getUploadDir() +
 							  Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
-	bool fileExists = std::ifstream(requestFile.c_str()).good();
-	// on ouvre in filestream
-	std::ofstream fileStream(requestFile.c_str());
-	// on regarde si le fichier existe
-	if (fileStream.is_open()) {
-		// il existe
-		fileStream << client->getObjRequest().getBody();
-		// on retourne un 200 si le fichier existait avant sinon un 201
-		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
-		fileStream.close();
+	struct stat sb;
+	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
+	// on ouvre le fichier (on le créé si il n'existe pas ou on l'ouvre en concat)
+	if (int fd = open(requestFile.c_str(), (fileExists ? O_APPEND : O_CREAT) | O_WRONLY, 0666) == -1) {
+		this->_statusCode = getMessageCode(500);
 	} else {
-		// il n'exite pas on retourne une erreur 403
-		this->_statusCode = getMessageCode(403);
+		// on écrit dans le fichier
+		int ret = write(fd, client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().size());
+		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret), NO_PRINT_CLASS);
+		// si ret est <= 0, il y a eu une erreur, on retourne une erreur 500
+		if (ret <= 0)
+			this->_statusCode = getMessageCode(500);
+		else {
+			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
+			if (this->_statusCode == getMessageCode(200))
+				this->setBody("File updated.");
+		}
+		close(fd);
 	}
 }
 
 void Response::deleteHandler(Client *client)
 {
 	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
-	if (std::remove(requestFile.c_str()) == 0) {
-		this->_statusCode = getMessageCode(200);
-	} else {
+	struct stat sb;
+	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
+
+	if (!fileExists) {
 		this->_statusCode = getMessageCode(404);
+	} else {
+		if (S_ISDIR(sb.st_mode)) {
+			this->removeDir(requestFile);
+		} else {
+			if (std::remove(requestFile.c_str()) == 0) {
+				this->_statusCode = getMessageCode(200);
+			} else {
+				this->_statusCode = getMessageCode(500);
+			}
+		}
 	}
+}
+
+void Response::removeDir(const std::string &path)
+{
+
+}
+
+void Response::handleAcceptLanguage(Client *client)
+{
+	if (client->getObjRequest().getHeaders().find("Accept-Language") == client->getObjRequest().getHeaders().end())
+		return ;
+	std::map<std::string, std::string> headers = client->getObjRequest().getHeaders();
+
 }
 
 /**
@@ -203,9 +235,9 @@ void Response::setContentType(Client *client)
 	std::string reqExtension = path.substr(index, path.size() - path.rfind('.'));
 
 	if (this->_contentTypes.find(reqExtension) != this->_contentTypes.end()) {
-		this->_headers["Content-type"] = this->_contentTypes[reqExtension];
+		this->_headers["Content-Type"] = this->_contentTypes[reqExtension];
 	} else {
-		this->_headers["Content-type"] = "text/html";
+		this->_headers["Content-Type"] = "text/html";
 	}
 }
 
