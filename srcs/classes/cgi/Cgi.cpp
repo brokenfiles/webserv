@@ -91,7 +91,7 @@ void	Cgi::execute(Client *client, Response &response)
 		}
 
 		//on récupère le code de retour du CGI et des headers
-		if (response.getLocation().getCgiExtension() != ".bla" || client->getObjRequest().getMethod() != "GET")
+		if (response.getLocation().getCgiExtension() != ".bla" && client->getObjRequest().getMethod() != "GET")
 		{	//TODO récupérer le status code et les eventuels headers
 			Parser parser;
 			std::string tmp = var.output.substr(0, var.output.find("\r\n\r\n", 0));
@@ -189,6 +189,11 @@ void Cgi::addMetaVariables(Response &response, Client *client)
     this->_metaVarMap["REDIRECT_STATUS"] = "200";
 
     //TODO gérer l'initialisation de variables dans la conf
+    std::map<std::string, std::string>::iterator begin = this->_metaVarMap.begin();
+    while (begin != this->_metaVarMap.end()) {
+    	std::cout << begin->first << " = `" << begin->second << "`" << std::endl;
+    	begin++;
+    }
 }
 
 /**
