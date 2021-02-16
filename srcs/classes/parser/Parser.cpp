@@ -119,6 +119,8 @@ void Parser::fillHeader(Request& req, std::string& keeper)
             break;
         }
         std::string line = keeper.substr(0, x);
+//        if (line.at(line.size() - 1) == '\r')
+//        	line.erase(line.size() - 1);
         if (line.find(':') != std::string::npos)
         {
             if (line.substr(0, line.find(':')) == "Set-Cookie")
