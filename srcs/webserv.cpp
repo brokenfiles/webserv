@@ -7,6 +7,9 @@
 #include "../srcs/classes/client/Client.hpp"
 #include "classes/config/Config.hpp"
 
+#include <limits>
+#include <ios>
+
 Logger logger;
 
 int main (int ac, char **av)

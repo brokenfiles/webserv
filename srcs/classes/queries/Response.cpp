@@ -137,14 +137,18 @@ void Response::postHandler(Client *client)
 	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
 	// on ouvre le fichier (on le créé si il n'existe pas ou on l'ouvre en concat)
 	if (int fd = open(requestFile.c_str(), (fileExists ? O_APPEND : O_CREAT) | O_WRONLY, 0666) == -1) {
-		this->_statusCode = getMessageCode(500);
+	    this->_statusCode = getMessageCode(500);
+	    std::cout << "ICI MON POTE\n";
+
 	} else {
 		// on écrit dans le fichier
 		int ret = write(fd, client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().size());
 		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret), NO_PRINT_CLASS);
 		// si ret est <= 0, il y a eu une erreur, on retourne une erreur 500
-		if (ret <= 0)
-			this->_statusCode = getMessageCode(500);
+		if (ret < 0) {
+            this->_statusCode = getMessageCode(500);
+            std::cout << "LA GROS\n";
+        }
 		else {
 			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
 			if (this->_statusCode == getMessageCode(200))
