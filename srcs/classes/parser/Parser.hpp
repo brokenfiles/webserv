@@ -44,6 +44,24 @@ public:
 	        }
 	};
 
+	class BadRequest : public std::exception
+	{
+	    public:
+	        virtual const char *what () const throw()
+	        {
+	            return ("Bad Request");
+	        }
+	};
+
+	class BadChunkedBody : public std::exception
+    {
+        public:
+            virtual const char *what () const throw()
+            {
+                    return ("Bad Chunked Body");
+            }
+    };
+
 	void parseHeader(Request& req, std::string& keeper);
 	int fillChunk(std::string &keeper);
 	int fillContentSize(std::string &keeper, std::string strsize);

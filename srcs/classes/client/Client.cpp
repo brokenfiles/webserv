@@ -61,9 +61,9 @@ int Client::read_request(void)
         //Si Header PAS encore parsé, on parse =)
         if (!this->request.isHeaderParsed())
         {
-//            std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
-//            std::cout << keeper << std::endl;
-//            std::cout << "-------------------------------------------------------\n";
+            std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+            std::cout << keeper << std::endl;
+            std::cout << "-------------------------------------------------------\n";
             this->parser.parseHeader(this->request, keeper);
 //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
 //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
@@ -76,10 +76,10 @@ int Client::read_request(void)
         if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
         {
             //SI "Transfer-Encoding: chunked", il y a un body et il faut le récupérer entierement =)
-            if ((it = this->request.getHeaders().find("Transfer-Encoding")) != this->request.getHeaders().end())
+            if ((((it = this->request.getHeaders().find("Transfer-Encoding")) != this->request.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
             {
                 //Vrai si CRLF (pour l'instant, Récupéré chunk par chunk à l'avenir)
-                if ((it->second.compare(0, 7, "chunked") == 0)  && this->parser.fillChunk(keeper))
+                if (this->parser.fillChunk(keeper))
                 {
                     this->request.setBody(keeper);
                 }
@@ -104,17 +104,16 @@ int Client::read_request(void)
         //Si HEADER et BODY récupéré/parsé, c'est une valid request, on continue =)
         if (this->request.isHeaderParsed() && this->request.isBodyParsed())
         {
+            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
             this->request.isBodyParsed() = false;
             this->request.isHeaderParsed() = false;
             this->isValidRequest() = true;
             this->_recvRequest_backup.clear();
-            std::cout << "isHeaderParsed() && isBodyParsed() - Lets send response.\n";
             return (0);
         }
-
-//        this->printRequest();
-//        logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
     }
+//    else if (!this->request.isHeaderParsed())
+//        return (logger.error("[SERVER]: Not Header Found.", NO_PRINT_CLASS, -1));
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;

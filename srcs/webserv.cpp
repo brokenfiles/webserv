@@ -17,7 +17,7 @@ int main (int ac, char **av)
 	Config        config;
     std::string configFile;
     ServerManager serverManager;
-    std::string intput;
+    std::string input;
 
 	if (ac == 2)
         configFile = av[1];
@@ -25,8 +25,8 @@ int main (int ac, char **av)
 	    configFile = "conf/max.conf";
 
 	logger.warning("Run Webserv in silent mode? : [y\\n]", NO_PRINT_CLASS);
-    std::getline(std::cin, intput);
-    bool state = !(intput == "n" || intput == "N");
+    std::getline(std::cin, input);
+    bool state = !(input == "n" || input == "N");
     logger.notice("SILENT MODE: " + logger.to_string(state) , NO_PRINT_CLASS);
     logger.notice("Loading configuration: " + configFile , NO_PRINT_CLASS);
     logger.silence_mode(state);
