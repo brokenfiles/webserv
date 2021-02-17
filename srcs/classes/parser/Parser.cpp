@@ -19,37 +19,58 @@ void Parser::parseHeader(Request &req, std::string& keeper)
         this->fillMethod(req, frontLine);
         this->fillPath(req, frontLine);
 
+        /* remove front line */
+        keeper.erase(0, frontLine.length() + 1);
+
+        /* fill header */
+        this->fillHeader(req, keeper);
+        this->fillQueryString(req);
+
     }
     catch (const std::exception &e)
     {
+        keeper.clear();
         logger.error("[SERVER]: " + logger.to_string(e.what()), NO_PRINT_CLASS, -1);
     }
-
-    /* remove front line */
-    keeper.erase(0, frontLine.length() + 1);
-
-    /* fill header */
-    this->fillHeader(req, keeper);
-    this->fillQueryString(req);
 
 }
 
 
 int Parser::fillChunk(std::string &keeper)
 {
-    if (keeper.find("\r\n\r\n") != std::string::npos)
-        return (1);
+    std::string keeper_tmp;
+    size_t closed;
+    size_t x;
+
+    closed = keeper.find("\r\n\r\n") != std::string::npos;
+    while (closed)
+    {
+        if ((x = keeper.find("\r\n")) != std::string::npos)
+        {
+            std::string line = keeper.substr(0, x);
+            if (!line.empty())
+            {
+                int size_chunk = 0;
+                std::stringstream convert;
+                convert << std::hex << line;
+                convert >> size_chunk;
+
+                keeper.erase(0, x + 2);
+                if (size_chunk > 0)
+                {
+                    keeper_tmp += keeper.substr(0,size_chunk + 2);
+                    keeper.erase(0 ,size_chunk + 2);
+                }
+                if (size_chunk == 0 && keeper == "\r\n")
+                {
+                    keeper = keeper_tmp;
+                    return (1);
+                }
+            }
+//            throw Parser::BadChunkedBody();
+        }
+    }
     return (0);
-
-//    std::string chunk = keeper.substr(0, keeper.find('\r'));
-//    std::stringstream convert;
-//    int size_chunk;
-
-//    keeper.erase(0, chunk.size() + 2);
-//    convert << chunk;
-//    convert >> std::hex >> size_chunk;
-//
-//    std::cout << "size chunked: " << size_chunk << std::endl;
 }
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
