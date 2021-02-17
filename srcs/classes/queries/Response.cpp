@@ -75,7 +75,7 @@ std::string Response::sendResponse(Client *client)
 			} else {
 				Cgi cgi;
 				// execute CGIs
-				cgi.execute(client, *this);
+				cgi.launch(client, *this);
 			}
 		}
 	}

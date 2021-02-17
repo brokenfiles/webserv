@@ -20,7 +20,7 @@ Cgi::~Cgi()
  * @param response
  * @action remplace le body de la reponse par le retour du CGI
  */
-void	Cgi::execute(Client *client, Response &response)
+void	Cgi::launch(Client *client, Response &response)
 {
     //on set le nom du fichier qui doit etre executé dans le cgi
 	setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
@@ -46,89 +46,70 @@ void	Cgi::execute(Client *client, Response &response)
     //on ajoute le nom du binaire et celui du fichier dans argv, qui sera passé au CGI dans un execve
     addArgv(response);
 
-	t_execCGI   var;
+    this->_client = client;
+    this->_requestBody = client->getObjRequest().getBody();
 
-	//on recupere argv et les variables d'environement
-    var.argv = vecToArray(this->_argv);
-    var.metaVarArray = mapToArray(this->_metaVarMap);
+    //on execute le CGI
+    execute(response);
 
-    pipe(var.pipe_fd);
-    pipe(var.outfd);
-    var.save_in = dup(STDIN_FILENO);
-    var.save_out = dup(STDOUT_FILENO);
-    dup2(var.outfd[1], 1);
+	//on remplace le body de la reponse par le retour du CGI
+    response.setBody(this->_var.output);
+}
+
+void	Cgi::execute(Response &response)
+{
+	pipe(this->_var.pipe_fd);
+	pipe(this->_var.outfd);
+	this->_var.save_in = dup(STDIN_FILENO);
+	this->_var.save_out = dup(STDOUT_FILENO);
+	dup2(this->_var.outfd[1], 1);
 
 	//on fork le processus en 2
-    var.pid = fork();
-    if (var.pid == 0)
+	this->_var.pid = fork();
+	if (this->_var.pid == 0)
 	{
-    	//processus fils
-        close(var.outfd[1]);
-        dup2(var.outfd[0], 0);
-		dup2(var.pipe_fd[1], 1);
+		//processus fils
+		close(this->_var.outfd[1]);
+		dup2(this->_var.outfd[0], 0);
+		dup2(this->_var.pipe_fd[1], 1);
 
 		//on execute le CGI
-        execve(var.argv[0], var.argv, var.metaVarArray);
-        close(var.outfd[0]);
+		execve(this->_var.argv[0], this->_var.argv, this->_var.metaVarArray);
 	}
-	else if (var.pid > 0)
+	else if (this->_var.pid > 0)
 	{
-        //processus pere
-		close(var.outfd[0]);
+		//processus pere
+		close(this->_var.outfd[0]);
 
 		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
-		if (client->getObjRequest().getMethod() == "POST")
-			write(var.outfd[1], client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().length());
+		if (this->_client->getObjRequest().getMethod() == "POST")
+			std::cerr << "write = " << write(this->_var.outfd[1], this->_requestBody.c_str(), this->_requestBody.size()) << std::endl;
 
-		close(var.outfd[1]);
-		close(var.pipe_fd[1]);
+		close(this->_var.outfd[1]);
+		close(this->_var.pipe_fd[1]);
 
-        //on lit le retour du CGI et on le stock var.output
-		while ((var.ret = read(var.pipe_fd[0], &var.buffer, BUFFER - 1)) != 0)
+		//on lit le retour du CGI et on le stock dans var.output
+		while ((this->_var.ret = read(this->_var.pipe_fd[0], this->_var.buffer, BUFFER - 1)) != 0)
 		{
-            var.buffer[var.ret] = 0;
-            var.output += var.buffer;
+			this->_var.buffer[this->_var.ret] = 0;
+			this->_var.output += this->_var.buffer;
 		}
 
 		//on récupère le code de retour du CGI et des headers
-		if (response.getLocation().getCgiExtension() != ".bla" && client->getObjRequest().getMethod() != "GET")
-		{	//TODO récupérer le status code et les eventuels headers
-			Parser parser;
-			std::string tmp = var.output.substr(0, var.output.find("\r\n\r\n", 0));
-			var.output.erase(0, var.output.find("\r\n\r\n", 0));
-			Query query = parser.parseResponse(tmp + "\n");
+		if (response.getLocation().getCgiExtension() != ".bla" || this->_client->getObjRequest().getMethod() != "GET")
+			getCGIReturn(response);
 
-			response.setCookies(query.getRawCookies());
-			if (!query.getHeaders().empty()) {
-				std::map<std::string, std::string>::const_iterator begin = query.getHeaders().begin();
-				std::map<std::string, std::string> headers = response.getHeaders();
-				if (query.getHeaders().find("Status") != query.getHeaders().end()) {
-					std::cerr << "cgi status set : " << query.getHeaders().at("Status") << std::endl;
-					response.setStatusCode(query.getHeaders().at("Status"));
-					begin++;
-				}
-				for (; begin != query.getHeaders().end(); begin++) {
-					std::cerr << "cgi header set : " << begin->first << " = " << begin->second << std::endl;
-					headers[begin->first] = begin->second;
-				}
-				response.setHeaders(headers);
-			}
-
-		}
 		//on remet STDIN et STDOUT sur leurs fd respectifs
-		dup2(var.save_in, STDIN_FILENO);
-		dup2(var.save_out, STDOUT_FILENO);
+		dup2(this->_var.save_in, STDIN_FILENO);
+		dup2(this->_var.save_out, STDOUT_FILENO);
 
-		//on remplace le body de la reponse par le retour du CGI
-        response.setBody(var.output);
-
-        //on free l'array de variables d'environement
-        for (size_t i = 0; i < this->_metaVarMap.size(); ++i) {
-            free(var.metaVarArray[i]);
-        }
-        free(var.metaVarArray);
-        close(var.pipe_fd[0]);
-    }
+		//on free l'array de variables d'environement
+		for (size_t i = 0; i < this->_metaVarMap.size(); ++i) {
+			free(this->_var.metaVarArray[i]);
+		}
+		free(this->_var.metaVarArray);
+		close(this->_var.pipe_fd[0]);
+	}
 }
 
 /**
@@ -143,6 +124,34 @@ void Cgi::addArgv(Response &response)
     vec.push_back(response.getLocation().getCgiBin());
     vec.push_back(getRequestFile());
     this->_argv = vec;
+	this->_var.argv = vecToArray(this->_argv);
+}
+
+/**
+ * cette fonction récupère le status code et les headers retournés par le programme CGI et les stock dans la réponse passée en argument
+ * @param response
+ */
+void	Cgi::getCGIReturn(Response &response)
+{
+	Parser parser;
+	std::string tmp = this->_var.output.substr(0, this->_var.output.find("\r\n\r\n", 0));
+	this->_var.output.erase(0, this->_var.output.find("\r\n\r\n", 0) + 4);
+	Query query = parser.parseResponse(tmp + "\r\n");
+
+	response.setCookies(query.getRawCookies());
+	if (!query.getHeaders().empty()) {
+		std::map<std::string, std::string>::const_iterator begin = query.getHeaders().begin();
+		std::map<std::string, std::string> headers = response.getHeaders();
+
+		for (; begin != query.getHeaders().end(); begin++)
+		{
+			if (begin->first == "Status")
+				response.setStatusCode(query.getHeaders().at("Status"));
+			else
+				headers[begin->first] = begin->second;
+		}
+		response.setHeaders(headers);
+	}
 }
 
 /**
@@ -157,7 +166,7 @@ void Cgi::addMetaVariables(Response &response, Client *client)
 	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
 	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(client->getObjRequest().getBody().size());
     if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
-		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second.substr(0, client->getObjRequest().getHeaders().find("Content-Type")->second.length() - 1);
+		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
 	this->_metaVarMap["PATH_INFO"] = client->getObjRequest().getPath();
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
@@ -187,13 +196,7 @@ void Cgi::addMetaVariables(Response &response, Client *client)
 
 	//cette variable est necessaire pour lancer php-cgi
     this->_metaVarMap["REDIRECT_STATUS"] = "200";
-
-    //TODO gérer l'initialisation de variables dans la conf
-    std::map<std::string, std::string>::iterator begin = this->_metaVarMap.begin();
-    while (begin != this->_metaVarMap.end()) {
-    	std::cout << begin->first << " = `" << begin->second << "`" << std::endl;
-    	begin++;
-    }
+	this->_var.metaVarArray = mapToArray(this->_metaVarMap);
 }
 
 /**
