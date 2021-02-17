@@ -78,10 +78,11 @@ int ServerManager::setup_fd()
     stream << "FD SERVER SOCKET [";
     for (it_t serv = servers.begin(); serv != servers.end(); serv++)
     {
-        if (serv._M_node->_M_next != servers.end()._M_node)
+		if (serv != servers.end()) {
             stream << (*serv)->getServerSocket() << ", ";
-        else
-            stream << (*serv)->getServerSocket();
+		} else {
+			stream << (*serv)->getServerSocket();
+		}
     }
     logger.notice(stream.str() + "]", NO_PRINT_CLASS);
 
