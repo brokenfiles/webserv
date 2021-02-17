@@ -60,6 +60,7 @@ public:
 	std::map<std::string, std::string> &getContentTypes ();
 	LocationConfig &getLocation ();
 	const std::string &getFileCode (int code);
+	std::string getFilesInDirectory (const std::string &path, Client *client);
 
 	/**
 	 * Setters
@@ -75,7 +76,13 @@ public:
 	{
 		virtual const char *what () const throw();
 	};
+	class CantOpenDirectoryException : public std::exception
+	{
+		virtual const char *what () const throw();
+	};
 	void displayErrors ();
+	void tryDirectoryListing (const std::string &path, Client *client);
+	std::string getLastModified (const std::string &file);
 };
 
 #endif

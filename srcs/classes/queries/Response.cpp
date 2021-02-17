@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <dirent.h>
 #include "Response.hpp"
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
@@ -113,8 +114,15 @@ void Response::getHandler(Client *client)
 			this->_statusCode = getMessageCode(403);
 		}
 	} else {
-		// il n'exite pas on retourne une erreur 404 not found
-		this->_statusCode = getMessageCode(404);
+		if (this->_location.getAutoindex() == "on") {
+			// on essaie le directory listing
+			this->tryDirectoryListing(
+					_location.getRootDir() + Request::getPathWithoutLocation(client->getObjRequest().getPath(),
+															  this->_location), client);
+		} else {
+			// il n'existe pas on retourne une erreur 404 not found
+			this->_statusCode = getMessageCode(404);
+		}
 	}
 }
 
@@ -147,7 +155,6 @@ void Response::postHandler(Client *client)
 	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
 	// on ouvre le fichier (on le créé si il n'existe pas ou on l'ouvre en concat)
 	if ((fd = open(requestFile.c_str(), (fileExists ? O_APPEND : O_CREAT) | O_WRONLY, 0666)) == -1) {
-        std::cout << "ici mon pote\n";
 		this->_statusCode = getMessageCode(500);
 	} else {
 		// on écrit dans le fichier
@@ -155,11 +162,7 @@ void Response::postHandler(Client *client)
 		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret), NO_PRINT_CLASS);
 		// si ret est <= 0, il y a eu une erreur, on retourne une erreur 500
 		if (ret < 0)
-        {
-            this->_statusCode = getMessageCode(500);
-            std::cout << "ici mon GROS\n";
-
-        }
+			this->_statusCode = getMessageCode(500);
 		else {
 			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
 			if (this->_statusCode == getMessageCode(200))
@@ -201,6 +204,61 @@ void Response::handleAcceptLanguage(Client *client)
 		return ;
 	std::map<std::string, std::string> headers = client->getObjRequest().getHeaders();
 
+}
+
+void Response::tryDirectoryListing (const std::string &path, Client *client) {
+	try {
+		std::string files = this->getFilesInDirectory(path, client);
+		std::ifstream fileStream("www/server/DirectoryListingTemplate.html", std::ifstream::in);
+		// on regarde si le fichier existe
+		if (fileStream.good())
+		{
+			// il existe
+			if (fileStream.is_open())
+			{
+				// on peut lire le fichier, on l'ajoute au body
+				// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
+				std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ), (std::istreambuf_iterator<char>()));
+
+				this->replace(fileContent, "${DIRECTORY_NAME}", client->getObjRequest().getPath());
+				this->replace(fileContent, "${FILES}", files);
+
+				this->setBody(fileContent);
+				fileStream.close();
+			}
+		}
+	} catch (const std::exception &exception) {
+		logger.warning("(DIRECTORY LISTING ERROR!) " + Logger::to_string(exception.what()), NO_PRINT_CLASS);
+		this->_statusCode = getMessageCode(404);
+	}
+}
+
+std::string Response::getFilesInDirectory(const std::string &path, Client *client)
+{
+	std::string HTML_files;
+	DIR *dir;
+	struct dirent *ent;
+
+	if ((dir = opendir (path.c_str())) != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir (dir)) != NULL) {
+			std::string entityName = std::string(ent->d_name);
+			if (entityName == "." || entityName == "..") {
+				continue;
+			}
+			std::string pathToEntity = client->getObjRequest().getPath();
+			if (pathToEntity[pathToEntity.size() - 1] != '/')
+				pathToEntity += '/';
+			pathToEntity += entityName;
+			std::string lastModified = getLastModified(path + "/" + entityName);
+			HTML_files += "<div class=\"link\"><p class=\"path\"><a href=\"" + pathToEntity +"\">" + entityName + "</a><p>" + lastModified + "</p></div>\n";
+		}
+		closedir (dir);
+	} else {
+		/* could not open directory */
+		throw CantOpenDirectoryException();
+	}
+	return HTML_files;
 }
 
 /**
@@ -324,6 +382,22 @@ std::string Response::currentDate ()
 	strftime(str, sizeof str, "%a, %d %b %G %T GMT", current);
 	ret.assign(str);
 	return (ret);
+}
+
+std::string Response::getLastModified (const std::string &file)
+{
+	struct stat info;
+	std::string sec;
+	struct tm   time;
+	std::string date;
+	char        buffer[1000];
+
+	stat(file.c_str(), &info);
+	sec = Logger::to_string(info.st_mtime);
+	strptime(sec.c_str(), "%s", &time);
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S CEST", &time);
+	date = buffer;
+	return (date);
 }
 
 /**
@@ -495,4 +569,9 @@ void Response::setStatusCode(const std::string &statusCode)
 const char *Response::NoLocationException::what () const throw()
 {
 	return "Aucune location trouvée pour le serveur";
+}
+
+const char *Response::CantOpenDirectoryException::what () const throw()
+{
+	return "Impossible d'ouvrir ce directory";
 }

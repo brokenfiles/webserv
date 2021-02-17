@@ -76,7 +76,7 @@ int Parser::fillChunk(std::string &keeper)
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
     std::stringstream convert;
-    ulong size;
+    unsigned long size;
 
     convert << strsize;
     convert >> size;
