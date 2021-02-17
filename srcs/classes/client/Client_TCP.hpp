@@ -30,7 +30,6 @@ class Client_TCP
         void sendChunkedData();
 
         struct hostent *host;
-        struct in_addr **addr_list;;
         struct sockaddr_in serv_addr;
 
 
