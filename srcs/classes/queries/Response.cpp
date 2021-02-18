@@ -67,12 +67,15 @@ std::string Response::sendResponse(Client *client)
 					this->getHandler(client);
 					if (method == "head")
 						this->setBody("");
-				} else if (method == "put") {
+				} else if (method == "put" || method == "patch") {
 					this->putHandler(client);
 				} else if (method == "post") {
 					this->postHandler(client);
 				} else if (method == "delete") {
 					this->deleteHandler(client);
+				} else {
+					// la méthode n'est pas géré par webserv
+					this->_statusCode = getMessageCode(405);
 				}
 			} else {
 				Cgi cgi;
@@ -187,10 +190,16 @@ void Response::deleteHandler(Client *client)
 		this->_statusCode = getMessageCode(404);
 	} else {
 		if (S_ISDIR(sb.st_mode)) {
-			this->removeDir(requestFile, client);
+			try {
+				this->removeDir(requestFile, client);
+				this->setBody("Directory deleted.");
+			} catch (const std::exception &e) {
+				this->_statusCode = getMessageCode(500);
+			}
 		} else {
 			if (std::remove(requestFile.c_str()) == 0) {
 				this->_statusCode = getMessageCode(200);
+				this->setBody("File deleted.");
 			} else {
 				this->_statusCode = getMessageCode(500);
 			}
