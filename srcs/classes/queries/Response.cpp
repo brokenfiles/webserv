@@ -51,6 +51,7 @@ std::string Response::sendResponse(Client *client)
 	if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
 		this->_statusCode = this->getMessageCode(405);
+		this->_headers["Allow"] = this->_location.getRawMethods();
 	} else {
 		// handle max body size
 		if (client->getServerConfig().getMaxBodySize() != DEFAULT_MAX_BODY_SIZE) {
@@ -109,6 +110,7 @@ void Response::getHandler(Client *client)
 
 			this->setBody(fileContent);
 			fileStream.close();
+			this->_headers["Last-Modified"] = getLastModified(requestFile);
 		} else {
 			// le fichier est inaccessible on retourne une erreur 403 forbidden
 			this->_statusCode = getMessageCode(403);
@@ -140,6 +142,7 @@ void Response::putHandler(Client *client)
 		// on retourne un 200 si le fichier existait avant sinon un 201
 		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
 		fileStream.close();
+		this->_headers["Last-Modified"] = getLastModified(requestFile);
 	} else {
 		// il n'exite pas on retourne une erreur 403
 		this->_statusCode = getMessageCode(403);
@@ -165,8 +168,10 @@ void Response::postHandler(Client *client)
 			this->_statusCode = getMessageCode(500);
 		else {
 			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
-			if (this->_statusCode == getMessageCode(200))
+			if (this->_statusCode == getMessageCode(200)) {
 				this->setBody("File updated.");
+				this->_headers["Last-Modified"] = getLastModified(requestFile);
+			}
 		}
 		close(fd);
 	}
@@ -182,7 +187,7 @@ void Response::deleteHandler(Client *client)
 		this->_statusCode = getMessageCode(404);
 	} else {
 		if (S_ISDIR(sb.st_mode)) {
-			this->removeDir(requestFile);
+			this->removeDir(requestFile, client);
 		} else {
 			if (std::remove(requestFile.c_str()) == 0) {
 				this->_statusCode = getMessageCode(200);
@@ -193,9 +198,33 @@ void Response::deleteHandler(Client *client)
 	}
 }
 
-void Response::removeDir(const std::string &path)
+void Response::removeDir(const std::string &path, Client *client)
 {
-	(void)path;
+	DIR *dir;
+	struct dirent *ent;
+
+	if ((dir = opendir (path.c_str())) != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir (dir)) != NULL) {
+			std::string entityName = std::string(ent->d_name);
+			if (entityName == "." || entityName == "..") {
+				continue;
+			}
+			std::string pathToEntity = client->getObjRequest().getPath();
+			if (pathToEntity[pathToEntity.size() - 1] != '/')
+				pathToEntity += '/';
+			pathToEntity += entityName;
+			if (ent->d_type == DT_DIR)
+				this->removeDir(path + "/" + entityName, client);
+			else
+				unlink(std::string(path + "/" + entityName).c_str());
+		}
+		rmdir(path.c_str());
+		closedir (dir);
+	} else {
+		/* could not open directory */
+		throw CantOpenDirectoryException();
+	}
 }
 
 void Response::handleAcceptLanguage(Client *client)
@@ -291,7 +320,7 @@ void Response::setDefaultHeaders(Client *client, ServerConfig &server)
 	this->_statusCode = this->getMessageCode(200);
 	this->setContentType(client);
 	this->_headers["Date"] = this->currentDate();
-	this->_headers["Server"] = "Webserv";
+	this->_headers["Host"] = "Webserv";
 	this->_headers["Content-Length"] = "0";
 }
 

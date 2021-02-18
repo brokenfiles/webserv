@@ -21,7 +21,7 @@ private:
 	LocationConfig _location;
 
 	std::string getDirName(const std::string& file);
-	void removeDir (const std::string &path);
+	void removeDir (const std::string &path, Client *client);
 
 public:
 	Response ();
@@ -61,6 +61,7 @@ public:
 	LocationConfig &getLocation ();
 	const std::string &getFileCode (int code);
 	std::string getFilesInDirectory (const std::string &path, Client *client);
+	std::string getLastModified (const std::string &file);
 
 	/**
 	 * Setters
@@ -82,7 +83,6 @@ public:
 	};
 	void displayErrors ();
 	void tryDirectoryListing (const std::string &path, Client *client);
-	std::string getLastModified (const std::string &file);
 };
 
 #endif
