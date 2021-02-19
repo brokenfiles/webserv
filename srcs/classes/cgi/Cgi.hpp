@@ -23,8 +23,8 @@ class Request;
 typedef struct s_execCGI
 {
 	int			pid;
-	int			pipe_fd[2];
-	int			outfd[2];
+	int			input_fd;
+	int			output_fd;
 	int			save_in;
 	int			save_out;
 	int         ret;

@@ -59,53 +59,53 @@ void	Cgi::launch(Client *client, Response &response)
 
 void	Cgi::execute(Response &response)
 {
-	pipe(this->_var.pipe_fd);
-	pipe(this->_var.outfd);
+	//pipe(this->_var.pipe_fd);
+	//pipe(this->_var.outfd);
 	this->_var.save_in = dup(STDIN_FILENO);
 	this->_var.save_out = dup(STDOUT_FILENO);
+
+
 
 	//on fork le processus en 2
 	this->_var.pid = fork();
 	if (this->_var.pid == 0)
 	{
+		this->_var.input_fd = open("tmpfile_input", O_CREAT | O_RDWR, 0777);
+		this->_var.output_fd = open("tmpfile_output", O_CREAT | O_RDWR, 0777);
 		//processus fils
-		dup2(this->_var.outfd[0], STDIN_FILENO);
-		dup2(this->_var.pipe_fd[1], STDOUT_FILENO);
+		dup2(this->_var.input_fd, STDIN_FILENO);
+		dup2(this->_var.output_fd, STDOUT_FILENO);
 
-		close(this->_var.outfd[1]);
-		close(this->_var.pipe_fd[0]);
+		//close(this->_var.outfd[1]);
+		//close(this->_var.pipe_fd[0]);
 
 		//on execute le CGI
 		execve(this->_var.argv[0], this->_var.argv, this->_var.metaVarArray);
 	}
 	else if (this->_var.pid > 0)
 	{
+		this->_var.input_fd = open("tmpfile_input", O_CREAT | O_RDWR, 0777);
+		this->_var.output_fd = open("tmpfile_output", O_CREAT | O_RDWR, 0777);
 		//processus pere
-		close(this->_var.outfd[0]);
-		close(this->_var.pipe_fd[1]);
-
-		//on agrandit le buffer du pipe dans lequel on doit écrire
-		if (fcntl(this->_var.outfd[1], F_SETFL, O_NONBLOCK) == -1)
-			std::cerr << "error fcntl" << std::endl;
-		if (fcntl(this->_var.pipe_fd[0], F_SETFL, O_NONBLOCK) == -1)
-			std::cerr << "error fcntl" << std::endl;
+		//close(this->_var.outfd[0]);
+		//close(this->_var.pipe_fd[1]);
 
 		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
 		if (this->_client->getObjRequest().getMethod() == "POST")
-			std::cerr << "write = " << write(this->_var.outfd[1], this->_requestBody.c_str(), this->_requestBody.size()) << std::endl;
+			std::cerr << "write = " << write(this->_var.input_fd, this->_requestBody.c_str(), this->_requestBody.size()) << std::endl;
 
-		close(this->_var.outfd[1]);
+		//close(this->_var.outfd[1]);
 
 		waitpid(this->_var.pid, &this->_var.status, 0);
 		std::cerr << "commence a read" << std::endl;
 
 		//on lit le retour du CGI et on le stock dans var.output
-		while ((this->_var.ret = read(this->_var.pipe_fd[0], this->_var.buffer, BUFFER - 1)) != 0)
+		while ((this->_var.ret = read(this->_var.output_fd, this->_var.buffer, BUFFER - 1)) != 0)
 		{
 			this->_var.buffer[this->_var.ret] = 0;
 			this->_var.output += this->_var.buffer;
 		}
-		std::cerr << "fini de read" << std::endl;
+		std::cerr << this->_var.output << std::endl;
 
 		//on récupère le code de retour du CGI et des headers
 		if (response.getLocation().getCgiExtension() != ".bla" || this->_client->getObjRequest().getMethod() != "GET")
@@ -120,7 +120,11 @@ void	Cgi::execute(Response &response)
 			free(this->_var.metaVarArray[i]);
 		}
 		free(this->_var.metaVarArray);
-		close(this->_var.pipe_fd[0]);
+
+		remove("tmpfile_input");
+		remove("tmpfile_output");
+
+		//close(this->_var.pipe_fd[0]);
 	}
 }
 
