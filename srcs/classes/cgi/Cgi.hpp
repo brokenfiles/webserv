@@ -28,6 +28,7 @@ typedef struct s_execCGI
 	int			save_in;
 	int			save_out;
 	int         ret;
+	int 		status;
 	char 		buffer[BUFFER];
 	char        **argv;
 	char        **metaVarArray;

@@ -4,6 +4,7 @@
 
 #include "Cgi.hpp"
 #include <sys/types.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 
 Cgi::Cgi()
@@ -62,16 +63,17 @@ void	Cgi::execute(Response &response)
 	pipe(this->_var.outfd);
 	this->_var.save_in = dup(STDIN_FILENO);
 	this->_var.save_out = dup(STDOUT_FILENO);
-	dup2(this->_var.outfd[1], 1);
 
 	//on fork le processus en 2
 	this->_var.pid = fork();
 	if (this->_var.pid == 0)
 	{
 		//processus fils
+		dup2(this->_var.outfd[0], STDIN_FILENO);
+		dup2(this->_var.pipe_fd[1], STDOUT_FILENO);
+
 		close(this->_var.outfd[1]);
-		dup2(this->_var.outfd[0], 0);
-		dup2(this->_var.pipe_fd[1], 1);
+		close(this->_var.pipe_fd[0]);
 
 		//on execute le CGI
 		execve(this->_var.argv[0], this->_var.argv, this->_var.metaVarArray);
@@ -80,13 +82,22 @@ void	Cgi::execute(Response &response)
 	{
 		//processus pere
 		close(this->_var.outfd[0]);
+		close(this->_var.pipe_fd[1]);
+
+		//on agrandit le buffer du pipe dans lequel on doit écrire
+		if (fcntl(this->_var.outfd[1], F_SETFL, O_NONBLOCK) == -1)
+			std::cerr << "error fcntl" << std::endl;
+		if (fcntl(this->_var.pipe_fd[0], F_SETFL, O_NONBLOCK) == -1)
+			std::cerr << "error fcntl" << std::endl;
 
 		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
 		if (this->_client->getObjRequest().getMethod() == "POST")
 			std::cerr << "write = " << write(this->_var.outfd[1], this->_requestBody.c_str(), this->_requestBody.size()) << std::endl;
 
 		close(this->_var.outfd[1]);
-		close(this->_var.pipe_fd[1]);
+
+		waitpid(this->_var.pid, &this->_var.status, 0);
+		std::cerr << "commence a read" << std::endl;
 
 		//on lit le retour du CGI et on le stock dans var.output
 		while ((this->_var.ret = read(this->_var.pipe_fd[0], this->_var.buffer, BUFFER - 1)) != 0)
@@ -94,6 +105,7 @@ void	Cgi::execute(Response &response)
 			this->_var.buffer[this->_var.ret] = 0;
 			this->_var.output += this->_var.buffer;
 		}
+		std::cerr << "fini de read" << std::endl;
 
 		//on récupère le code de retour du CGI et des headers
 		if (response.getLocation().getCgiExtension() != ".bla" || this->_client->getObjRequest().getMethod() != "GET")
