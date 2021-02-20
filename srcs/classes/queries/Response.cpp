@@ -76,7 +76,7 @@ std::string Response::sendResponse(Client *client)
 			} else {
 				Cgi cgi;
 				// execute CGIs
-				cgi.execute(client, *this);
+				cgi.launch(client, *this);
 			}
 		}
 	}
@@ -274,7 +274,7 @@ std::string 	Response::stringify() const
 	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
 		string += it->first + ": " + it->second + "\r\n";
 	string += getCookies();
-	string += "\r\n\r\n";
+	string += "\r\n";
 	string += this->getBody();
 
 	return (string);

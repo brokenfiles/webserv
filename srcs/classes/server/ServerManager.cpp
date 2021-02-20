@@ -182,8 +182,11 @@ int ServerManager::run_servers()
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
 //                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 
-                    if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
+
+                    int ret = 0;
+                    if ((ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+                    std::cout << "ret send: " << ret << std::endl;
 
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
                 }
