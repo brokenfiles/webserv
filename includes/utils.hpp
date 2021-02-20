@@ -6,6 +6,8 @@ namespace Utils {
 	std::string removeWhitespaces(const std::string &string);
 	std::string decodeBase64(const std::string &token);
 	std::string generateToken(unsigned int len);
+	std::string toUppercase(std::string string);
+	std::string replaceAll(std::basic_string<char> string, char haystack, char needle);
 	int ft_strlen(const char *str);
 	char *ft_strdup(const char *str);
 }

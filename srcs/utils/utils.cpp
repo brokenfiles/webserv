@@ -79,6 +79,24 @@ namespace Utils {
 		return token;
 	}
 
+	std::string toUppercase(std::string string)
+	{
+		std::string uppercase = string;
+		for (std::string::iterator it = uppercase.begin(); it != uppercase.end(); it++)
+			*it = std::toupper(*it);
+		return (uppercase);
+	}
+
+	std::string replaceAll(std::string string, char haystack, char needle)
+	{
+		std::string replaced = string;
+		for (std::string::iterator it = replaced.begin(); it != replaced.end(); it++) {
+			if (*it == haystack)
+				*it = needle;
+		}
+		return (replaced);
+	}
+
 	int	ft_strlen(const char *str)
 	{
 		int	i;

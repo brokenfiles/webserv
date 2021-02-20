@@ -86,7 +86,7 @@ void	Cgi::execute(Response &response)
 		//processus pere
 
 		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
-		if (this->_client->getObjRequest().getMethod() == "POST")
+		if (this->_client->getObjRequest().getMethod() != "GET")
 			write(this->_var.input_fd, this->_requestBody.c_str(), this->_requestBody.size());
 
 		waitpid(this->_var.pid, &this->_var.status, 0);
@@ -142,9 +142,16 @@ void Cgi::addArgv(Response &response)
 void	Cgi::getCGIReturn(Response &response)
 {
 	Parser parser;
+	int count = 0;
+	unsigned int nPos  = 0;
 	std::string tmp = this->_var.output.substr(0, this->_var.output.find("\r\n\r\n", 0));
-	this->_var.output.erase(0, this->_var.output.find("\r\n\r\n", 0) + 4);
-	Query query = parser.parseResponse(tmp + "\r\n");
+	while((unsigned int)(nPos = this->_var.output.find("\r\n", nPos)) != (unsigned int)std::string::npos) {
+		count++; nPos += 2;
+	}
+	if (count > 1) {
+		this->_var.output.erase(0, this->_var.output.find("\r\n\r\n") + 4);
+	}
+	Request query = parser.parseResponse(tmp + "\r\n");
 
 	response.setCookies(query.getRawCookies());
 	if (!query.getHeaders().empty()) {
@@ -169,38 +176,47 @@ void	Cgi::getCGIReturn(Response &response)
  */
 void Cgi::addMetaVariables(Response &response, Client *client)
 {
+	Request request = client->getObjRequest();
+
 	this->_metaVarMap["AUTH_TYPE"] = "NULL";
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
-	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
-	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(client->getObjRequest().getBody().size());
-    if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
-		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second;
+	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
+	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(request.getBody().size());
+    if (request.getHeaders().find("Content-Type") != request.getHeaders().end())
+		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-	this->_metaVarMap["PATH_INFO"] = client->getObjRequest().getPath();
+	this->_metaVarMap["PATH_INFO"] = request.getPath();
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
 	if (client->getObjRequest().getQueryString().empty())
 	    this->_metaVarMap["QUERY_STRING"] = "";
 	else
-	    this->_metaVarMap["QUERY_STRING"] = client->getObjRequest().getQueryString();
+	    this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
 	this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
-	this->_metaVarMap["REQUEST_URI"] = client->getObjRequest().getPath();
-	if (!client->getObjRequest().getQueryString().empty())
-		this->_metaVarMap["REQUEST_URI"] += "?" + client->getObjRequest().getQueryString();
+	this->_metaVarMap["REQUEST_URI"] = request.getPath();
+	if (!request.getQueryString().empty())
+		this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
 	this->_metaVarMap["SCRIPT_NAME"] = response.getLocation().getCgiBin();
 	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
 	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
 	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
-	if (client->getObjRequest().getHeaders().find("Cookie") != client->getObjRequest().getHeaders().end())
+	if (request.getHeaders().find("Cookie") != request.getHeaders().end())
 		this->_metaVarMap["HTTP_COOKIE"] = client->getObjRequest().getHeaders().at("Cookie");
-    if (client->getObjRequest().getHeaders().find("Accept") != client->getObjRequest().getHeaders().end())
+    if (request.getHeaders().find("Accept") != request.getHeaders().end())
         this->_metaVarMap["HTTP_ACCEPT"] = client->getObjRequest().getHeaders().at("Accept");
-    if (client->getObjRequest().getHeaders().find("Connection") != client->getObjRequest().getHeaders().end())
+    if (request.getHeaders().find("Connection") != request.getHeaders().end())
         this->_metaVarMap["HTTP_CONNECTION"] = client->getObjRequest().getHeaders().at("Connection");
-    if (client->getObjRequest().getHeaders().find("User-Agent") != client->getObjRequest().getHeaders().end())
-        this->_metaVarMap["HTTP_USER_AGENT"] = client->getObjRequest().getHeaders().at("User-Agent");
-    if (client->getObjRequest().getHeaders().find("X-Secret-Header-For-Test") != client->getObjRequest().getHeaders().end())
-        this->_metaVarMap["HTTP_X_SECRET_HEADER_FOR_TEST"] = client->getObjRequest().getHeaders().at("X-Secret-Header-For-Test");
+    if (request.getHeaders().find("User-Agent") != request.getHeaders().end())
+        this->_metaVarMap["HTTP_USER_AGENT"] = request.getHeaders().at("User-Agent");
+    if (request.getHeaders().find("X-Secret-Header-For-Test") != request.getHeaders().end())
+        this->_metaVarMap["HTTP_X_SECRET_HEADER_FOR_TEST"] = request.getHeaders().at("X-Secret-Header-For-Test");
+    std::map<std::string, std::string>::const_iterator it = request.getHeaders().begin();
+    while (it != request.getHeaders().end()) {
+    	if (this->_metaVarMap.find(Utils::replaceAll(Utils::toUppercase(it->first), '-', '_')) == this->_metaVarMap.end()) {
+			this->_metaVarMap["HTTP_" + Utils::replaceAll(Utils::toUppercase(it->first), '-', '_')] = it->second;
+		}
+    	it ++;
+    }
     this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
 

@@ -32,7 +32,7 @@ public:
 	Response &operator= (const Response &copy);
 
 	std::string sendResponse (Client *client);
-	LocationConfig &find_location (Client *client);
+	LocationConfig find_location (Client *client);
 	std::string stringify () const;
 	std::string currentDate ();
 	std::string toLower (std::string string);

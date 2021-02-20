@@ -63,6 +63,7 @@ std::string Response::sendResponse(Client *client)
 		// on vérifie que le status code est à 200
 		if (this->_statusCode == getMessageCode(200)) {
 			if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
+				logger.info("Executing built-in methods for this request", NO_PRINT_CLASS);
 				// on regarde si auth est empty ou non dans la location
 				if (!this->_location.getAuth().empty()) {
 					bool authenticated = this->authenticate(client);
@@ -89,15 +90,17 @@ std::string Response::sendResponse(Client *client)
 					}
 				}
 			} else {
+				logger.info("Executing CGI for this request", NO_PRINT_CLASS);
 				Cgi cgi;
 				// execute CGIs
 				cgi.launch(client, *this);
 			}
 		}
 	}
+
 	// display error codes
 	// si le premier char de l'erreur n'est pas égal à 2, c'est une erreur : afficher l'erreur
-	if (this->_statusCode.find("200") == std::string::npos) {
+	if (this->_statusCode.find("200") == std::string::npos && this->getBody().empty()) {
 		this->displayErrors();
 	}
 
@@ -496,17 +499,36 @@ void Response::setContentType(Client *client)
  * @param client le client
  * @return la meilleure location
  */
-LocationConfig &Response::find_location(Client *client)
+LocationConfig Response::find_location(Client *client)
 {
-	for (std::list<LocationConfig>::iterator ite = client->getServerConfig().getLocations().begin(); ite != client->getServerConfig().getLocations().end(); ite++)
-	{
-		if (this->getPathWithSlash((*ite).getPath()) == this->getPathWithSlash(getDirName(client->getObjRequest().getPath())))
-			return ((*ite));
-	}
+	std::list<LocationConfig> matchedLocations;
 	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
 	{
-		if ((*it).getPath() == "/")
-			return ((*it));
+		if (this->getPathWithSlash((*it).getPath()) == this->getPathWithSlash(getDirName(client->getObjRequest().getPath()))) {
+			matchedLocations.push_back(*it);
+		}
+	}
+	if (matchedLocations.empty()) {
+		for (std::list<LocationConfig>::iterator it1 = client->getServerConfig().getLocations().begin(); it1 != client->getServerConfig().getLocations().end(); it1++)
+		{
+			if ((*it1).getPath() == "/")
+				return ((*it1));
+		}
+	} else {
+		std::string path = client->getObjRequest().getDefaultPath(this->_location);
+		size_t index = path.rfind('.');
+		if (index == std::string::npos)
+			return (matchedLocations.front());
+		std::string reqExtension = path.substr(index, path.size() - path.rfind('.'));
+		std::list<LocationConfig>::iterator matchedLocationsIterator = matchedLocations.begin();
+		while (matchedLocationsIterator != matchedLocations.end()) {
+			if (matchedLocationsIterator->getCgiExtension() == reqExtension) {
+				logger.info("Found best location for extension " + reqExtension, NO_PRINT_CLASS);
+				return *matchedLocationsIterator;
+			}
+			matchedLocationsIterator ++;
+		}
+		return (matchedLocations.front());
 	}
 	throw NoLocationException();
 }
@@ -534,6 +556,9 @@ bool Response::isMethodValid(const std::string &method)
  * @return
  */
 std::string Response::getPathWithSlash(std::string path) {
+	if (path.size() == 0) {
+		return (path += '/');
+	}
 	if (path.size() > 0 && path[path.size() - 1] != '/') {
 		return (path += '/');
 	} else {

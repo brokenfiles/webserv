@@ -237,6 +237,18 @@ void Config::checkConfig() {
 		if (server.locations.empty()) {
 			throw MissingLocationException();
 		}
+		bool hasRootLocation = false;
+		std::list<LocationConfig>::iterator it = server.locations.begin();
+		while (it != server.locations.end()) {
+			if (it->getPath() == "/") {
+				hasRootLocation = true;
+				break ;
+			}
+			it ++;
+		}
+		if (!hasRootLocation) {
+			throw NoRootLocationException();
+		}
 		if (server.configuration.find("listen") == server.configuration.end()) {
 			throw MissingFieldException();
 		}
@@ -271,6 +283,11 @@ const char *Config::NoSemicolonException::what() const throw()
 const char *Config::ScopeException::what() const throw()
 {
 	return "Erreur dans les scopes de la config";
+}
+
+const char *Config::NoRootLocationException::what() const throw()
+{
+	return "Il doit y avoir une location / dans tous les serveurs";
 }
 
 const char *Config::MissingFieldException::what() const throw()
