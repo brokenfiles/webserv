@@ -118,10 +118,10 @@ bool &Request::isBodyParsed()
 }
 void Request::setBody(const std::string &body)
 {
-    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
-    std::cout << ">" << body << "< size:" << body.size() << std::endl;
-    std::cout << "-------------------------------------------------------\n";
-
+//    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
+//    std::cout << ">" << body << "< size:" << body.size() << std::endl;
+//    std::cout << "-------------------------------------------------------\n";
+	std::cout << "keeper - body.size(): " << body.size() << std::endl;
     Query::setBody(body);
     this->isBodyParsed() = true;
 }

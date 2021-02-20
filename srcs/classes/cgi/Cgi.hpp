@@ -19,6 +19,23 @@ class Client;
 class Response;
 class Request;
 
+//structure contenant toutes les variables necessaires à l'execution du CGI
+typedef struct s_execCGI
+{
+	int			pid;
+	int			input_fd;
+	int			output_fd;
+	int			save_in;
+	int			save_out;
+	int         ret;
+	int 		status;
+	char 		buffer[BUFFER];
+	char        **argv;
+	char        **metaVarArray;
+	std::string	output;
+}               t_execCGI;
+
+
 /**
  * Cette classe gère l'execution des programes CGI
  */
@@ -37,12 +54,19 @@ private:
 
         //le binaire à utiliser pour l'execution
         std::string                         _cgiBin;
+
+        //les variables necessaire pour le execve
+        t_execCGI							_var;
+
+        Client								*_client;
+
+        std::string							_requestBody;
 public:
         Cgi();
 		virtual ~Cgi();
 
-		//execute function
-		void		execute(Client *client, Response &response);
+		void		launch(Client *client, Response &response);
+		void		execute(Response &response);
 
 		//getters and setters
 		const std::string                       &getRequestFile() const;
@@ -52,28 +76,14 @@ public:
         static bool                             isCGI(Request request, LocationConfig location);
 
 		//meta var functions
-        void addMetaVariables(Response &response, Client *pClient);
+        void addMetaVariables(Response &response, Client *Client);
 		void addArgv(Response &response);
 		char **vecToArray(std::vector<std::string> &vec);
 		char **mapToArray(std::map<std::string, std::string> &map);
 
+		void	getCGIReturn(Response &response);
+
 };
-
-
-//structure contenant toutes les variables necessaires à l'execution du CGI
-typedef struct s_execCGI
-{
-    int			pid;
-    int			pipe_fd[2];
-    int			outfd[2];
-    int			save_in;
-    int			save_out;
-    int         ret;
-    char 		buffer[BUFFER];
-    char        **argv;
-    char        **metaVarArray;
-    std::string	output;
-}               t_execCGI;
 
 char		*ft_strdup(const char *str);
 

@@ -145,10 +145,11 @@ void Parser::fillHeader(Request& req, std::string& keeper)
         if (line.find(':') != std::string::npos)
         {
             if (line.substr(0, line.find(':')) == "Set-Cookie")
-                req.addCookie(line.substr(line.find(':') + 2, x - 2 - line.find(':')));
+                req.addCookie(line.substr(line.find(':') + 2, x - 3 - line.find(':')));
             else
-                map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 2 - line.find(':'));
+                map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 3 - line.find(':'));
             keeper.erase(0, x + 1);
+//            std::cout << "[" << map[line.substr(0, line.find(':'))] << "]" << std::endl;
         }
         else
             throw BadHeader();

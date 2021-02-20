@@ -91,7 +91,7 @@ std::string Response::sendResponse(Client *client)
 			} else {
 				Cgi cgi;
 				// execute CGIs
-				cgi.execute(client, *this);
+				cgi.launch(client, *this);
 			}
 		}
 	}
@@ -450,7 +450,7 @@ std::string 	Response::stringify() const
 
 	string = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
-		string += it->first + ": " + it->second + "\n";
+		string += it->first + ": " + it->second + "\r\n";
 	string += getCookies();
 	string += "\r\n";
 	string += this->getBody();
