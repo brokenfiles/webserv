@@ -3,6 +3,7 @@
 //
 
 #include "Cgi.hpp"
+#include "../../../includes/utils.hpp"
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -105,7 +106,7 @@ void	Cgi::execute(Response &response)
 			this->_var.buffer[this->_var.ret] = 0;
 			this->_var.output += this->_var.buffer;
 		}
-		std::cerr << this->_var.output << std::endl;
+//		std::cerr << this->_var.output << std::endl;
 
 		//on récupère le code de retour du CGI et des headers
 		if (response.getLocation().getCgiExtension() != ".bla" || this->_client->getObjRequest().getMethod() != "GET")
@@ -248,7 +249,7 @@ char    **Cgi::mapToArray(std::map<std::string, std::string> &map)
     for (std::map<std::string, std::string>::iterator it = this->_metaVarMap.begin(); it != this->_metaVarMap.end(); it++)
     {
         tmp = "" + it->first + "=" + it->second;
-        env[i] = ft_strdup(tmp.c_str());
+        env[i] = Utils::ft_strdup(tmp.c_str());
         i++;
     }
     env[i] = NULL;
