@@ -58,7 +58,7 @@ int Parser::fillChunk(std::string &keeper)
                 keeper.erase(0, x + 2);
                 if (size_chunk > 0)
                 {
-                    keeper_tmp += keeper.substr(0,size_chunk + 2);
+                    keeper_tmp += keeper.substr(0,size_chunk);
                     keeper.erase(0 ,size_chunk + 2);
                 }
                 if (size_chunk == 0 && keeper == "\r\n")

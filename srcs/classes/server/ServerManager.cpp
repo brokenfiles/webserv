@@ -186,8 +186,6 @@ int ServerManager::run_servers()
                     int ret = 0;
                     if ((ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-                    std::cout << "errno : " << strerror(errno) << std::endl;
-                    std::cout << "ret send: " << ret << std::endl;
 
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
                 }

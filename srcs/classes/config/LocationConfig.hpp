@@ -8,6 +8,7 @@
 #include <ostream>
 #include "../../../includes/includes.h"
 #define DEFAULT_INDEX "index.html"
+#define DEFAULT_MAX_BODY_SIZE -1
 
 class LocationConfig
 {
@@ -48,8 +49,9 @@ public:
 
 	std::string getIndex ();
 
-	std::map<std::string, std::string> &getConfiguration ();
+	int getMaxBodySize ();
 
+	std::map<std::string, std::string> &getConfiguration ();
 };
 
 

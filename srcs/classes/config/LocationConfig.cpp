@@ -76,6 +76,14 @@ std::string LocationConfig::getCgiExtension() {
 	return ("");
 }
 
+int LocationConfig::getMaxBodySize()
+{
+	if (this->configuration.find("max_body_size") != this->configuration.end()) {
+		return (std::atoi(this->configuration["max_body_size"].c_str()));
+	}
+	return (DEFAULT_MAX_BODY_SIZE);
+}
+
 std::string LocationConfig::getCgiBin() {
 	if (this->configuration.find("cgi_bin") != this->configuration.end()) {
 		return (this->configuration["cgi_bin"]);

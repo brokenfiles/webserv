@@ -65,6 +65,20 @@ namespace Utils {
 		return out;
 	}
 
+	/**
+	 * Génère un token aléatoire de la taille voulue
+	 * @param len la taille du token généré
+	 * @return le token généré
+	 */
+	std::string generateToken(unsigned int len)
+	{
+		std::string token, charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+		while (len -- > 0) {
+			token += charset[rand() % charset.size()];
+		}
+		return token;
+	}
+
 	int	ft_strlen(const char *str)
 	{
 		int	i;

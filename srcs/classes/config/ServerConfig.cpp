@@ -27,14 +27,6 @@ int ServerConfig::getPort()
 	return (DEFAULT_SERVER_PORT);
 }
 
-int ServerConfig::getMaxBodySize()
-{
-	if (this->configuration.find("max_body_size") != this->configuration.end()) {
-		return (std::atoi(this->configuration["max_body_size"].c_str()));
-	}
-	return (DEFAULT_MAX_BODY_SIZE);
-}
-
 std::string ServerConfig::getServerName()
 {
 	if (this->configuration.find("server_name") != this->configuration.end()) {

@@ -55,8 +55,8 @@ std::string Response::sendResponse(Client *client)
 		this->_headers["Allow"] = this->_location.getRawMethods();
 	} else {
 		// handle max body size
-		if (client->getServerConfig().getMaxBodySize() != DEFAULT_MAX_BODY_SIZE) {
-			if ((int)client->getObjRequest().getBody().size() > client->getServerConfig().getMaxBodySize()) {
+		if (this->_location.getMaxBodySize() != DEFAULT_MAX_BODY_SIZE) {
+			if ((int)client->getObjRequest().getBody().size() > this->_location.getMaxBodySize()) {
 				this->_statusCode = getMessageCode(413);
 			}
 		}
@@ -151,8 +151,7 @@ void Response::getHandler(Client *client)
 
 void Response::putHandler(Client *client)
 {
-	std::string requestFile = this->_location.getUploadDir() +
-			Request::getPathWithIndex(client->getObjRequest().getPath(), this->_location);
+	std::string requestFile = Request::getPathWithIndex(this->_location.getUploadDir() + client->getObjRequest().getPath(), this->_location);
 	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
     std::ofstream fileStream(requestFile.c_str());
@@ -175,8 +174,7 @@ void Response::putHandler(Client *client)
 
 void Response::postHandler(Client *client)
 {
-	std::string requestFile = this->_location.getUploadDir() +
-			Request::getPathWithIndex(client->getObjRequest().getPath(), this->_location);
+	std::string requestFile = Request::getPathWithIndex(this->_location.getUploadDir() + client->getObjRequest().getPath(), this->_location);
 	int fd;
 	struct stat sb;
 	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
