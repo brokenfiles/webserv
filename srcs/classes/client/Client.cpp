@@ -3,7 +3,6 @@
 Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest(), _recvRequest_backup()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
-    this->connected = true;
     this->validRequest = false;
 }
 
@@ -47,8 +46,6 @@ int Client::read_request(void)
 
     if (!(recvCheck) || read == 0)
     {
-        this->connected = false;
-        this->validRequest = false;
         if (read == 0)
             return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
         else
@@ -181,10 +178,7 @@ ServerConfig &Client::getServerConfig()
 {
     return (serverConfig);
 }
-bool &Client::isAvailable()
-{
-    return (this->connected);
-}
+
 bool &Client::isValidRequest()
 {
     return (this->validRequest);

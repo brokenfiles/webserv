@@ -43,7 +43,6 @@ class Client
 
 	    ServerConfig &getServerConfig();
 
-	    bool &isAvailable();
 	    bool &isValidRequest();
 
 	    //setters
@@ -54,7 +53,6 @@ class Client
         Request request;
         ServerConfig serverConfig;
 
-	    bool connected;
 	    bool validRequest;
 
 	    struct sockaddr_in client_addr;

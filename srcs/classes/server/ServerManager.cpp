@@ -173,7 +173,7 @@ int ServerManager::run_servers()
 
             if (FD_ISSET(client_curr->getSocket(), &this->write_pool))
             {
-                if (client_curr->isValidRequest() && client_curr->isAvailable())
+                if (client_curr->isValidRequest())
                 {
                     Response rep;
                     std::string response = rep.sendResponse(client_curr);
