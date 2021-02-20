@@ -39,6 +39,7 @@ public:
 	void setMethod (const std::string &method);
 	void setQueryString (const std::string &queryString);
 	static std::string getPathWithoutLocation (const std::string &rawPath, LocationConfig &location);
+	static std::string getPathWithIndex (const std::string &rawPath, LocationConfig &location);
 };
 std::ostream &operator<< (std::ostream &o, const Request &q);
 

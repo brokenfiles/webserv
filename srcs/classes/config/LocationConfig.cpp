@@ -55,9 +55,9 @@ std::string LocationConfig::getAutoindex() {
 	return ("off");
 }
 
-std::string LocationConfig::getDefaultDir() {
-	if (this->configuration.find("default_dir") != this->configuration.end()) {
-		return (this->configuration["default_dir"]);
+std::string LocationConfig::getAuth() {
+	if (this->configuration.find("auth") != this->configuration.end()) {
+		return (this->configuration["auth"]);
 	}
 	return ("");
 }

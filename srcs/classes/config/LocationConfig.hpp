@@ -34,6 +34,8 @@ public:
 
 	std::string getAutoindex();
 
+	std::string getAuth();
+
 	std::string getUploadDir();
 
 	std::string getDefaultDir();

@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include "Response.hpp"
+#include "../../../includes/utils.hpp"
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
 
@@ -62,20 +63,30 @@ std::string Response::sendResponse(Client *client)
 		// on vérifie que le status code est à 200
 		if (this->_statusCode == getMessageCode(200)) {
 			if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
-				/* la méthode est valide */
-				if (method == "get" || method == "head") {
-					this->getHandler(client);
-					if (method == "head")
-						this->setBody("");
-				} else if (method == "put" || method == "patch") {
-					this->putHandler(client);
-				} else if (method == "post") {
-					this->postHandler(client);
-				} else if (method == "delete") {
-					this->deleteHandler(client);
-				} else {
-					// la méthode n'est pas géré par webserv
-					this->_statusCode = getMessageCode(405);
+				// on regarde si auth est empty ou non dans la location
+				if (!this->_location.getAuth().empty()) {
+					bool authenticated = this->authenticate(client);
+					if (!authenticated) {
+						this->_statusCode = getMessageCode(401);
+						this->_headers["WWW-Authenticate"] = "Basic";
+					}
+				}
+				if (this->_statusCode == getMessageCode(200)) {
+					/* la méthode est valide */
+					if (method == "get" || method == "head") {
+						this->getHandler(client);
+						if (method == "head")
+							this->setBody("");
+					} else if (method == "put" || method == "patch") {
+						this->putHandler(client);
+					} else if (method == "post") {
+						this->postHandler(client);
+					} else if (method == "delete") {
+						this->deleteHandler(client);
+					} else {
+						// la méthode n'est pas géré par webserv
+						this->_statusCode = getMessageCode(405);
+					}
 				}
 			} else {
 				Cgi cgi;
@@ -100,6 +111,12 @@ std::string Response::sendResponse(Client *client)
 void Response::getHandler(Client *client)
 {
 	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
+	this->handleAcceptCharset(client);
+	if (this->_statusCode != getMessageCode(200))
+		return ;
+	// on gère le accept language et on ajoute "extLanguage" à request file
+	this->handleAcceptLanguage(client, requestFile);
+	requestFile += this->_extLanguage;
 	// on ouvre in filestream
 	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
 	// on regarde si le fichier existe
@@ -113,6 +130,7 @@ void Response::getHandler(Client *client)
 
 			this->setBody(fileContent);
 			fileStream.close();
+			this->_headers["Content-Location"] = requestFile;
 			this->_headers["Last-Modified"] = getLastModified(requestFile);
 		} else {
 			// le fichier est inaccessible on retourne une erreur 403 forbidden
@@ -134,7 +152,7 @@ void Response::getHandler(Client *client)
 void Response::putHandler(Client *client)
 {
 	std::string requestFile = this->_location.getUploadDir() +
-			Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
+			Request::getPathWithIndex(client->getObjRequest().getPath(), this->_location);
 	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
     std::ofstream fileStream(requestFile.c_str());
@@ -145,6 +163,9 @@ void Response::putHandler(Client *client)
 		// on retourne un 200 si le fichier existait avant sinon un 201
 		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
 		fileStream.close();
+		if (!fileExists)
+			this->_headers["Location"] = client->getObjRequest().getPath();
+		this->_headers["Content-Location"] = requestFile;
 		this->_headers["Last-Modified"] = getLastModified(requestFile);
 	} else {
 		// il n'exite pas on retourne une erreur 403
@@ -155,7 +176,7 @@ void Response::putHandler(Client *client)
 void Response::postHandler(Client *client)
 {
 	std::string requestFile = this->_location.getUploadDir() +
-							  Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
+			Request::getPathWithIndex(client->getObjRequest().getPath(), this->_location);
 	int fd;
 	struct stat sb;
 	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
@@ -170,10 +191,13 @@ void Response::postHandler(Client *client)
 		if (ret < 0)
 			this->_statusCode = getMessageCode(500);
 		else {
+			this->_headers["Content-Location"] = requestFile;
 			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
 			if (this->_statusCode == getMessageCode(200)) {
 				this->setBody("File updated.");
 				this->_headers["Last-Modified"] = getLastModified(requestFile);
+			} else if (this->_statusCode == getMessageCode(201)) {
+				this->_headers["Location"] = client->getObjRequest().getPath();
 			}
 		}
 		close(fd);
@@ -190,11 +214,23 @@ void Response::deleteHandler(Client *client)
 		this->_statusCode = getMessageCode(404);
 	} else {
 		if (S_ISDIR(sb.st_mode)) {
-			try {
-				this->removeDir(requestFile, client);
-				this->setBody("Directory deleted.");
-			} catch (const std::exception &e) {
-				this->_statusCode = getMessageCode(500);
+			// on regarde si le dossier que l'utilisateur veut delete ne correspond pas au dossier d'upload
+			std::string uploadDir = std::string(this->_location.getUploadDir());
+			if (uploadDir[uploadDir.size() - 1] != '/') {
+				uploadDir += '/';
+			}
+			if (uploadDir != requestFile) {
+				try {
+					this->_headers["Content-Location"] = requestFile;
+					this->removeDir(requestFile, client);
+					this->setBody("Directory deleted.");
+				} catch (const std::exception &e) {
+					this->_statusCode = getMessageCode(500);
+				}
+			} else {
+				// le dossier que l'user veut delete est le dossier d'upload
+				// on renvoit une bad request
+				this->_statusCode = getMessageCode(400);
 			}
 		} else {
 			if (std::remove(requestFile.c_str()) == 0) {
@@ -205,6 +241,30 @@ void Response::deleteHandler(Client *client)
 			}
 		}
 	}
+}
+
+/**
+ * Cette fonction prends le client, récupère le token d'authentification, le décode et compare avec la valeur auth
+ * @param client
+ * @return si l'authentification est bonne
+ */
+bool Response::authenticate(Client *client)
+{
+	if (client->getObjRequest().getHeaders().find("Authorization") == client->getObjRequest().getHeaders().end())
+		return false;
+	std::string authorization = client->getObjRequest().getHeaders().at("Authorization");
+	std::vector<std::string> authSpecs = Utils::explode(authorization, " ");
+	if (authSpecs.size() == 2) {
+		if (toLower(authSpecs[0]) == "basic") {
+			std::string decoded = Utils::decodeBase64(authSpecs[1]);
+			if (decoded == this->_location.getAuth()) {
+				logger.success("Client authenticated", NO_PRINT_CLASS);
+				return true;
+			}
+		}
+	}
+	logger.error("Client failed to authenticate", NO_PRINT_CLASS);
+	return false;
 }
 
 void Response::removeDir(const std::string &path, Client *client)
@@ -236,12 +296,92 @@ void Response::removeDir(const std::string &path, Client *client)
 	}
 }
 
-void Response::handleAcceptLanguage(Client *client)
+void Response::handleAcceptLanguage(Client *client, const std::string &requestFile)
 {
+	// on check si le header accept-language existe
 	if (client->getObjRequest().getHeaders().find("Accept-Language") == client->getObjRequest().getHeaders().end())
 		return ;
 	std::map<std::string, std::string> headers = client->getObjRequest().getHeaders();
+	struct stat fileStat;
+	// on récupère les langages en raw pour les split plus tard
+	std::string rawLanguages = headers["Accept-Language"];
+	// on split les langages
+	std::vector<std::string> languages = Utils::explode(rawLanguages, ",");
+	// si languages.size == 1 ça veut dire qu'il n'y en a qu'un seul
+	// sinon il y a plusieurs langages, on doit le gérer
+	if (languages.size() == 1) {
+		std::string lang = Utils::removeWhitespaces(languages.front());
+		// si la langue n'est pas égale à un wildcard (toute langue autorisée)
+		if (lang != "*") {
+			if (stat(std::string(requestFile + "." + lang).c_str(), &fileStat) != -1) {
+				this->_extLanguage = "." + lang;
+				this->_headers["Content-Language"] = lang;
+			}
+		}
+	} else if (languages.size() > 1) {
+		std::vector<std::string>::iterator it = languages.begin();
+		std::list<std::string> orderedLanguages;
+		while (it != languages.end()) {
+			std::string temporaryLang = Utils::removeWhitespaces(*it);
+			std::vector<std::string> langSpecs = Utils::explode(temporaryLang, ";");
+			// on ajoute les languages au fur et à mesure de la lecture dans une liste
+			orderedLanguages.push_back(Utils::removeWhitespaces(langSpecs.front()));
+			it ++;
+		}
+		// on dispose de la liste et on va pouvoir choisir le meilleur langage
+		std::list<std::string>::iterator listIt = orderedLanguages.begin();
+		while (listIt != orderedLanguages.end()) {
+			if (stat(std::string(requestFile + "." + *listIt).c_str(), &fileStat) != -1) {
+				this->_extLanguage = "." + *listIt;
+				this->_headers["Content-Language"] = *listIt;
+				break ;
+			}
+			listIt ++;
+		}
+	}
+	if (!this->_extLanguage.empty()) {
+		logger.success("File found for wanted language. Extension : " + this->_extLanguage, NO_PRINT_CLASS);
+	}
+}
 
+void Response::handleAcceptCharset(Client *client)
+{
+	// on check si le header accept-charset existe
+	if (client->getObjRequest().getHeaders().find("Accept-Charset") == client->getObjRequest().getHeaders().end())
+		return ;
+	std::map<std::string, std::string> headers = client->getObjRequest().getHeaders();
+	// on récupère les langages en raw pour les split plus tard
+	std::string rawCharsets = headers["Accept-Charset"];
+	// on split les charsets
+	std::vector<std::string> charsets = Utils::explode(rawCharsets, ",");
+	// si charsets.size == 1 ça veut dire qu'il n'y en a qu'un seul
+	// sinon il y a plusieurs charsets, on doit le gérer
+	if (charsets.size() == 1) {
+		std::string charset = this->toLower(Utils::removeWhitespaces(charsets.front()));
+		// si la langue n'est pas égale à un wildcard (toute langue autorisée)
+		if (charset == "*" || charset == "utf-8") {
+			return ;
+		}
+	} else if (charsets.size() > 1) {
+		std::vector<std::string>::iterator it = charsets.begin();
+		std::list<std::string> orderedCharsets;
+		while (it != charsets.end()) {
+			std::string temporaryCharset = Utils::removeWhitespaces(*it);
+			std::vector<std::string> charsetSpecs = Utils::explode(temporaryCharset, ";");
+			// on ajoute les languages au fur et à mesure de la lecture dans une liste
+			orderedCharsets.push_back(this->toLower(Utils::removeWhitespaces(charsetSpecs.front())));
+			it ++;
+		}
+		// on dispose de la liste et on va pouvoir choisir le meilleur langage
+		std::list<std::string>::iterator listIt = orderedCharsets.begin();
+		while (listIt != orderedCharsets.end()) {
+			if (*listIt == "*" || *listIt == "utf-8")
+				return ;
+			listIt ++;
+		}
+	}
+	this->_statusCode = getMessageCode(406);
+	logger.error("Client accept-charset is invalid (the charset in not handled by server)", NO_PRINT_CLASS);
 }
 
 void Response::tryDirectoryListing (const std::string &path, Client *client) {
@@ -329,7 +469,8 @@ void Response::setDefaultHeaders(Client *client, ServerConfig &server)
 	this->_statusCode = this->getMessageCode(200);
 	this->setContentType(client);
 	this->_headers["Date"] = this->currentDate();
-	this->_headers["Host"] = "Webserv";
+	this->_headers["Host"] = client->getServerConfig().getServerName() + ":" + Logger::to_string(client->getServerConfig().getPort());
+	this->_headers["Server"] = "Webserv/1.0 (Ubuntu)";
 	this->_headers["Content-Length"] = "0";
 }
 
@@ -530,6 +671,7 @@ void Response::setDefaultStatusCodes()
 	this->addError(403, "Forbidden", "");
 	this->addError(404, "Not Found", "");
 	this->addError(405, "Method Not Allowed", "");
+	this->addError(406, "Non acceptable", "");
 	this->addError(413, "Request Entity Too Large", "");
 	this->addError(500, "Internal Server Error", "");
 	this->addError(501, "Not Implemented", "");

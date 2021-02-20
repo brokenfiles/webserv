@@ -17,6 +17,8 @@ private:
 	std::map<int, std::pair<std::string, std::string> > _statusMessages;
 	/** la correspondence entre extension et content type */
 	std::map<std::string, std::string> _contentTypes;
+	/** l'extension du langage s'il y en a un spéficié */
+	std::string _extLanguage;
 	/** la location de la requête dans le serveur */
 	LocationConfig _location;
 
@@ -48,7 +50,8 @@ public:
 	void putHandler (Client *client);
 	void postHandler (Client *client);
 	void deleteHandler (Client *client);
-	void handleAcceptLanguage (Client *client);
+	void handleAcceptLanguage (Client *client, const std::string &requestFile);
+	void handleAcceptCharset (Client *client);
 
 	/*
 	 * Getters
@@ -83,6 +86,7 @@ public:
 	};
 	void displayErrors ();
 	void tryDirectoryListing (const std::string &path, Client *client);
+	bool authenticate (Client *client);
 };
 
 #endif

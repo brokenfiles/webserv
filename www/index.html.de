@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Webserv</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header" class="header">
+        <logo id="logo">Webserv</logo>
+        <div id="header-nav" class="header-nav">
+            <a href="#">Wer sind wir?</a>
+            <a href="#">Contact</a>
+            <a href="#">Verbindung</a>
+        </div>
+        <div id="burger" class="burger">
+            <span class="burger-span"></span>
+        </div>
+    </header>
+    <div class="content">
+        <h1 class="titre">POSTICH in dem TIEKS</h1>
+    </div>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+</html>
