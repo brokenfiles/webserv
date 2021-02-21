@@ -41,7 +41,6 @@ public:
 	void setContentType (Client *client);
 	void setDefaultStatusCodes ();
 	void setDefaultExtensions ();
-	void replace(std::string &fileContent, std::string replace, std::string newString);
 
 	/*
 	 * Methods Handlers
@@ -50,8 +49,10 @@ public:
 	void putHandler (Client *client);
 	void postHandler (Client *client);
 	void deleteHandler (Client *client);
+	void optionsHandler ();
 	void handleAcceptLanguage (Client *client, const std::string &requestFile);
 	void handleAcceptCharset (Client *client);
+	void handleServerUnavailable (Client *client);
 
 	/*
 	 * Getters
@@ -85,6 +86,7 @@ public:
 	void displayErrors ();
 	void tryDirectoryListing (const std::string &path, Client *client);
 	bool authenticate (Client *client);
+	void traceHandler (Client *client);
 };
 
 #endif
