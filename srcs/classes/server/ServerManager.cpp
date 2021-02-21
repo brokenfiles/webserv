@@ -176,6 +176,7 @@ int ServerManager::run_servers()
 
                 if (client_curr->isValidRequest())
                     FD_SET(client_curr->getSocket(), &this->write_backup);
+                break;
             }
             else
                 logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - read_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"));
@@ -197,9 +198,20 @@ int ServerManager::run_servers()
                         return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
 
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
+                    if (client_curr->isFull())
+                    {
+                        FD_CLR(client_curr->getSocket(), &this->write_backup);
+                        FD_CLR(client_curr->getSocket(), &this->write_pool);
+                        fd_av.remove(client_curr->getSocket());
+
+                        client_curr->close_socket();
+                        clients.erase(it);
+                        break;
+                    }
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);
+                break;
             }
             else
                 logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - write_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"));

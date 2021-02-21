@@ -32,7 +32,6 @@ class Client_TCP
         struct hostent *host;
         struct sockaddr_in serv_addr;
 
-
         int sock;
 };
 
