@@ -139,6 +139,15 @@ int ServerManager::run_servers()
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
 
+                if (this->fd_av.size() > 916)
+                {
+                    newClient->isFull() = true;
+                    FD_SET(newClient->getSocket(), &this->write_backup);
+                    logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
+                    break;
+                }
+
+
                 FD_SET(newClient->getSocket(), &this->read_backup);
                 fd_av.push_back(newClient->getSocket());
 
