@@ -48,6 +48,9 @@ std::string Response::sendResponse(Client *client)
 	/* On définie les headers par défaut */
 	this->setDefaultHeaders(client, client->getServerConfig());
 
+	/* Gère si le serveur est unavailable */
+	this->handleServerUnavailable(client);
+
 	/* On check si la méthode est gérée par la location */
 	if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
@@ -80,7 +83,14 @@ std::string Response::sendResponse(Client *client)
 							this->setBody("");
 					} else if (method == "put" || method == "patch") {
 						this->putHandler(client);
-					} else if (method == "post") {
+					} else if (method == "options") {
+						this->optionsHandler();
+					} else if (method == "connect") {
+						// connexion établie, rien à faire
+					} else if (method == "connect") {
+						this->traceHandler(client);
+					}
+					else if (method == "post") {
 						this->postHandler(client);
 					} else if (method == "delete") {
 						this->deleteHandler(client);
@@ -105,6 +115,12 @@ std::string Response::sendResponse(Client *client)
 	}
 
 	return (this->stringify());
+}
+
+void Response::handleServerUnavailable (Client *client)
+{
+	this->_statusCode = getMessageCode(503);
+	this->_headers["Retry-After"] = "120";
 }
 
 /**
@@ -173,6 +189,29 @@ void Response::putHandler(Client *client)
 		// il n'exite pas on retourne une erreur 403
 		this->_statusCode = getMessageCode(403);
 	}
+}
+
+/**
+ * Cette méthode affiche les Options de la location (exemple : Allow)
+ * @param client
+ */
+void Response::optionsHandler()
+{
+	this->_headers["Allow"] = this->_location.getRawMethods();
+}
+
+void Response::traceHandler(Client *client)
+{
+	std::string headers;
+
+	headers += client->getObjRequest().getMethod() + " " + client->getObjRequest().getPath() + " HTTP/1.1";
+	std::map<std::string, std::string>::const_iterator it = client->getObjRequest().getHeaders().begin();
+	while (it != client->getObjRequest().getHeaders().end()) {
+		headers += it->first + ": " + it->second;
+		it ++;
+	}
+	this->setBody(headers);
+	this->_headers["Content-Type"] = "message/http";
 }
 
 void Response::postHandler(Client *client)

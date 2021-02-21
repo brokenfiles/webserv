@@ -31,7 +31,7 @@ std::string LocationConfig::getRawMethods()
 	if (this->configuration.find("methods") != this->configuration.end()) {
 		return (this->configuration["methods"]);
 	}
-	return ("No methods found");
+	return ("GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH");
 }
 
 std::string LocationConfig::getRootDir() {

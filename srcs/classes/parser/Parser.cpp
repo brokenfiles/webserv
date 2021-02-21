@@ -92,7 +92,6 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
     std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
     std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
 
-
     //Check la reqMethod
     for (size_t i = 0; i < 9; i++)
     {
@@ -103,8 +102,8 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
         }
     }
 
-    if (req.getMethod().empty())
-        throw BadRequestMethod();
+//    if (req.getMethod().empty())
+//        throw BadRequestMethod();
 }
 
 void Parser::fillPath(Request &req, std::string &frontLine)
