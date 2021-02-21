@@ -111,19 +111,20 @@ int main()
     std::string host_ip = "127.0.0.1";
     int port = 8080;
 
-    client.connectToServer(host_ip, port, 200);
+    client.connectToServer(host_ip, port, 50);
 
 //    client.sendHeader();
 //    client.sendChunkedData();
 
-//    char buffer[1024] = { 0 };
-//    int valread = read(client.sock , buffer, 1024);
-//    std::cout << "---------- RESPONSE ----------" << std::endl;
-//    std::cout << buffer << std::endl;
-//    std::cout << "------------ END. ------------" << std::endl;
-
-    std::string input;
-    std::cout << "Press anykey to close connexion\n";
-    std::getline(std::cin, input);
-
+    for (std::list<struct Client_TCP::item*>::iterator it = client.clientList.begin(); it != client.clientList.end(); it++)
+    {
+        char buffer[2048] = {0};
+        int valread = read((*it)->socket, buffer, 2048);
+        std::cout << "---------- RESPONSE ----------" << std::endl;
+        std::cout << buffer << std::endl;
+        std::cout << "------------ END. ------------" << std::endl;
+    }
+        std::string input;
+        std::cout << "Press anykey to close connexion\n";
+        std::getline(std::cin, input);
 }

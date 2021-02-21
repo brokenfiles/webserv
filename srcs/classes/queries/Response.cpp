@@ -49,10 +49,12 @@ std::string Response::sendResponse(Client *client)
 	this->setDefaultHeaders(client, client->getServerConfig());
 
 	/* Gère si le serveur est unavailable */
-	this->handleServerUnavailable(client);
-
+	if (client->isFull())
+    {
+        this->handleServerUnavailable(client);
+    }
 	/* On check si la méthode est gérée par la location */
-	if (!this->isMethodValid(method)) {
+	else if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
 		this->_statusCode = this->getMessageCode(405);
 		this->_headers["Allow"] = this->_location.getRawMethods();
@@ -122,10 +124,9 @@ std::string Response::sendResponse(Client *client)
  */
 void Response::handleServerUnavailable (Client *client)
 {
-	if (client->isFull()) {
-		this->_statusCode = getMessageCode(503);
-		this->_headers["Retry-After"] = "120";
-	}
+    (void)client;
+    this->_statusCode = getMessageCode(503);
+    this->_headers["Retry-After"] = "120";
 }
 
 /**

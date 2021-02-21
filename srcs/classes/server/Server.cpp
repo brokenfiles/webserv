@@ -72,7 +72,7 @@ int Server::create_socket()
     return (0);
 }
 
-int Server::accept_client(Client *client, fd_set &fd_pool, int &higher_fd)
+int Server::accept_client(Client *client)
 {
     int size = sizeof(client->getAddr());
     (void)higher_fd;
