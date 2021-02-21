@@ -63,7 +63,7 @@ std::string Response::sendResponse(Client *client)
 		// on vérifie que le status code est à 200
 		if (this->_statusCode == getMessageCode(200)) {
 			if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
-				logger.info("Executing built-in methods for this request", NO_PRINT_CLASS);
+				logger.info("Executing built-in methods for this request");
 				// on regarde si auth est empty ou non dans la location
 				if (!this->_location.getAuth().empty()) {
 					bool authenticated = this->authenticate(client);
@@ -90,7 +90,7 @@ std::string Response::sendResponse(Client *client)
 					}
 				}
 			} else {
-				logger.info("Executing CGI for this request", NO_PRINT_CLASS);
+				logger.info("Executing CGI for this request");
 				Cgi cgi;
 				// execute CGIs
 				cgi.launch(client, *this);
@@ -187,7 +187,7 @@ void Response::postHandler(Client *client)
 	} else {
 		// on écrit dans le fichier
 		int ret = write(fd, client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().size());
-		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret), NO_PRINT_CLASS);
+		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret));
 		// si ret est <= 0, il y a eu une erreur, on retourne une erreur 500
 		if (ret < 0)
 			this->_statusCode = getMessageCode(500);
@@ -259,15 +259,23 @@ bool Response::authenticate(Client *client)
 		if (toLower(authSpecs[0]) == "basic") {
 			std::string decoded = Utils::decodeBase64(authSpecs[1]);
 			if (decoded == this->_location.getAuth()) {
-				logger.success("Client authenticated", NO_PRINT_CLASS);
+				logger.success("Client authenticated");
 				return true;
+			} else {
+				logger.error("Identifiers tried : " + decoded);
 			}
 		}
 	}
-	logger.error("Client failed to authenticate", NO_PRINT_CLASS);
+	logger.error("Client failed to authenticate");
 	return false;
 }
 
+/**
+ * Cette fonction supprime un directory
+ * En vérifiant que le directory ne correspond pas au upload_dir
+ * @param path
+ * @param client
+ */
 void Response::removeDir(const std::string &path, Client *client)
 {
 	DIR *dir;
@@ -297,6 +305,13 @@ void Response::removeDir(const std::string &path, Client *client)
 	}
 }
 
+/**
+ * Cette fonction gère le header "Accept-Language"
+ * Les fichiers peuvent avoir une extension .<lang>
+ * Si cette langue est spécifiée, ce sera ce fichier qui sera renvoyé
+ * @param client
+ * @param requestFile
+ */
 void Response::handleAcceptLanguage(Client *client, const std::string &requestFile)
 {
 	// on check si le header accept-language existe
@@ -341,10 +356,16 @@ void Response::handleAcceptLanguage(Client *client, const std::string &requestFi
 		}
 	}
 	if (!this->_extLanguage.empty()) {
-		logger.success("File found for wanted language. Extension : " + this->_extLanguage, NO_PRINT_CLASS);
+		logger.success("File found for wanted language. Extension : " + this->_extLanguage);
 	}
 }
 
+/**
+ * Cette fonction regarde si le charset de la requête est géré par webserv
+ * S'il est géré, on ne fait rien
+ * Sinon, on renvoie un code 406 non acceptable
+ * @param client
+ */
 void Response::handleAcceptCharset(Client *client)
 {
 	// on check si le header accept-charset existe
@@ -382,7 +403,7 @@ void Response::handleAcceptCharset(Client *client)
 		}
 	}
 	this->_statusCode = getMessageCode(406);
-	logger.error("Client accept-charset is invalid (the charset in not handled by server)", NO_PRINT_CLASS);
+	logger.error("Client accept-charset is invalid (the charset in not handled by server)");
 }
 
 void Response::tryDirectoryListing (const std::string &path, Client *client) {
@@ -399,15 +420,15 @@ void Response::tryDirectoryListing (const std::string &path, Client *client) {
 				// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
 				std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ), (std::istreambuf_iterator<char>()));
 
-				this->replace(fileContent, "${DIRECTORY_NAME}", client->getObjRequest().getPath());
-				this->replace(fileContent, "${FILES}", files);
+				Utils::replaceString(fileContent, "${DIRECTORY_NAME}", client->getObjRequest().getPath());
+				Utils::replaceString(fileContent, "${FILES}", files);
 
 				this->setBody(fileContent);
 				fileStream.close();
 			}
 		}
 	} catch (const std::exception &exception) {
-		logger.warning("(DIRECTORY LISTING ERROR!) " + Logger::to_string(exception.what()), NO_PRINT_CLASS);
+		logger.warning("(DIRECTORY LISTING ERROR!) " + Logger::to_string(exception.what()));
 		this->_statusCode = getMessageCode(404);
 	}
 }
@@ -523,7 +544,7 @@ LocationConfig Response::find_location(Client *client)
 		std::list<LocationConfig>::iterator matchedLocationsIterator = matchedLocations.begin();
 		while (matchedLocationsIterator != matchedLocations.end()) {
 			if (matchedLocationsIterator->getCgiExtension() == reqExtension) {
-				logger.info("Found best location for extension " + reqExtension, NO_PRINT_CLASS);
+				logger.info("Found best location for extension " + reqExtension);
 				return *matchedLocationsIterator;
 			}
 			matchedLocationsIterator ++;
@@ -633,23 +654,15 @@ std::string Response::getDirName (const std::string& file)
 	return(fileSlash.substr(firstSlash, secondSlash - firstSlash));
 }
 
-void Response::replace(std::string &fileContent, std::string replace, std::string newString)
-{
-    size_t pos = 0;
-
-    while ((pos = fileContent.find(replace)) != std::string::npos)
-    {
-        fileContent.replace(pos, replace.length(), newString);
-        pos += newString.length();
-    }
-}
-
+/**
+ * Cette fonction afficher les erreurs grâce à la map statusMessages et au statusCode
+ */
 void Response::displayErrors ()
 {
-	std::map<int, std::pair<std::string, std::string> >::iterator begin = this->_statusMessages.begin();
-	while (begin != this->_statusMessages.end())
+	std::map<int, std::string>::iterator it = this->_statusMessages.begin();
+	while (it != this->_statusMessages.end())
 	{
-		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode)
+		if (Logger::to_string(it->first) + " " + it->second == this->_statusCode)
 		{
 			std::ifstream fileStream("www/server/ErrorTemplate.html", std::ifstream::in);
 			// on regarde si le fichier existe
@@ -662,18 +675,22 @@ void Response::displayErrors ()
 					// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
 					std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ), (std::istreambuf_iterator<char>()));
 
-					this->replace(fileContent, "ErrorStatus", begin->second.first);
-					this->replace(fileContent, "ErrorCode", logger.to_string(begin->first));
+					Utils::replaceString(fileContent, "ErrorStatus", it->second);
+					Utils::replaceString(fileContent, "ErrorCode", Logger::to_string(it->first));
 
 					this->setBody(fileContent);
 					fileStream.close();
 				}
 			}
 		}
-		begin++;
+		it++;
 	}
 }
 
+/**
+ * Getter pour le statusCode
+ * @return le statusCode
+ */
 const std::string &Response::getStatusCode () const
 {
 	return _statusCode;
@@ -681,25 +698,25 @@ const std::string &Response::getStatusCode () const
 
 void Response::setDefaultStatusCodes()
 {
-	this->addError(200, "OK", "");
-	this->addError(201, "Created", "");
-	this->addError(202, "Accepted", "");
-	this->addError(204, "No Content", "");
-	this->addError(300, "Multiple Choices", "");
-	this->addError(301, "Moved Permanently", "");
-	this->addError(302, "Found", "");
-	this->addError(310, "Too many Redirects", "");
-	this->addError(400, "Bad request", "");
-	this->addError(401, "Unauthorized", "");
-	this->addError(403, "Forbidden", "");
-	this->addError(404, "Not Found", "");
-	this->addError(405, "Method Not Allowed", "");
-	this->addError(406, "Non acceptable", "");
-	this->addError(413, "Request Entity Too Large", "");
-	this->addError(500, "Internal Server Error", "");
-	this->addError(501, "Not Implemented", "");
-	this->addError(502, "Bad Gateway", "");
-	this->addError(503, "Service Unavailable", "");
+	this->addError(200, "OK");
+	this->addError(201, "Created");
+	this->addError(202, "Accepted");
+	this->addError(204, "No Content");
+	this->addError(300, "Multiple Choices");
+	this->addError(301, "Moved Permanently");
+	this->addError(302, "Found");
+	this->addError(310, "Too many Redirects");
+	this->addError(400, "Bad request");
+	this->addError(401, "Unauthorized");
+	this->addError(403, "Forbidden");
+	this->addError(404, "Not Found");
+	this->addError(405, "Method Not Allowed");
+	this->addError(406, "Non acceptable");
+	this->addError(413, "Request Entity Too Large");
+	this->addError(500, "Internal Server Error");
+	this->addError(501, "Not Implemented");
+	this->addError(502, "Bad Gateway");
+	this->addError(503, "Service Unavailable");
 }
 
 void Response::setDefaultExtensions()
@@ -725,31 +742,20 @@ void Response::setDefaultExtensions()
 
 std::string Response::getMessageCode (int code)
 {
-	return (Logger::to_string(code) + " " + this->_statusMessages[code].first);
-}
-
-const std::string &Response::getFileCode (int code)
-{
-	return (this->_statusMessages[code].second);
+	return (Logger::to_string(code) + " " + this->_statusMessages[code]);
 }
 
 void Response::setMessageCode (int code, const std::string& message)
 {
-	this->_statusMessages[code].first = message;
+	this->_statusMessages[code] = message;
 }
 
-void Response::setFileCode (int code, const std::string& file)
-{
-	this->_statusMessages[code].second = file;
-}
-
-void Response::addError (int code, const std::string &message, const std::string &file)
+void Response::addError (int code, const std::string &message)
 {
 	this->setMessageCode(code, message);
-	this->setFileCode(code, file);
 }
 
-std::map<int, std::pair<std::string, std::string> > &Response::getStatusMessages ()
+std::map<int, std::string > &Response::getStatusMessages ()
 {
 	return _statusMessages;
 }

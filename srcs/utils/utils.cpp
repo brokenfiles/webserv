@@ -97,6 +97,17 @@ namespace Utils {
 		return (replaced);
 	}
 
+	void replaceString (std::string &fileContent, const std::string &replace, const std::string &newString)
+	{
+		size_t pos = 0;
+
+		while ((pos = fileContent.find(replace)) != std::string::npos)
+		{
+			fileContent.replace(pos, replace.length(), newString);
+			pos += newString.length();
+		}
+	}
+
 	int	ft_strlen(const char *str)
 	{
 		int	i;

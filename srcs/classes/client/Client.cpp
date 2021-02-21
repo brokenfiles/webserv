@@ -47,9 +47,9 @@ int Client::read_request(void)
     if (!(recvCheck) || read == 0)
     {
         if (read == 0)
-            return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
+            return (logger.warning(std::string("[SERVER]: recv: 0")), -1);
         else
-            return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
+            return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno)))), -1);
     }
 
     //Si on trouve un CRLF "\r\n\r\n" > Parsing HEADER || BODY;
@@ -101,7 +101,7 @@ int Client::read_request(void)
         //Si HEADER et BODY récupéré/parsé, c'est une valid request, on continue =)
         if (this->request.isHeaderParsed() && this->request.isBodyParsed())
         {
-            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
+            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".");
             this->request.isBodyParsed() = false;
             this->request.isHeaderParsed() = false;
             this->isValidRequest() = true;
@@ -110,18 +110,18 @@ int Client::read_request(void)
         }
     }
 //    else if (!this->request.isHeaderParsed())
-//        return (logger.error("[SERVER]: Not Header Found.", NO_PRINT_CLASS, -1));
+//        return (logger.error("[SERVER]: Not Header Found.", -1));
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;
-    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".", NO_PRINT_CLASS);
+    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
     return (0);
 }
 
 int Client::send_response(const std::string &req)
 {
     if (send(this->socket, req.c_str(), req.length(), 0) != (int) req.length())
-        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
     return (0);
 }
 

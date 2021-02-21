@@ -8,6 +8,7 @@ namespace Utils {
 	std::string generateToken(unsigned int len);
 	std::string toUppercase(std::string string);
 	std::string replaceAll(std::basic_string<char> string, char haystack, char needle);
+	void replaceString (std::string &fileContent, const std::string &replace, const std::string &newString);
 	int ft_strlen(const char *str);
 	char *ft_strdup(const char *str);
 }

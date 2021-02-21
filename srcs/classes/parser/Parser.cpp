@@ -31,7 +31,7 @@ void Parser::parseHeader(Request &req, std::string& keeper)
     catch (const std::exception &e)
     {
         keeper.clear();
-        logger.error("[SERVER]: " + logger.to_string(e.what()), NO_PRINT_CLASS, -1);
+        logger.error("[SERVER]: " + logger.to_string(e.what()), -1);
     }
 
 }

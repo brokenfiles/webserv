@@ -14,7 +14,7 @@ private:
 	/** le code qui est retourné par response */
 	std::string _statusCode;
 	/** les messages des status code */
-	std::map<int, std::pair<std::string, std::string> > _statusMessages;
+	std::map<int, std::string> _statusMessages;
 	/** la correspondence entre extension et content type */
 	std::map<std::string, std::string> _contentTypes;
 	/** l'extension du langage s'il y en a un spéficié */
@@ -57,12 +57,11 @@ public:
 	 * Getters
 	 */
 	const std::string &getStatusCode () const;
-	std::map<int, std::pair<std::string, std::string> > &getStatusMessages ();
+	std::map<int, std::string> &getStatusMessages ();
 	std::string getMessageCode (int code);
 	std::string getPathWithSlash (std::string path);
 	std::map<std::string, std::string> &getContentTypes ();
 	LocationConfig &getLocation ();
-	const std::string &getFileCode (int code);
 	std::string getFilesInDirectory (const std::string &path, Client *client);
 	std::string getLastModified (const std::string &file);
 
@@ -70,8 +69,7 @@ public:
 	 * Setters
 	 */
 	void setMessageCode (int code, const std::string& message);
-	void setFileCode (int code, const std::string& file);
-	void addError (int code, const std::string &message, const std::string& file);
+	void addError (int code, const std::string &message);
 	void setStatusCode(const std::string &statusCode);
 	/*
 	 * Exceptions

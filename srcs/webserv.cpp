@@ -24,11 +24,11 @@ int main (int ac, char **av)
 	else
 	    configFile = "conf/max.conf";
 
-	logger.warning("Run Webserv in silent mode? : [y\\n]", NO_PRINT_CLASS);
+	logger.warning("Run Webserv in silent mode? : [y\\n]");
     std::getline(std::cin, input);
     bool state = !(input == "n" || input == "N");
-    logger.notice("SILENT MODE: " + logger.to_string(state) , NO_PRINT_CLASS);
-    logger.notice("Loading configuration: " + configFile , NO_PRINT_CLASS);
+    logger.notice("SILENT MODE: " + logger.to_string(state) );
+    logger.notice("Loading configuration: " + configFile );
     logger.silence_mode(state);
 
 	try
@@ -49,7 +49,7 @@ int main (int ac, char **av)
 	}
 	catch (const std::exception &exception)
 	{
-		return (logger.error("[SERVER]: " + logger.to_string(exception.what()), NO_PRINT_CLASS, -1));
+		return (logger.error("[SERVER]: " + logger.to_string(exception.what()), -1));
 	}
 
 	return (0);
