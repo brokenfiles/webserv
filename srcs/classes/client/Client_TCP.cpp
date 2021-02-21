@@ -24,27 +24,36 @@ Client_TCP &Client_TCP::operator=(const Client_TCP &copy)
     }
     return (*this);
 }
-void Client_TCP::connectToServer(std::string &host_ip, int port)
+void Client_TCP::connectToServer(std::string &host_ip, int port, int size)
 {
-    this->sock = socket(AF_INET , SOCK_STREAM , 0);
-    this->host = gethostbyname(host_ip.c_str());
-
-    if (this->host == NULL)
+    for (int i = 0; i < size; i++)
     {
-        std::cout << "gethostbyname error: " << strerror(errno) << std::endl;
-        exit(0);
-    }
+        struct item* client = new struct item;
+        this->clientList.push_front(client);
 
-    serv_addr.sin_addr.s_addr = inet_addr(host_ip.c_str());
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
 
-    if (connect(this->sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        std::cout << "connect error: " << strerror(errno) << std::endl;
-        exit(0);
+
+        client->socket = socket(AF_INET, SOCK_STREAM, 0);
+        client->serv_h = gethostbyname(host_ip.c_str());
+
+        if (client->serv_h == NULL)
+        {
+            std::cout << "gethostbyname error: " << strerror(errno) << std::endl;
+            exit(0);
+        }
+
+        client->addr.sin_addr.s_addr = inet_addr(host_ip.c_str());
+        client->addr.sin_family = AF_INET;
+        client->addr.sin_port = htons(port);
+
+        if (connect(client->socket, (struct sockaddr *) &client->addr, sizeof(client->addr)) < 0)
+        {
+            std::cout << "connect error: " << strerror(errno) << std::endl;
+            exit(0);
+        }
+        std::cout << "Connected to: " << inet_ntoa(client->addr.sin_addr) << ":" << ntohs(client->addr.sin_port) << std::endl;
+        usleep(100000);
     }
-    std::cout << "Connected to: " << inet_ntoa(serv_addr.sin_addr) << ":" << ntohs(serv_addr.sin_port) << std::endl;
 }
 void Client_TCP::sendHeader()
 {
@@ -102,16 +111,16 @@ int main()
     std::string host_ip = "127.0.0.1";
     int port = 8080;
 
-    client.connectToServer(host_ip, port);
+    client.connectToServer(host_ip, port, 200);
 
-    client.sendHeader();
-    client.sendChunkedData();
+//    client.sendHeader();
+//    client.sendChunkedData();
 
-    char buffer[1024] = { 0 };
-    int valread = read(client.sock , buffer, 1024);
-    std::cout << "---------- RESPONSE ----------" << std::endl;
-    std::cout << buffer << std::endl;
-    std::cout << "------------ END. ------------" << std::endl;
+//    char buffer[1024] = { 0 };
+//    int valread = read(client.sock , buffer, 1024);
+//    std::cout << "---------- RESPONSE ----------" << std::endl;
+//    std::cout << buffer << std::endl;
+//    std::cout << "------------ END. ------------" << std::endl;
 
     std::string input;
     std::cout << "Press anykey to close connexion\n";
