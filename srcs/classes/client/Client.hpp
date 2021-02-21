@@ -35,7 +35,6 @@ class Client
 	    struct sockaddr_in &getAddr();
 	    int &getSocket();
 
-	    std::string &getStringRequest();
 	    Request& getObjRequest();
 
 	    std::string &getIP();
@@ -44,9 +43,9 @@ class Client
 	    ServerConfig &getServerConfig();
 
 	    bool &isValidRequest();
+	    bool &isFull();
 
 	    //setters
-	    void setRequest(std::string& request);
 
     private:
         Parser parser;
@@ -54,13 +53,13 @@ class Client
         ServerConfig serverConfig;
 
 	    bool validRequest;
+	    bool full;
 
 	    struct sockaddr_in client_addr;
 	    int socket;
 
 	    int port;
 	    std::string ip;
-	    std::string _recvRequest;
 	    std::string _recvRequest_backup;
 
 };

@@ -1,9 +1,10 @@
 #include "Client.hpp"
 
-Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest(), _recvRequest_backup()
+Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest_backup()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
     this->validRequest = false;
+    this->full = false;
 }
 
 Client::~Client()
@@ -101,7 +102,7 @@ int Client::read_request(void)
         //Si HEADER et BODY récupéré/parsé, c'est une valid request, on continue =)
         if (this->request.isHeaderParsed() && this->request.isBodyParsed())
         {
-            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".");
+            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
             this->request.isBodyParsed() = false;
             this->request.isHeaderParsed() = false;
             this->isValidRequest() = true;
@@ -130,7 +131,7 @@ void Client::printRequest(void)
 //    if (!logger.isSilent())
 //    {
         std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
-        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
+//        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
         std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 //    }
 }
@@ -147,16 +148,6 @@ struct sockaddr_in &Client::getAddr()
 int &Client::getSocket()
 {
     return (socket);
-}
-
-void Client::setRequest(std::string& request)
-{
-    _recvRequest = request;
-}
-
-std::string& Client::getStringRequest(void)
-{
-    return (this->_recvRequest);
 }
 
 std::string& Client::getIP(void)
@@ -182,6 +173,10 @@ ServerConfig &Client::getServerConfig()
 bool &Client::isValidRequest()
 {
     return (this->validRequest);
+}
+bool &Client::isFull()
+{
+    return (this->full);
 }
 
 
