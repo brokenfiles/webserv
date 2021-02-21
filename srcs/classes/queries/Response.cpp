@@ -87,10 +87,9 @@ std::string Response::sendResponse(Client *client)
 						this->optionsHandler();
 					} else if (method == "connect") {
 						// connexion établie, rien à faire
-					} else if (method == "connect") {
+					} else if (method == "trace") {
 						this->traceHandler(client);
-					}
-					else if (method == "post") {
+					} else if (method == "post") {
 						this->postHandler(client);
 					} else if (method == "delete") {
 						this->deleteHandler(client);
@@ -117,10 +116,16 @@ std::string Response::sendResponse(Client *client)
 	return (this->stringify());
 }
 
+/**
+ * Mets un status code 503 si le serveur est full
+ * @param client
+ */
 void Response::handleServerUnavailable (Client *client)
 {
-	this->_statusCode = getMessageCode(503);
-	this->_headers["Retry-After"] = "120";
+	if (client->isFull()) {
+		this->_statusCode = getMessageCode(503);
+		this->_headers["Retry-After"] = "120";
+	}
 }
 
 /**
@@ -204,10 +209,10 @@ void Response::traceHandler(Client *client)
 {
 	std::string headers;
 
-	headers += client->getObjRequest().getMethod() + " " + client->getObjRequest().getPath() + " HTTP/1.1";
+	headers += client->getObjRequest().getMethod() + " " + client->getObjRequest().getPath() + " HTTP/1.1\n";
 	std::map<std::string, std::string>::const_iterator it = client->getObjRequest().getHeaders().begin();
 	while (it != client->getObjRequest().getHeaders().end()) {
-		headers += it->first + ": " + it->second;
+		headers += it->first + ": " + it->second + "\n";
 		it ++;
 	}
 	this->setBody(headers);
