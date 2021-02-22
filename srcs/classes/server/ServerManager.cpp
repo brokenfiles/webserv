@@ -10,7 +10,12 @@ ServerManager::ServerManager()
 
 ServerManager::~ServerManager()
 {
-
+    for (std::list<Server*>::iterator it = this->servers.begin(); it != this->servers.end(); it++)
+    {
+        delete (*it);
+        it = this->servers.erase(it);
+    }
+    std::cout << "destru\n";
 }
 
 ServerManager::ServerManager(const ServerManager &copy)
@@ -116,7 +121,6 @@ int ServerManager::setup_fd()
 int ServerManager::run_servers()
 {
     int higher_fd = -1;
-    fd_set fd_pool;
 
     while (1)
     {
@@ -137,7 +141,7 @@ int ServerManager::run_servers()
                 if (server_curr->accept_client(newClient) < 0)
                     throw AcceptClientError();
 
-                if (this->fd_av.size() > 30)
+                if (this->fd_av.size() > 916)
                 {
                     newClient->isFull() = true;
                     FD_SET(newClient->getSocket(), &this->write_backup);
@@ -159,9 +163,17 @@ int ServerManager::run_servers()
             {
                 if (client_curr->read_request() < 0)
                 {
-                    this->disconnectClient(client_curr);
-                    clients.erase(it);
-                    break;
+                    FD_CLR(client_curr->getSocket(), &this->read_backup);
+                    FD_CLR(client_curr->getSocket(), &this->read_pool);
+                    fd_av.remove(client_curr->getSocket());
+                    delete client_curr;
+                    client_curr->close_socket();
+                    it = clients.erase(it);
+                    logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
+                    continue;
+//                    this->disconnectClient(client_curr);
+//                    clients.erase(it);
+//                    break;
                 }
 
                 if (client_curr->isValidRequest())
@@ -188,9 +200,17 @@ int ServerManager::run_servers()
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
                     if (client_curr->isFull())
                     {
-                        this->disconnectClient(client_curr);
-                        clients.erase(it);
-                        break;
+                        FD_CLR(client_curr->getSocket(), &this->write_backup);
+                        FD_CLR(client_curr->getSocket(), &this->write_pool);
+                        fd_av.remove(client_curr->getSocket());
+                        client_curr->close_socket();
+                        delete client_curr;
+                        it = clients.erase(it);
+                        logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
+                        continue;
+//                        this->disconnectClient(client_curr);
+//                        clients.erase(it);
+//                        break;
                     }
                 }
                 client_curr->isValidRequest() = false;
