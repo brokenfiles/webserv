@@ -29,7 +29,7 @@ class Server
         Server &operator=(const Server &copy);
 
         int create_socket();
-        int accept_client(Client *client);
+        int accept_client(Client *client, fd_set &fd_pool, int &higher_fd);
 
         int &getServerSocket(void);
         struct sockaddr_in &getServerAddr();

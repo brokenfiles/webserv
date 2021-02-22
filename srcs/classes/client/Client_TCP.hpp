@@ -25,20 +25,12 @@ class Client_TCP
         Client_TCP(const Client_TCP &copy);
         Client_TCP &operator=(const Client_TCP &copy);
 
-        void connectToServer(std::string &host, int port, int size);
+        void connectToServer(std::string &host, int port);
         void sendHeader();
         void sendChunkedData();
 
         struct hostent *host;
         struct sockaddr_in serv_addr;
-
-        struct item {
-            int socket;
-            struct hostent *serv_h;
-            struct sockaddr_in addr;
-        };
-
-        std::list<struct item*> clientList;
 
         int sock;
 };

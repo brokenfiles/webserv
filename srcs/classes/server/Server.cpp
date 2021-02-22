@@ -72,9 +72,11 @@ int Server::create_socket()
     return (0);
 }
 
-int Server::accept_client(Client *client)
+int Server::accept_client(Client *client, fd_set &fd_pool, int &higher_fd)
 {
     int size = sizeof(client->getAddr());
+    (void)higher_fd;
+    (void)fd_pool;
 
     if ((client->getSocket() = accept(this->getServerSocket(), (struct sockaddr *) &client->getAddr(), (socklen_t *) &size)) < 0)
         return (logger.error("[SERVER]: accept: " + std::string(strerror(errno)), -1));
