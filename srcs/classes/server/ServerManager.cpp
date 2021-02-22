@@ -170,10 +170,10 @@ int ServerManager::run_servers()
                     client_curr->close_socket();
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
-                    continue;
+//                    continue;
 //                    this->disconnectClient(client_curr);
 //                    clients.erase(it);
-//                    break;
+                    break;
                 }
 
                 if (client_curr->isValidRequest())
@@ -207,7 +207,7 @@ int ServerManager::run_servers()
                         delete client_curr;
                         it = clients.erase(it);
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
-                        continue;
+                        break;
 //                        this->disconnectClient(client_curr);
 //                        clients.erase(it);
 //                        break;
