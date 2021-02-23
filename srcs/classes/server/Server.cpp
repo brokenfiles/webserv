@@ -89,3 +89,13 @@ int Server::accept_client(Client *client, fd_set &fd_pool, int &higher_fd)
     }
     return (0);
 }
+
+void Server::getRightConfig(Config &config)
+{
+    (void)config;
+//    for (std::vector<ServerConfig>::iterator it = config.getServers().begin(); it != config.getServers().end(); it++)
+//    {
+//
+//    }
+//    return (ServerConfig());
+}

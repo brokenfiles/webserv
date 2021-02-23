@@ -59,9 +59,9 @@ int Client::read_request(void)
         //Si Header PAS encore parsé, on parse =)
         if (!this->request.isHeaderParsed())
         {
-//            std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
-//            std::cout << keeper << std::endl;
-//            std::cout << "-------------------------------------------------------\n";
+            std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+            std::cout << keeper << std::endl;
+            std::cout << "-------------------------------------------------------\n";
             this->parser.parseHeader(this->request, keeper);
 //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
 //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
@@ -73,6 +73,8 @@ int Client::read_request(void)
         //Ensuite Parsing du BODY si header déjà parsé
         if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
         {
+
+
             //SI "Transfer-Encoding: chunked", il y a un body et il faut le récupérer entierement =)
             if ((((it = this->request.getHeaders().find("Transfer-Encoding")) != this->request.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
             {
@@ -107,6 +109,8 @@ int Client::read_request(void)
             this->isValidRequest() = true;
             logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".");
             this->_recvRequest_backup.clear();
+
+            std::vector<std::string>::iterator  it_header;
             return (0);
         }
     }
@@ -177,6 +181,14 @@ bool &Client::isValidRequest()
 bool &Client::isConnected()
 {
     return (this->connected);
+}
+Parser &Client::getObjParser()
+{
+    return (this->parser);
+}
+int &Client::getListener()
+{
+    return (this->listen);
 }
 
 

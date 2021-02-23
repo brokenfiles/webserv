@@ -26,25 +26,27 @@ Client_TCP &Client_TCP::operator=(const Client_TCP &copy)
 }
 void Client_TCP::connectToServer(std::string &host_ip, int port)
 {
-    this->sock = socket(AF_INET , SOCK_STREAM , 0);
-    this->host = gethostbyname(host_ip.c_str());
+    struct clientItem* item = new struct clientItem();
+    this->clientList.push_back(item);
+    item->socket = socket(AF_INET , SOCK_STREAM , 0);
+    item->serv_h = gethostbyname(host_ip.c_str());
 
-    if (this->host == NULL)
+    if (item->serv_h == NULL)
     {
         std::cout << "gethostbyname error: " << strerror(errno) << std::endl;
         exit(0);
     }
 
-    serv_addr.sin_addr.s_addr = inet_addr(host_ip.c_str());
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
+    item->serv_addr.sin_addr.s_addr = inet_addr(host_ip.c_str());
+    item->serv_addr.sin_family = AF_INET;
+    item->serv_addr.sin_port = htons(port);
 
-    if (connect(this->sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+    if (connect(item->socket, (struct sockaddr*)&item->serv_addr, sizeof(item->serv_addr)) < 0)
     {
         std::cout << "connect error: " << strerror(errno) << std::endl;
         exit(0);
     }
-    std::cout << "Connected to: " << inet_ntoa(serv_addr.sin_addr) << ":" << ntohs(serv_addr.sin_port) << std::endl;
+    std::cout << "Connected to: " << inet_ntoa(item->serv_addr.sin_addr) << ":" << ntohs(item->serv_addr.sin_port) << std::endl;
 }
 void Client_TCP::sendHeader()
 {
@@ -101,18 +103,23 @@ int main()
     Client_TCP client;
     std::string host_ip = "127.0.0.1";
     int port = 8080;
+    int nb_client = 40;
 
-    client.connectToServer(host_ip, port);
+    while (nb_client--)
+    {
+        client.connectToServer(host_ip, port);
+        usleep(50000);
+    }
 
-    client.sendHeader();
-    client.sendChunkedData();
-
-    char buffer[1024] = { 0 };
-    int valread = read(client.sock , buffer, 1024);
-    std::cout << "---------- RESPONSE ----------" << std::endl;
-    std::cout << buffer << std::endl;
-    std::cout << "------------ END. ------------" << std::endl;
-
+//    client.sendHeader();
+//    client.sendChunkedData();
+//
+//    char buffer[1024] = { 0 };
+//    int valread = read(client.sock , buffer, 1024);
+//    std::cout << "---------- RESPONSE ----------" << std::endl;
+//    std::cout << buffer << std::endl;
+//    std::cout << "------------ END. ------------" << std::endl;
+//
     std::string input;
     std::cout << "Press anykey to close connexion\n";
     std::getline(std::cin, input);
