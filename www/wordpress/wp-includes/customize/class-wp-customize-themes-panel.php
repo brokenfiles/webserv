@@ -94,8 +94,8 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 
 			<div class="customize-control-notifications-container"></div>
 		</li>
-		<li class="customize-themes-full-container-container">
-			<div class="customize-themes-full-container">
+		<li class="customize-themes-connected-container-container">
+			<div class="customize-themes-connected-container">
 				<div class="customize-themes-notifications"></div>
 			</div>
 		</li>

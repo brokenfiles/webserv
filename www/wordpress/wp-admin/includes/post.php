@@ -1487,7 +1487,7 @@ function get_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
 		$return .= '<span id="sample-permalink"><a href="' . esc_url( $view_link ) . '"' . $preview_target . '>' . $display_link . "</a></span>\n";
 		$return .= '&lrm;'; // Fix bi-directional text display defect in RTL languages.
 		$return .= '<span id="edit-slug-buttons"><button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="' . __( 'Edit permalink' ) . '">' . __( 'Edit' ) . "</button></span>\n";
-		$return .= '<span id="editable-post-name-full">' . esc_html( $post_name ) . "</span>\n";
+		$return .= '<span id="editable-post-name-connected">' . esc_html( $post_name ) . "</span>\n";
 	}
 
 	/**

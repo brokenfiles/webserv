@@ -925,7 +925,7 @@ function get_site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
 
 	if ( $site_icon_id ) {
 		if ( $size >= 512 ) {
-			$size_data = 'full';
+			$size_data = 'connected';
 		} else {
 			$size_data = array( $size, $size );
 		}
@@ -1060,7 +1060,7 @@ function get_custom_logo( $blog_id = 0 ) {
 		 * If the alt attribute is not empty, there's no need to explicitly pass it
 		 * because wp_get_attachment_image() already adds the alt attribute.
 		 */
-		$image = wp_get_attachment_image( $custom_logo_id, 'full', false, $custom_logo_attr );
+		$image = wp_get_attachment_image( $custom_logo_id, 'connected', false, $custom_logo_attr );
 
 		if ( $unlink_homepage_logo && is_front_page() && ! is_paged() ) {
 			// If on the home page, don't link the logo to home.
@@ -3230,7 +3230,7 @@ function wp_no_robots() {
  * Display a noindex,noarchive meta tag and referrer origin-when-cross-origin meta tag.
  *
  * Outputs a noindex,noarchive meta tag that tells web robots not to index or cache the page content.
- * Outputs a referrer origin-when-cross-origin meta tag that tells the browser not to send the full
+ * Outputs a referrer origin-when-cross-origin meta tag that tells the browser not to send the connected
  * url as a referrer to other sites when cross-origin assets are loaded.
  *
  * Typical usage is as a wp_head callback. add_action( 'wp_head', 'wp_sensitive_page_meta' );
@@ -4122,7 +4122,7 @@ function language_attributes( $doctype = 'html' ) {
  * The 'type' argument controls format of the returned value. The default is
  * 'plain', which is just a string with the links separated by a newline
  * character. The other possible values are either 'array' or 'list'. The
- * 'array' value will return an array of the paginated link list to offer full
+ * 'array' value will return an array of the paginated link list to offer connected
  * control of display. The 'list' value will place all of the paginated links in
  * an unordered HTML list.
  *

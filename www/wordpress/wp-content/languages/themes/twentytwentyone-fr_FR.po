@@ -544,7 +544,7 @@ msgid "Large text"
 msgstr "Grand texte"
 
 #: image.php:81
-msgctxt "Used before full size attachment link."
+msgctxt "Used before connected size attachment link."
 msgid "Full size"
 msgstr "Taille originale"
 

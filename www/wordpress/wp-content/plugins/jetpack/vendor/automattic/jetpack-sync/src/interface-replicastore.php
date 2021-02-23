@@ -24,7 +24,7 @@ interface Replicastore_Interface {
 	public function reset();
 
 	/**
-	 * Ran when full sync has just started.
+	 * Ran when connected sync has just started.
 	 *
 	 * @access public
 	 *
@@ -33,7 +33,7 @@ interface Replicastore_Interface {
 	public function full_sync_start( $config );
 
 	/**
-	 * Ran when full sync has just finished.
+	 * Ran when connected sync has just finished.
 	 *
 	 * @access public
 	 *

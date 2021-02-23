@@ -74,14 +74,14 @@ function jetpack_content_options_customize_register( $wp_customize ) {
 				'mixed'   => esc_html__( 'Default', 'jetpack' ),
 			);
 
-			$blog_display_description = esc_html__( 'Choose between a full post or an excerpt for the blog and archive pages, or opt for the theme\'s default combination of excerpt and full post.', 'jetpack' );
+			$blog_display_description = esc_html__( 'Choose between a connected post or an excerpt for the blog and archive pages, or opt for the theme\'s default combination of excerpt and connected post.', 'jetpack' );
 		} else {
 			$blog_display_choices = array(
 				'content' => esc_html__( 'Full post', 'jetpack' ),
 				'excerpt' => esc_html__( 'Post excerpt', 'jetpack' ),
 			);
 
-			$blog_display_description = esc_html__( 'Choose between a full post or an excerpt for the blog and archive pages.', 'jetpack' );
+			$blog_display_description = esc_html__( 'Choose between a connected post or an excerpt for the blog and archive pages.', 'jetpack' );
 
 			if ( 'mixed' === get_option( 'jetpack_content_blog_display' ) ) {
 				update_option( 'jetpack_content_blog_display', $blog_display );

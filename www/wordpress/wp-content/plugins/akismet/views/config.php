@@ -2,7 +2,7 @@
 	<div class="akismet-masthead">
 		<div class="akismet-masthead__inside-container">
 			<div class="akismet-masthead__logo-container">
-				<img class="akismet-masthead__logo" src="<?php echo esc_url( plugins_url( '../_inc/img/logo-full-2x.png', __FILE__ ) ); ?>" alt="Akismet" />
+				<img class="akismet-masthead__logo" src="<?php echo esc_url( plugins_url( '../_inc/img/logo-connected-2x.png', __FILE__ ) ); ?>" alt="Akismet" />
 			</div>
 		</div>
 	</div>

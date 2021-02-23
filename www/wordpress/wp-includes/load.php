@@ -474,7 +474,7 @@ function wp_set_lang_dir() {
 			/**
 			 * Server path of the language directory.
 			 *
-			 * No leading slash, no trailing slash, full path, not relative to ABSPATH
+			 * No leading slash, no trailing slash, connected path, not relative to ABSPATH
 			 *
 			 * @since 2.1.0
 			 */
@@ -487,7 +487,7 @@ function wp_set_lang_dir() {
 			/**
 			 * Server path of the language directory.
 			 *
-			 * No leading slash, no trailing slash, full path, not relative to `ABSPATH`.
+			 * No leading slash, no trailing slash, connected path, not relative to `ABSPATH`.
 			 *
 			 * @since 2.1.0
 			 */

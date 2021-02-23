@@ -230,12 +230,29 @@ std::vector<std::string> Config::explode(const std::string& s, const char& c)
 }
 
 void Config::checkConfig() {
+	std::list<std::string> serversComb;
 	//check if root field exists
 	std::vector<ServerConfig>::iterator begin = this->servers.begin();
 	while (begin != this->servers.end()) {
 		ServerConfig server = *begin;
+		if (std::find(serversComb.begin(), serversComb.end(), server.getHost() + ":" + Logger::to_string(server.getPort()) + ":" + server.getServerName()) != serversComb.end()) {
+			throw TwoSameServersException();
+		}
+		serversComb.push_back(server.getHost() + ":" + Logger::to_string(server.getPort()) + ":" + server.getServerName());
 		if (server.locations.empty()) {
 			throw MissingLocationException();
+		}
+		bool hasRootLocation = false;
+		std::list<LocationConfig>::iterator it = server.locations.begin();
+		while (it != server.locations.end()) {
+			if (it->getPath() == "/") {
+				hasRootLocation = true;
+				break ;
+			}
+			it ++;
+		}
+		if (!hasRootLocation) {
+			throw NoRootLocationException();
 		}
 		if (server.configuration.find("listen") == server.configuration.end()) {
 			throw MissingFieldException();
@@ -273,9 +290,19 @@ const char *Config::ScopeException::what() const throw()
 	return "Erreur dans les scopes de la config";
 }
 
+const char *Config::NoRootLocationException::what() const throw()
+{
+	return "Il doit y avoir une location / dans tous les serveurs";
+}
+
 const char *Config::MissingFieldException::what() const throw()
 {
 	return "Il manque un champ dans la configuration";
+}
+
+const char *Config::TwoSameServersException::what() const throw()
+{
+	return "Il y a deux fois les mêmes serveurs";
 }
 
 const char *Config::MissingLocationException::what() const throw()

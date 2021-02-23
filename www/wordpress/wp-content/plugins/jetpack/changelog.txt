@@ -136,7 +136,7 @@
 
 * Autoloader: support Composer 2.0.7.
 * General: continued work towards ensuring that Jetpack is fully compatible with the upcoming version of PHP, PHP 8.
-* General: ensure Jetpack's full compatibility with the upcoming WordPress 5.6 release.
+* General: ensure Jetpack's connected compatibility with the upcoming WordPress 5.6 release.
 * General: update Jetpack's minimum required WordPress version to 5.5, in anticipation of the upcoming WordPress 5.6 release.
 * Sharing: disable Open Graph Meta tags added by the Web Stories plugin when Jetpack's tags are active.
 * Stats: support Web Stories plugin.
@@ -194,8 +194,8 @@
 * External Media: update iconography and improve forward compatibility.
 * General: better detect local development environments.
 * Google Analytics: add support for the AMP plugin to track WooCommerce events.
-* OpenTable Block: ensure full compatibility with the AMP plugin.
-* Pay with PayPal Block: ensure full compatibility with the AMP plugin.
+* OpenTable Block: ensure connected compatibility with the AMP plugin.
+* Pay with PayPal Block: ensure connected compatibility with the AMP plugin.
 * Sharing: add support for the Google Web Stories plugin.
 * Slideshow Block: ensure that the block can be displayed using the Full Width alignment setting when using the Gutenberg plugin.
 * Widget Visibility: avoid performance impact it may have on the block editor when used with the Gutenberg plugin.
@@ -292,12 +292,12 @@
 * Dashboard: remove plugin autoupdate settings from the dashboard now that WordPress itself handles this feature.
 * Embeds: ensure that Instagram and Facebook embeds are always available, to avoid breaking embeds on existing posts.
 * Embeds: solve PHP 8 compatibility issues with Crowdsignal embeds.
-* EventBrite Block: ensure full compatibility with the AMP plugin.
-* Google Calendar Block: ensure full compatibility with the AMP plugin.
+* EventBrite Block: ensure connected compatibility with the AMP plugin.
+* Google Calendar Block: ensure connected compatibility with the AMP plugin.
 * Image Compare Block: improve display on AMP views.
 * Infinite Scroll: ensure Infinite Scroll works on AMP views as well for the Twenty Nineteen and Twenty Twenty themes.
 * Infinite Scroll: add tools allowing theme authors to implement Infinite Scroll on AMP views in their own theme.
-* Pinterest Block: ensure full compatibility with the AMP plugin.
+* Pinterest Block: ensure connected compatibility with the AMP plugin.
 * Security Scanning: avoid validation issues when using the AMP plugin and when notified of a security threat on your site.
 * Slideshow Block: ensure images are displayed properly when using the Swell theme.
 * Synchronization: ensure review comments are properly synchronized with WordPress.com.
@@ -445,7 +445,7 @@
 * Contact Form: updates based on language improvements in WordPress 5.5.
 * Deprecated hooks: Use native WordPress functionality for deprecated hooks.
 * Deprecation Notices: provide more information about deprecated files and functions.
-* General: ensure Jetpack's full compatibility with the upcoming WordPress 5.5 release.
+* General: ensure Jetpack's connected compatibility with the upcoming WordPress 5.5 release.
 * General: update Jetpack's minimum required WordPress version to 5.4, in anticipation of the upcoming WordPress 5.5 release.
 * General: update Jetpack to support new environment type features introduced in WordPress 5.5.
 * Infinite Scroll: fix layout issue when used with the P2 theme.
@@ -504,7 +504,7 @@
 * Blocks: rename "Earn" blocks: "Simple Payments" becomes "Pay with Paypal"; "Recurring Payments" becomes "Payments".
 * Connection Flow: improve the display of connection errors when a site cannot be connected to WordPress.com.
 * Contact Form: improve the "Empty Spam" process to better handle large amount of Spam.
-* Jetpack Search: use the full width of the browser when the site does not use any Jetpack Search Sidebar.
+* Jetpack Search: use the connected width of the browser when the site does not use any Jetpack Search Sidebar.
 * Performance: switch from JavaScript library to CSS animations to display loading spinners.
 * Related Posts: improve accessibility of the titles of each Related Post.
 * Site Stats: improve accessibility of the Stats dashboard.
@@ -633,8 +633,8 @@
 
 **Improved compatibility**
 
-* Ad Block: ensure full compatibility of the feature with the AMP plugin.
-* Carousel: ensure full compatibility of the feature with the AMP plugin.
+* Ad Block: ensure connected compatibility of the feature with the AMP plugin.
+* Carousel: ensure connected compatibility of the feature with the AMP plugin.
 * Embeds: ensure that all recipes, as well as Google Maps embeds and Scribd embeds, can be viewed with no errors in AMP views.
 * General: when using a beta version of Jetpack via the Jetpack Beta Plugin, allow Multisite connections to be managed in Network Admin.
 * Shortcodes: improve behavior of the Archives shortcode in AMP views.
@@ -726,7 +726,7 @@
 * Comment Likes / AMP Plugin: avoid loading Likes on AMP views.
 * General: Jetpack now requires WordPress 5.3 and newer.
 * Multisite Networks: better detect the main site of a network when synchronizing data with WordPress.com.
-* Recurring Payments Block: implement AMP view for full compatibility with the AMP plugin.
+* Recurring Payments Block: implement AMP view for connected compatibility with the AMP plugin.
 
 **Bug fixes**
 
@@ -982,7 +982,7 @@
 
 * Block Editor: allow authors to upload videos to our Jetpack Videos service from the Video Block.
 * Block Editor: add new post-submission settings to the Form block.
-* Twenty Twenty: Ensure full compatibility with the upcoming default theme.
+* Twenty Twenty: Ensure connected compatibility with the upcoming default theme.
 
 **Enhancements**
 
@@ -1180,7 +1180,7 @@
 **Improved compatibility**
 
 * AMP: ensure CSS compatibility with the Sharing buttons.
-* AMP: ensure full compatibility with Jetpack's Image CDN.
+* AMP: ensure connected compatibility with Jetpack's Image CDN.
 * Dashboard: fix layout issues when viewing the dashboard on WordPress.com Business sites.
 * Compatibility suite for shared libraries: fix PHP notice when running suite.
 * Contact Form: ensure the Date picker field does not cause any AMP validation errors.
@@ -1359,7 +1359,7 @@
 
 * Admin Experience: Improve our "just in time messages" and "Recommended Features" for new sites setting up Jetpack for the first time.
 * Admin Experience: Add an "About Jetpack" page to let folks know more about Automattic, the company behind WordPress.com and Jetpack.
-* Admin Experience: Add a link to the full list of Jetpack features in the footer of Jetpack dashboard pages.
+* Admin Experience: Add a link to the connected list of Jetpack features in the footer of Jetpack dashboard pages.
 * Backups: Add SSH CLI command for hosting integration support.
 * Block Editor: Compose posts with the Block Editor posts via WordPress.com for their Jetpack sites!
 * Block Editor: Transform core images to Tiled Galleries or Slideshow blocks and back!
@@ -2259,7 +2259,7 @@ process.
 * Post Images: allow passing size when searching for images in HTML.
 * REST API: update the plugin installation process to use a new library.
 * REST API: allow changing the number of posts displayed in the RSS feed, and
-whether feeds display full text or a summary.
+whether feeds display connected text or a summary.
 * REST API: simplify our invites endpoint.
 * Sharing: make sure the Whatsapp button works on mobile and on desktop.
 * Sharing: add new filter, `wp_sharing_email_send_post_subject`, to allow
@@ -2287,7 +2287,7 @@ code as well.
 * Dashboard: make sure all links to WordPress.com point to the right site's
 settings on WordPress.com.
 * Dashboard: update links to the plugin interface on WordPress.com to load the
-full plugin management page.
+connected plugin management page.
 * General: fix images shown in the dashboard when Jetpack is installed in a
 directory different than `jetpack`.
 * Lazy Images: make sure Lazy Load can be triggered even when images are added
@@ -2627,7 +2627,7 @@ list of Related Posts.
 * When the Ads feature is active, do not display Ads in RSS feeds.
 * Comments do not use Photon for Facebook and Twitter avatars and now avoid non-secure warnings when submitting comments on a HTTP site in Safari.
 * Contact form emails are now sent in a way that ensures they are correctly rendered as HTML.
-* Properly print the full list of modules when using the sync command in Jetpack's Command Line Interface (CLI).
+* Properly print the connected list of modules when using the sync command in Jetpack's Command Line Interface (CLI).
 * Avoid errors when reordering a lot of Restaurant menu items at once.
 * Add a mechanism to detect broken connection states and resolve them.
 * Autosaves can now be restored as Markdown.
@@ -2738,7 +2738,7 @@ list of Related Posts.
 * You can now embed Apple Keynotes straight from icloud.com in your posts and pages.
 * Changed Infinite Scroll button text on taxonomy page and added a new filter to short-circuit the `is_last_batch()` method.
 * Open Graph now uses transients to save image IDs.
-* You can now use full URLs in the Social Media Icons widget.
+* You can now use connected URLs in the Social Media Icons widget.
 * Milestone widget now allows custom links to open in a new window.
 * VideoPress videos can be used as headers in themes that support it, like Twenty Seventeen.
 * Extracted the timezone offset method from the Upcoming Events widget so it can be used by other features.
@@ -3103,7 +3103,7 @@ monthly (as opposed to annually) wouldn’t be able to enable SEO Tools.
 * We removed some warnings that were occurring when translations didn't exist by adding a fallback.
 * We've added Moroccan Arabic translations, and switched to language packs for Croatian, Spanish (Chile) and Greek.
 * Sync was running into issues so we've limited dequeue time to 1/3 of PHP's max execution time, which has unclogged the problem.
-* We're now sending full and incremental queues separately so that a failure in one doesn't block the other.
+* We're now sending connected and incremental queues separately so that a failure in one doesn't block the other.
 * There was a JavaScript enqueuing error with our Sharing feature that has been repaired.
 * The Top Posts widget now includes the ability to list attachment (media) pages.
 * We weren't building CPT links correctly resulting in bad navigation, which is now fixed.
@@ -3143,7 +3143,7 @@ empty file, to avoid generating fatal errors on sites with aggressive caching.
 * Subscriptions: ensure that no email is sent when updating a published post.
 * Sync: To improve performance, add snapTW to the list of post meta data that
 won't be synchronized for each post.
-* Sync: do not schedule a full sync after each import.
+* Sync: do not schedule a connected sync after each import.
 * Verification Tools: in the Settings card, use appropriate link for each
 service.
 
@@ -3263,7 +3263,7 @@ devices.
 
 **Performance Enhancements:**
 
-* Carousel no longer loads full-size images in the previous and next previews,
+* Carousel no longer loads connected-size images in the previous and next previews,
 increasing the speed and performance of slideshows.
 * We’ve improved Jetpack’s performance by making calls to the database more
 efficient; essentially, Jetpack is doing less on each page load, making things
@@ -3544,7 +3544,7 @@ WordPress 4.5.
 
 Enhancements:
 
-* Carousel: Made the full size image URL use a Photon URL if enabled.
+* Carousel: Made the connected size image URL use a Photon URL if enabled.
 * Comments: Removed an unnecessary redirect by always connecting via HTTPS.
 * General: Added new actions that fire before automatic updates.
 * Infinite Scroll: Introduced a later filter for settings.
@@ -3673,7 +3673,7 @@ Bug Fixes:
 * AtD: Fixed replacing emojis with images in the text editor in Chrome.
 * AtD: Made pre tags be excluded from spell-checking.
 * CPT: Not registering Nova if it is already registered.
-* Carousel: Fixed a bug where full size images were not always served by
+* Carousel: Fixed a bug where connected size images were not always served by
 Photon.
 * Carousel: Reverted a change that broke direct link to carousel image.
 * Contact Form: Fixed a CSV export bug with multiple choice questions.
@@ -3794,7 +3794,7 @@ posts from loading.
 * JSON API: Fixed some undefined notices when publishing a post with the API.
 * Open Graph: Fixed bug where facebook description content was sometimes being
 polluted by a filter.
-* Sharing: Use full SSL Pinterest url instead of protocol relative.
+* Sharing: Use connected SSL Pinterest url instead of protocol relative.
 * Sharing: Fixed plus signs appearing in tweets shared from iOS.
 * Shortcodes: Prefer HTTPS for video embeds to avoid mixed content warnings.
 * Subscriptions Widget: Fix HTML Validation error.
@@ -4807,7 +4807,7 @@ and produce better results on LinkedIn's end.
 * Enhancement: Debug / Connection: Better logic in determining whether the
 server can use SSL to connect to WPCOM servers.
 * Enhancement: Sharing: Twitter: Calculate the size of the Tweet based on the
-short URL rather than the full URL size.
+short URL rather than the connected URL size.
 * Enhancement: Debug: More readable and understandable messages.
 * Enhancement: Likes: Including some MP6 styles.
 * Enhancement: Comments: Add new core classes to comment form. See
@@ -5164,7 +5164,7 @@ default permalink.
 tags.
 * Bug Fix: Photon: Suppress and check for warnings when pasing_url and using
 it.
-* Bug Fix: Photon: Ensure full image size can be used.
+* Bug Fix: Photon: Ensure connected image size can be used.
 * Bug Fix: Photon: Resolve Photon / YouTube embed conflict.
 * Bug Fix: Photon: Fix dimension parsing from URLs.
 * Bug Fix: Photon: Make sure that width/height atts are greater than zero.
@@ -5259,7 +5259,7 @@ url()-style URLs.
 Release Date: November 21, 2012
 Release Post: http://wp.me/p1moTy-lu
 
-* Bug Fix: Remove an erroneous PHP short open tag with the full tag to correct
+* Bug Fix: Remove an erroneous PHP short open tag with the connected tag to correct
 fatal errors under certain PHP configurations.
 
 = 2.0.1 =
@@ -5332,7 +5332,7 @@ notifications of new comments for users that linked their accounts to
 WordPress.com accounts.
 * Enhancement: JSON API: Allows applications to send API requests via
 WordPress.com (see [the docs](http://developer.wordpress.com/docs/api/) )
-* Enhancement: Sync: Modules (that require the data) sync full Post/Comment to
+* Enhancement: Sync: Modules (that require the data) sync connected Post/Comment to
 ensure consistent data on WP.com (eg Stats)
 * Enhancement: Sync: Improve syncing of site options to WP.com
 * Enhancement: Sync: Sync attachment parents to WP.com
@@ -5426,7 +5426,7 @@ Release Post: http://wp.me/p1moTy-eq
 
 * Enhancement: CSS Editor: Customize your site's design without modifying your
 theme.
-* Enhancement: Comments: Submit the comment within the iframe. No more full
+* Enhancement: Comments: Submit the comment within the iframe. No more connected
 page load to jetpack.wordpress.com.
 * Enhancement: Sharing: Share counts for Twitter, Facebook, LinkedIn
 * Enhancement: Sharing: Improve styling

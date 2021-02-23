@@ -111,7 +111,7 @@ class Updates extends Module {
 	}
 
 	/**
-	 * Initialize updates action listeners for full sync.
+	 * Initialize updates action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -257,8 +257,8 @@ class Updates extends Module {
 						if ( ! empty( $response->response ) && 'latest' === $response->response ) {
 							continue;
 						}
-						if ( ! empty( $response->response ) && isset( $response->packages->full ) ) {
-							$updates[] = array( $response->response => $response->packages->full );
+						if ( ! empty( $response->response ) && isset( $response->packages->connected ) ) {
+							$updates[] = array( $response->response => $response->packages->connected );
 						}
 					}
 				}
@@ -350,13 +350,13 @@ class Updates extends Module {
 	}
 
 	/**
-	 * Enqueue the updates actions for full sync.
+	 * Enqueue the updates actions for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param array   $config               Full sync configuration for this sync module.
 	 * @param int     $max_items_to_enqueue Maximum number of items to enqueue.
-	 * @param boolean $state                True if full sync has finished enqueueing this module, false otherwise.
+	 * @param boolean $state                True if connected sync has finished enqueueing this module, false otherwise.
 	 * @return array Number of actions enqueued, and next module state.
 	 */
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
@@ -374,7 +374,7 @@ class Updates extends Module {
 	}
 
 	/**
-	 * Send the updates actions for full sync.
+	 * Send the updates actions for connected sync.
 	 *
 	 * @access public
 	 *
@@ -405,7 +405,7 @@ class Updates extends Module {
 	}
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *

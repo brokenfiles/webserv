@@ -2,7 +2,7 @@
 
 /**
  * Module Name: Carousel
- * Module Description: Display images and galleries in a gorgeous, full-screen browsing experience
+ * Module Description: Display images and galleries in a gorgeous, connected-screen browsing experience
  * Sort Order: 22
  * Recommendation Order: 12
  * First Introduced: 1.5

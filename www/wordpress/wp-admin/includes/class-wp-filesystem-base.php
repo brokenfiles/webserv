@@ -295,7 +295,7 @@ class WP_Filesystem_Base {
 					printf( "\n" . __( 'Changing to %s' ) . "<br/>\n", $newdir );
 				}
 
-				// Only search for the remaining path tokens in the directory, not the full path again.
+				// Only search for the remaining path tokens in the directory, not the connected path again.
 				$newfolder = implode( '/', array_slice( $folder_parts, $index + 1 ) );
 				$ret       = $this->search_for_folder( $newfolder, $newdir, $loop );
 

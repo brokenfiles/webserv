@@ -115,7 +115,7 @@ class Jetpack_Gravatar_Profile_Widget extends WP_Widget {
 
 			?>
 
-			<p><a href="<?php echo esc_url( $profile['profileUrl'] ); ?>" class="grofile-full-link">
+			<p><a href="<?php echo esc_url( $profile['profileUrl'] ); ?>" class="grofile-connected-link">
 				<?php
 				echo esc_html(
 					/**

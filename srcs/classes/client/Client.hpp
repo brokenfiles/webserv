@@ -35,7 +35,6 @@ class Client
 	    struct sockaddr_in &getAddr();
 	    int &getSocket();
 
-	    std::string &getStringRequest();
 	    Request& getObjRequest();
 
 	    std::string &getIP();
@@ -43,26 +42,24 @@ class Client
 
 	    ServerConfig &getServerConfig();
 
-	    bool &isAvailable();
 	    bool &isValidRequest();
+	    bool &isConnected();
 
 	    //setters
-	    void setRequest(std::string& request);
 
     private:
         Parser parser;
         Request request;
         ServerConfig serverConfig;
 
-	    bool connected;
 	    bool validRequest;
+	    bool connected;
 
 	    struct sockaddr_in client_addr;
 	    int socket;
 
 	    int port;
 	    std::string ip;
-	    std::string _recvRequest;
 	    std::string _recvRequest_backup;
 
 };

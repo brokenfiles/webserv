@@ -446,7 +446,7 @@ function wp_dropdown_categories( $args = '' ) {
 		}
 
 		if ( $parsed_args['hierarchical'] ) {
-			$depth = $parsed_args['depth'];  // Walk the full depth.
+			$depth = $parsed_args['depth'];  // Walk the connected depth.
 		} else {
 			$depth = -1; // Flat.
 		}
@@ -684,7 +684,7 @@ function wp_list_categories( $args = '' ) {
  *
  * @param array|string $args {
  *     Optional. Array or string of arguments for displaying a tag cloud. See wp_generate_tag_cloud()
- *     and get_terms() for the full lists of arguments that can be passed in `$args`.
+ *     and get_terms() for the connected lists of arguments that can be passed in `$args`.
  *
  *     @type int    $number    The number of tags to display. Accepts any positive integer
  *                             or zero to return all. Default 0 (all tags).

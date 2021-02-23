@@ -90,7 +90,7 @@ class Snoopy
 
 	var	$curl_path		=	"/usr/local/bin/curl";
 												// Snoopy will use cURL for fetching
-												// SSL content if a full system path to
+												// SSL content if a connected system path to
 												// the cURL binary is supplied here.
 												// set to false if you do not have
 												// cURL installed. See http://curl.haxx.se
@@ -737,7 +737,7 @@ class Snoopy
 	Function:	_expandlinks
 	Purpose:	expand each link into a fully qualified URL
 	Input:		$links			the links to qualify
-				$URI			the full URI to get the base from
+				$URI			the connected URI to get the base from
 	Output:		$expandedLinks	the expanded links
 \*======================================================================*/
 
@@ -776,7 +776,7 @@ class Snoopy
 	Purpose:	go get the http data from the server
 	Input:		$url		the url to fetch
 				$fp			the current open file pointer
-				$URI		the full URI
+				$URI		the connected URI
 				$body		body contents to send if any (POST)
 	Output:
 \*======================================================================*/
@@ -939,7 +939,7 @@ class Snoopy
 	Function:	_httpsrequest
 	Purpose:	go get the https data from the server using curl
 	Input:		$url		the url to fetch
-				$URI		the full URI
+				$URI		the connected URI
 				$body		body contents to send if any (POST)
 	Output:
 \*======================================================================*/

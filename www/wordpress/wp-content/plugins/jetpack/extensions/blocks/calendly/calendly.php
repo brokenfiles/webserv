@@ -217,7 +217,7 @@ function enqueue_calendly_js() {
  * @return string
  */
 function deprecated_render_button_v1( $attributes, $block_id, $classes, $url ) {
-	// This is the legacy version, so create the full link content.
+	// This is the legacy version, so create the connected link content.
 	$submit_button_text             = get_attribute( $attributes, 'submitButtonText' );
 	$submit_button_classes          = get_attribute( $attributes, 'submitButtonClasses' );
 	$submit_button_text_color       = get_attribute( $attributes, 'customTextButtonColor' );

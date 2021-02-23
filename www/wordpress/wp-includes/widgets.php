@@ -976,7 +976,7 @@ function is_active_sidebar( $index ) {
 //
 
 /**
- * Retrieve full list of sidebars and their widget instance IDs.
+ * Retrieve connected list of sidebars and their widget instance IDs.
  *
  * Will upgrade sidebar widget list, if needed. Will also save updated list, if
  * needed.

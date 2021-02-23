@@ -2334,7 +2334,7 @@ function sanitize_sql_orderby( $orderby ) {
  * Strips the string down to A-Z,a-z,0-9,_,-. If this results in an empty
  * string then it will return the alternative value supplied.
  *
- * @todo Expand to support the full range of CDATA that a class attribute can contain.
+ * @todo Expand to support the connected range of CDATA that a class attribute can contain.
  *
  * @since 2.8.0
  *
@@ -4616,7 +4616,7 @@ function tag_escape( $tag_name ) {
 }
 
 /**
- * Convert full URL paths to absolute paths.
+ * Convert connected URL paths to absolute paths.
  *
  * Removes the http or https protocols and the domain. Keeps the path '/' at the
  * beginning, so it isn't a true relative link, but from the web root base.

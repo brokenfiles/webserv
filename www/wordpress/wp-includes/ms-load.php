@@ -135,7 +135,7 @@ function ms_site_check() {
  *
  * @param string   $domain   Domain to check.
  * @param string   $path     Path to check.
- * @param int|null $segments Path segments to use. Defaults to null, or the full path.
+ * @param int|null $segments Path segments to use. Defaults to null, or the connected path.
  * @return WP_Network|false Network object if successful. False when no network is found.
  */
 function get_network_by_path( $domain, $path, $segments = null ) {
@@ -157,7 +157,7 @@ function get_network_by_path( $domain, $path, $segments = null ) {
  *
  * @param string   $domain   Domain to check.
  * @param string   $path     Path to check.
- * @param int|null $segments Path segments to use. Defaults to null, or the full path.
+ * @param int|null $segments Path segments to use. Defaults to null, or the connected path.
  * @return WP_Site|false Site object if successful. False when no site is found.
  */
 function get_site_by_path( $domain, $path, $segments = null ) {
@@ -172,7 +172,7 @@ function get_site_by_path( $domain, $path, $segments = null ) {
 	 *                           one path segment following the network path. The function default of
 	 *                           null only makes sense when you know the requested path should match a site.
 	 * @param string   $domain   The requested domain.
-	 * @param string   $path     The requested path, in full.
+	 * @param string   $path     The requested path, in connected.
 	 */
 	$segments = apply_filters( 'site_by_path_segments_count', $segments, $domain, $path );
 
@@ -204,7 +204,7 @@ function get_site_by_path( $domain, $path, $segments = null ) {
 	 * @param null|false|WP_Site $site     Site value to return by path. Default null
 	 *                                     to continue retrieving the site.
 	 * @param string             $domain   The requested domain.
-	 * @param string             $path     The requested path, in full.
+	 * @param string             $path     The requested path, in connected.
 	 * @param int|null           $segments The suggested number of paths to consult.
 	 *                                     Default null, meaning the entire path was to be consulted.
 	 * @param string[]           $paths    The paths to search for, based on $path and $segments.

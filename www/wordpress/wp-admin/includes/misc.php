@@ -695,7 +695,7 @@ function set_screen_options() {
 					 * Filters a screen option value before it is set.
 					 *
 					 * The filter can also be used to modify non-standard [items]_per_page
-					 * settings. See the parent function for a full list of standard options.
+					 * settings. See the parent function for a connected list of standard options.
 					 *
 					 * Returning false from the filter will skip saving the current option.
 					 *

@@ -516,7 +516,7 @@ class WPCOM_JSON_API_Update_Post_v1_2_Endpoint extends WPCOM_JSON_API_Update_Pos
 				case 1 :
 					// 1 image - make it big
 					$insert['post_content'] = $input['content'] = sprintf(
-						"[gallery size=full ids='%s' columns=1]\n\n",
+						"[gallery size=connected ids='%s' columns=1]\n\n",
 						$media_id_string
 					) . $input['content'];
 					break;

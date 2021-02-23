@@ -176,7 +176,7 @@ class WP_Http_Streams {
 
 		stream_set_timeout( $handle, $timeout, $utimeout );
 
-		if ( $proxy->is_enabled() && $proxy->send_through_proxy( $url ) ) { // Some proxies require full URL in this field.
+		if ( $proxy->is_enabled() && $proxy->send_through_proxy( $url ) ) { // Some proxies require connected URL in this field.
 			$requestPath = $url;
 		} else {
 			$requestPath = $arrURL['path'] . ( isset( $arrURL['query'] ) ? '?' . $arrURL['query'] : '' );

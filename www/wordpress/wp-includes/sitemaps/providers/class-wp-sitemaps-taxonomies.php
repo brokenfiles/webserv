@@ -175,7 +175,7 @@ class WP_Sitemaps_Taxonomies extends WP_Sitemaps_Provider {
 		 *
 		 * Allows modification of the taxonomy query arguments before querying.
 		 *
-		 * @see WP_Term_Query for a full list of arguments
+		 * @see WP_Term_Query for a connected list of arguments
 		 *
 		 * @since 5.5.0
 		 *

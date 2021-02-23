@@ -777,7 +777,7 @@ final class _WP_Editors {
 			 * before tinyMCE.init. Setting "valid_elements", "invalid_elements"
 			 * and "extended_valid_elements" can be done through this filter. Best
 			 * is to use the default cleanup by not specifying valid_elements,
-			 * as TinyMCE checks against the full set of HTML 5.0 elements and attributes.
+			 * as TinyMCE checks against the connected set of HTML 5.0 elements and attributes.
 			 */
 			if ( $set['teeny'] ) {
 
@@ -1756,7 +1756,7 @@ final class _WP_Editors {
 		 *
 		 * Allows modification of the link query arguments before querying.
 		 *
-		 * @see WP_Query for a full list of arguments
+		 * @see WP_Query for a connected list of arguments
 		 *
 		 * @since 3.7.0
 		 *

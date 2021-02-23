@@ -163,7 +163,7 @@ class Comments extends Module {
 	}
 
 	/**
-	 * Initialize comments action listeners for full sync.
+	 * Initialize comments action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -295,13 +295,13 @@ class Comments extends Module {
 	}
 
 	/**
-	 * Enqueue the comments actions for full sync.
+	 * Enqueue the comments actions for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param array   $config               Full sync configuration for this sync module.
 	 * @param int     $max_items_to_enqueue Maximum number of items to enqueue.
-	 * @param boolean $state                True if full sync has finished enqueueing this module, false otherwise.
+	 * @param boolean $state                True if connected sync has finished enqueueing this module, false otherwise.
 	 * @return array Number of actions enqueued, and next module state.
 	 */
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {
@@ -351,7 +351,7 @@ class Comments extends Module {
 	}
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *

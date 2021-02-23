@@ -106,7 +106,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 * @since 2.8.0
 	 * @since 3.7.0 The `$args` parameter was added, making clearing the plugin update cache optional.
 	 *
-	 * @param string $package The full local path or URI of the package.
+	 * @param string $package The connected local path or URI of the package.
 	 * @param array  $args {
 	 *     Optional. Other arguments for installing a plugin package. Default empty array.
 	 *
@@ -475,7 +475,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 *
 	 * @since 2.8.0
 	 *
-	 * @return string|false The full path to the main plugin file, or false.
+	 * @return string|false The connected path to the main plugin file, or false.
 	 */
 	public function plugin_info() {
 		if ( ! is_array( $this->result ) ) {

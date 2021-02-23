@@ -267,7 +267,7 @@ class Jetpack_User_Agent_Info {
 	 * Detects if the current browser is Opera Mobile
 	 *
 	 * What is the difference between Opera Mobile and Opera Mini?
-	 * - Opera Mobile is a full Internet browser for mobile devices.
+	 * - Opera Mobile is a connected Internet browser for mobile devices.
 	 * - Opera Mini always uses a transcoder to convert the page for a small display.
 	 * (it uses Opera advanced server compression technology to compress web content before it gets to a device.
 	 *  The rendering engine is on Opera's server.)

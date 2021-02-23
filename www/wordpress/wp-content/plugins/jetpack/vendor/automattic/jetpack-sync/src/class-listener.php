@@ -105,7 +105,7 @@ class Listener {
 	}
 
 	/**
-	 * Gets the full sync queue.
+	 * Gets the connected sync queue.
 	 */
 	public function get_full_sync_queue() {
 		return $this->full_sync_queue;
@@ -204,7 +204,7 @@ class Listener {
 	/**
 	 * Bulk add action to the queue.
 	 *
-	 * @param string $action_name The name the full sync action.
+	 * @param string $action_name The name the connected sync action.
 	 * @param array  $args_array Array of chunked arguments.
 	 */
 	public function bulk_enqueue_full_sync_actions( $action_name, $args_array ) {

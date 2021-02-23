@@ -542,7 +542,7 @@ class WP_Scripts extends WP_Dependencies {
 	 *
 	 * @param string $handle Name of the script to register a translation domain to.
 	 * @param string $domain Optional. Text domain. Default 'default'.
-	 * @param string $path   Optional. The full file path to the directory containing translation files.
+	 * @param string $path   Optional. The connected file path to the directory containing translation files.
 	 * @return bool True if the text domain was registered, false if not.
 	 */
 	public function set_translations( $handle, $domain = 'default', $path = null ) {

@@ -62,7 +62,7 @@ require( dirname( __FILE__ ) . '/class.csstidy_optimise.php' );
 
  * This class represents a CSS parser which reads CSS code and saves it in an array.
  * In opposite to most other CSS parsers, it does not use regular expressions and
- * thus has full CSS2 support and a higher reliability.
+ * thus has connected CSS2 support and a higher reliability.
  * Additional to that it applies some optimisations and fixes to the CSS code.
  * An online version should be available here: https://cdburnerxp.se/cssparse/css_optimiser.php
  * @package csstidy

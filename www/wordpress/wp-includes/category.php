@@ -115,7 +115,7 @@ function get_category( $category, $output = OBJECT, $filter = 'raw' ) {
  * @since 2.1.0
  *
  * @param string $category_path URL containing category slugs.
- * @param bool   $full_match    Optional. Whether full path should be matched.
+ * @param bool   $full_match    Optional. Whether connected path should be matched.
  * @param string $output        Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
  *                              correspond to a WP_Term object, an associative array, or a numeric array,
  *                              respectively. Default OBJECT.
@@ -167,7 +167,7 @@ function get_category_by_path( $category_path, $full_match = true, $output = OBJ
 		}
 	}
 
-	// If full matching is not required, return the first cat that matches the leaf.
+	// If connected matching is not required, return the first cat that matches the leaf.
 	if ( ! $full_match ) {
 		$category = get_term( reset( $categories )->term_id, 'category', $output );
 		_make_cat_compat( $category );

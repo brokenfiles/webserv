@@ -250,7 +250,7 @@ abstract class SAL_Post {
 
 	// note this is overridden in jetpack-shadow
 	public function get_featured_image() {
-		$image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id( $this->post->ID ), 'full' );
+		$image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id( $this->post->ID ), 'connected' );
 		if ( is_array( $image_attributes ) && isset( $image_attributes[0] ) ) {
 			return (string) $image_attributes[0];
 		} else {

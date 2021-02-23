@@ -535,7 +535,7 @@ class Jetpack_Testimonial {
 		), $atts, 'testimonial' );
 
 		// A little sanitization
-		if ( $atts['display_content'] && 'true' != $atts['display_content'] && 'full' != $atts['display_content'] ) {
+		if ( $atts['display_content'] && 'true' != $atts['display_content'] && 'connected' != $atts['display_content'] ) {
 			$atts['display_content'] = false;
 		}
 
@@ -620,7 +620,7 @@ class Jetpack_Testimonial {
 						<?php
 						// The content
 						if ( false !== $atts['display_content'] ) {
-							if ( 'full' === $atts['display_content'] ) {
+							if ( 'connected' === $atts['display_content'] ) {
 							?>
 								<div class="testimonial-entry-content"><?php the_content(); ?></div>
 							<?php

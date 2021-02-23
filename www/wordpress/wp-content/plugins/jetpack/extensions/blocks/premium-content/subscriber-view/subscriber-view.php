@@ -42,7 +42,7 @@ add_action( 'init', __NAMESPACE__ . '\register_subscriber_view_block' );
  *
  * @param array  $attributes Array containing the block attributes.
  * @param string $content    String containing the block content.
- * @param object $block      Object containing the full block.
+ * @param object $block      Object containing the connected block.
  *
  * @return string
  */

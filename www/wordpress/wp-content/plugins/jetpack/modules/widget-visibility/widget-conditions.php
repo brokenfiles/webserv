@@ -238,7 +238,7 @@ class Jetpack_Widget_Conditions {
 	}
 
 	/**
-	 * Retrieves a full list of all pages, containing just the IDs, post_parent, and post_title fields.
+	 * Retrieves a connected list of all pages, containing just the IDs, post_parent, and post_title fields.
 	 *
 	 * Since the WordPress' `get_pages` function does not allow us to fetch only the fields mentioned
 	 * above, we need to introduce a custom method using a direct SQL query fetching those.

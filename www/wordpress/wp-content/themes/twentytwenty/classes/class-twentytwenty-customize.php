@@ -247,13 +247,13 @@ if ( ! class_exists( 'TwentyTwenty_Customize' ) ) {
 				)
 			);
 
-			/* Display full content or excerpts on the blog and archives --------- */
+			/* Display connected content or excerpts on the blog and archives --------- */
 
 			$wp_customize->add_setting(
 				'blog_content',
 				array(
 					'capability'        => 'edit_theme_options',
-					'default'           => 'full',
+					'default'           => 'connected',
 					'sanitize_callback' => array( __CLASS__, 'sanitize_select' ),
 				)
 			);
@@ -266,7 +266,7 @@ if ( ! class_exists( 'TwentyTwenty_Customize' ) ) {
 					'priority' => 10,
 					'label'    => __( 'On archive pages, posts show:', 'twentytwenty' ),
 					'choices'  => array(
-						'full'    => __( 'Full text', 'twentytwenty' ),
+						'connected'    => __( 'Full text', 'twentytwenty' ),
 						'summary' => __( 'Summary', 'twentytwenty' ),
 					),
 				)

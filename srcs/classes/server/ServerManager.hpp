@@ -24,6 +24,8 @@ class ServerManager
         int setup_fd();
         int run_servers();
 
+        void disconnectClient(Client *client);
+
         std::list<Server*>& getServerList();
 
         class SetupSocketError : public std::exception

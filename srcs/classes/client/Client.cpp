@@ -1,10 +1,10 @@
 #include "Client.hpp"
 
-Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest(), _recvRequest_backup()
+Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest_backup()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
-    this->connected = true;
     this->validRequest = false;
+    this->connected = true;
 }
 
 Client::~Client()
@@ -47,12 +47,10 @@ int Client::read_request(void)
 
     if (!(recvCheck) || read == 0)
     {
-        this->connected = false;
-        this->validRequest = false;
         if (read == 0)
-            return (logger.warning(std::string("[SERVER]: recv: 0"), NO_PRINT_CLASS), -1);
+            return (logger.warning(std::string("[SERVER]: recv: 0")), -1);
         else
-            return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno))), NO_PRINT_CLASS), -1);
+            return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno)))), -1);
     }
 
     //Si on trouve un CRLF "\r\n\r\n" > Parsing HEADER || BODY;
@@ -61,9 +59,9 @@ int Client::read_request(void)
         //Si Header PAS encore parsé, on parse =)
         if (!this->request.isHeaderParsed())
         {
-        //    std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
-        //    std::cout << keeper << std::endl;
-        //    std::cout << "-------------------------------------------------------\n";
+//            std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+//            std::cout << keeper << std::endl;
+//            std::cout << "-------------------------------------------------------\n";
             this->parser.parseHeader(this->request, keeper);
 //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
 //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
@@ -104,27 +102,27 @@ int Client::read_request(void)
         //Si HEADER et BODY récupéré/parsé, c'est une valid request, on continue =)
         if (this->request.isHeaderParsed() && this->request.isBodyParsed())
         {
-            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->getStringRequest().size()) + ".", NO_PRINT_CLASS);
             this->request.isBodyParsed() = false;
             this->request.isHeaderParsed() = false;
             this->isValidRequest() = true;
+            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".");
             this->_recvRequest_backup.clear();
             return (0);
         }
     }
 //    else if (!this->request.isHeaderParsed())
-//        return (logger.error("[SERVER]: Not Header Found.", NO_PRINT_CLASS, -1));
+//        return (logger.error("[SERVER]: Not Header Found.", -1));
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;
-    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".", NO_PRINT_CLASS);
+    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
     return (0);
 }
 
 int Client::send_response(const std::string &req)
 {
     if (send(this->socket, req.c_str(), req.length(), 0) != (int) req.length())
-        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
     return (0);
 }
 
@@ -133,7 +131,7 @@ void Client::printRequest(void)
 //    if (!logger.isSilent())
 //    {
         std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
-        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
+//        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
         std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 //    }
 }
@@ -150,16 +148,6 @@ struct sockaddr_in &Client::getAddr()
 int &Client::getSocket()
 {
     return (socket);
-}
-
-void Client::setRequest(std::string& request)
-{
-    _recvRequest = request;
-}
-
-std::string& Client::getStringRequest(void)
-{
-    return (this->_recvRequest);
 }
 
 std::string& Client::getIP(void)
@@ -181,13 +169,14 @@ ServerConfig &Client::getServerConfig()
 {
     return (serverConfig);
 }
-bool &Client::isAvailable()
-{
-    return (this->connected);
-}
+
 bool &Client::isValidRequest()
 {
     return (this->validRequest);
+}
+bool &Client::isConnected()
+{
+    return (this->connected);
 }
 
 

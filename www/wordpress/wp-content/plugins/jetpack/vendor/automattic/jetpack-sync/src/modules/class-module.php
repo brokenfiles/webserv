@@ -85,7 +85,7 @@ abstract class Module {
 	}
 
 	/**
-	 * Initialize module action listeners for full sync.
+	 * Initialize module action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -120,13 +120,13 @@ abstract class Module {
 	}
 
 	/**
-	 * Enqueue the module actions for full sync.
+	 * Enqueue the module actions for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param array   $config               Full sync configuration for this sync module.
 	 * @param int     $max_items_to_enqueue Maximum number of items to enqueue.
-	 * @param boolean $state                True if full sync has finished enqueueing this module, false otherwise.
+	 * @param boolean $state                True if connected sync has finished enqueueing this module, false otherwise.
 	 * @return array  Number of actions enqueued, and next module state.
 	 */
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {
@@ -150,7 +150,7 @@ abstract class Module {
 	// phpcs:enable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *
@@ -322,10 +322,10 @@ SQL
 	 * @access protected
 	 *
 	 * @param string $config Full sync configuration for this module.
-	 * @param array  $status the current module full sync status.
-	 * @param float  $send_until timestamp until we want this request to send full sync events.
+	 * @param array  $status the current module connected sync status.
+	 * @param float  $send_until timestamp until we want this request to send connected sync events.
 	 *
-	 * @return array Status, the module full sync status updated.
+	 * @return array Status, the module connected sync status updated.
 	 */
 	public function send_full_sync_actions( $config, $status, $send_until ) {
 		global $wpdb;

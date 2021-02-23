@@ -76,7 +76,7 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 
 	$current_network = get_network();
 
-	// If a full blog object is not available, do not destroy anything.
+	// If a connected blog object is not available, do not destroy anything.
 	if ( $drop && ! $blog ) {
 		$drop = false;
 	}

@@ -3,6 +3,7 @@
 //
 
 #include "Cgi.hpp"
+#include "../../../includes/utils.hpp"
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -59,45 +60,36 @@ void	Cgi::launch(Client *client, Response &response)
 
 void	Cgi::execute(Response &response)
 {
-	//pipe(this->_var.pipe_fd);
-	//pipe(this->_var.outfd);
 	this->_var.save_in = dup(STDIN_FILENO);
 	this->_var.save_out = dup(STDOUT_FILENO);
 
-
-
+	std::string token = Utils::generateToken(16);
+	std::string fileNameInput = token + ".input";
+	std::string fileNameOutput = token + ".output";
 	//on fork le processus en 2
 	this->_var.pid = fork();
 	if (this->_var.pid == 0)
 	{
-		this->_var.input_fd = open("tmpfile_input", O_CREAT | O_RDWR, 0777);
-		this->_var.output_fd = open("tmpfile_output", O_CREAT | O_RDWR, 0777);
+		this->_var.input_fd = open(fileNameInput.c_str(), O_CREAT | O_RDWR, 0777);
+		this->_var.output_fd = open(fileNameOutput.c_str(), O_CREAT | O_RDWR, 0777);
 		//processus fils
 		dup2(this->_var.input_fd, STDIN_FILENO);
 		dup2(this->_var.output_fd, STDOUT_FILENO);
-
-		//close(this->_var.outfd[1]);
-		//close(this->_var.pipe_fd[0]);
 
 		//on execute le CGI
 		execve(this->_var.argv[0], this->_var.argv, this->_var.metaVarArray);
 	}
 	else if (this->_var.pid > 0)
 	{
-		this->_var.input_fd = open("tmpfile_input", O_CREAT | O_RDWR, 0777);
-		this->_var.output_fd = open("tmpfile_output", O_CREAT | O_RDWR, 0777);
+		this->_var.input_fd = open(fileNameInput.c_str(), O_CREAT | O_RDWR, 0777);
+		this->_var.output_fd = open(fileNameOutput.c_str(), O_CREAT | O_RDWR, 0777);
 		//processus pere
-		//close(this->_var.outfd[0]);
-		//close(this->_var.pipe_fd[1]);
 
 		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
-		if (this->_client->getObjRequest().getMethod() == "POST")
-			std::cerr << "write = " << write(this->_var.input_fd, this->_requestBody.c_str(), this->_requestBody.size()) << std::endl;
-
-		//close(this->_var.outfd[1]);
+		if (this->_client->getObjRequest().getMethod() != "GET")
+			write(this->_var.input_fd, this->_requestBody.c_str(), this->_requestBody.size());
 
 		waitpid(this->_var.pid, &this->_var.status, 0);
-		std::cerr << "commence a read" << std::endl;
 
 		//on lit le retour du CGI et on le stock dans var.output
 		while ((this->_var.ret = read(this->_var.output_fd, this->_var.buffer, BUFFER - 1)) != 0)
@@ -105,7 +97,6 @@ void	Cgi::execute(Response &response)
 			this->_var.buffer[this->_var.ret] = 0;
 			this->_var.output += this->_var.buffer;
 		}
-		std::cerr << this->_var.output << std::endl;
 
 		//on récupère le code de retour du CGI et des headers
 		if (response.getLocation().getCgiExtension() != ".bla" || this->_client->getObjRequest().getMethod() != "GET")
@@ -121,10 +112,11 @@ void	Cgi::execute(Response &response)
 		}
 		free(this->_var.metaVarArray);
 
-		remove("tmpfile_input");
-		remove("tmpfile_output");
+		close(this->_var.input_fd);
+		close(this->_var.output_fd);
+		remove(fileNameInput.c_str());
+		remove(fileNameOutput.c_str());
 
-		//close(this->_var.pipe_fd[0]);
 	}
 }
 
@@ -150,9 +142,16 @@ void Cgi::addArgv(Response &response)
 void	Cgi::getCGIReturn(Response &response)
 {
 	Parser parser;
+	int count = 0;
+	unsigned int nPos  = 0;
 	std::string tmp = this->_var.output.substr(0, this->_var.output.find("\r\n\r\n", 0));
-	this->_var.output.erase(0, this->_var.output.find("\r\n\r\n", 0) + 4);
-	Query query = parser.parseResponse(tmp + "\r\n");
+	while((unsigned int)(nPos = this->_var.output.find("\r\n", nPos)) != (unsigned int)std::string::npos) {
+		count++; nPos += 2;
+	}
+	if (count > 1) {
+		this->_var.output.erase(0, this->_var.output.find("\r\n\r\n") + 4);
+	}
+	Request query = parser.parseResponse(tmp + "\r\n");
 
 	response.setCookies(query.getRawCookies());
 	if (!query.getHeaders().empty()) {
@@ -177,36 +176,47 @@ void	Cgi::getCGIReturn(Response &response)
  */
 void Cgi::addMetaVariables(Response &response, Client *client)
 {
+	Request request = client->getObjRequest();
+
 	this->_metaVarMap["AUTH_TYPE"] = "NULL";
 	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
-	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
-	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(client->getObjRequest().getBody().size());
-    if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
-		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second;
+	this->_metaVarMap["REQUEST_METHOD"] = request.getMethod();
+	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(request.getBody().size());
+    if (request.getHeaders().find("Content-Type") != request.getHeaders().end())
+		this->_metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
 	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-	this->_metaVarMap["PATH_INFO"] = client->getObjRequest().getPath();
+	this->_metaVarMap["PATH_INFO"] = request.getPath();
 	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
 	if (client->getObjRequest().getQueryString().empty())
 	    this->_metaVarMap["QUERY_STRING"] = "";
 	else
-	    this->_metaVarMap["QUERY_STRING"] = client->getObjRequest().getQueryString();
+	    this->_metaVarMap["QUERY_STRING"] = request.getQueryString();
 	this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
-	this->_metaVarMap["REQUEST_URI"] = client->getObjRequest().getPath();
-	if (!client->getObjRequest().getQueryString().empty())
-		this->_metaVarMap["REQUEST_URI"] += "?" + client->getObjRequest().getQueryString();
+	this->_metaVarMap["REQUEST_URI"] = request.getPath();
+	if (!request.getQueryString().empty())
+		this->_metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
 	this->_metaVarMap["SCRIPT_NAME"] = response.getLocation().getCgiBin();
 	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
 	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
 	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
 	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
-	if (client->getObjRequest().getHeaders().find("Cookie") != client->getObjRequest().getHeaders().end())
+	if (request.getHeaders().find("Cookie") != request.getHeaders().end())
 		this->_metaVarMap["HTTP_COOKIE"] = client->getObjRequest().getHeaders().at("Cookie");
-    if (client->getObjRequest().getHeaders().find("Accept") != client->getObjRequest().getHeaders().end())
+    if (request.getHeaders().find("Accept") != request.getHeaders().end())
         this->_metaVarMap["HTTP_ACCEPT"] = client->getObjRequest().getHeaders().at("Accept");
-    if (client->getObjRequest().getHeaders().find("Connection") != client->getObjRequest().getHeaders().end())
+    if (request.getHeaders().find("Connection") != request.getHeaders().end())
         this->_metaVarMap["HTTP_CONNECTION"] = client->getObjRequest().getHeaders().at("Connection");
-    if (client->getObjRequest().getHeaders().find("User-Agent") != client->getObjRequest().getHeaders().end())
-        this->_metaVarMap["HTTP_USER_AGENT"] = client->getObjRequest().getHeaders().at("User-Agent");
+    if (request.getHeaders().find("User-Agent") != request.getHeaders().end())
+        this->_metaVarMap["HTTP_USER_AGENT"] = request.getHeaders().at("User-Agent");
+    if (request.getHeaders().find("X-Secret-Header-For-Test") != request.getHeaders().end())
+        this->_metaVarMap["HTTP_X_SECRET_HEADER_FOR_TEST"] = request.getHeaders().at("X-Secret-Header-For-Test");
+    std::map<std::string, std::string>::const_iterator it = request.getHeaders().begin();
+    while (it != request.getHeaders().end()) {
+    	if (this->_metaVarMap.find(Utils::replaceAll(Utils::toUppercase(it->first), '-', '_')) == this->_metaVarMap.end()) {
+			this->_metaVarMap["HTTP_" + Utils::replaceAll(Utils::toUppercase(it->first), '-', '_')] = it->second;
+		}
+    	it ++;
+    }
     this->_metaVarMap["REMOTE_IDENT"] = "login_user";
 	this->_metaVarMap["REMOTE_USER"] = "user";
 
@@ -248,7 +258,7 @@ char    **Cgi::mapToArray(std::map<std::string, std::string> &map)
     for (std::map<std::string, std::string>::iterator it = this->_metaVarMap.begin(); it != this->_metaVarMap.end(); it++)
     {
         tmp = "" + it->first + "=" + it->second;
-        env[i] = ft_strdup(tmp.c_str());
+        env[i] = Utils::ft_strdup(tmp.c_str());
         i++;
     }
     env[i] = NULL;

@@ -10,7 +10,17 @@ ServerManager::ServerManager()
 
 ServerManager::~ServerManager()
 {
+    for (std::list<Server*>::iterator it = servers.begin(); it != servers.end(); it++)
+    {
+        delete (*it);
+        it = servers.erase(it);
+    }
 
+    for (std::list<Client*>::iterator it = clients.begin(); it != clients.end(); it++)
+    {
+        delete (*it);
+        it = clients.erase(it);
+    }
 }
 
 ServerManager::ServerManager(const ServerManager &copy)
@@ -40,7 +50,7 @@ int ServerManager::setup_sockets(Config &conf)
         if (server_curr->create_socket() < 0)
             throw SetupSocketError();
 
-        logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() +" listen on port " + logger.to_string(server_curr->getServerConfig().getPort()) + ".", NO_PRINT_CLASS);
+        logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() +" listen on port " + logger.to_string(server_curr->getServerConfig().getPort()) + ".");
         FD_SET(server_curr->getServerSocket(), &this->read_backup);
         fd_av.push_back(server_curr->getServerSocket());
     }
@@ -84,7 +94,7 @@ int ServerManager::setup_fd()
 			stream << (*serv)->getServerSocket();
 		}
     }
-    logger.notice(stream.str() + "]", NO_PRINT_CLASS);
+    logger.notice(stream.str() + "]");
 
     stream.str("");
 
@@ -96,7 +106,7 @@ int ServerManager::setup_fd()
         else
             stream << read_stack[i];
     }
-    logger.notice(stream.str() + "]", NO_PRINT_CLASS);
+    logger.notice(stream.str() + "]");
 
     stream.str("");
 
@@ -108,7 +118,7 @@ int ServerManager::setup_fd()
         else
             stream << write_stack[i];
     }
-    logger.notice(stream.str() + "]", NO_PRINT_CLASS);
+    logger.notice(stream.str() + "]");
 
     return (higher_fd);
 }
@@ -123,15 +133,14 @@ int ServerManager::run_servers()
         higher_fd = this->setup_fd();
 
         if (select(higher_fd + 1, &this->read_pool, &this->write_pool, NULL, NULL) < 0)
-            return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
-        logger.info("[SERVER]: ~ NEW SELECT CALL ~", NO_PRINT_CLASS);
+            return (logger.error("[SERVER]: select: " + std::string(strerror(errno)), -1));
+        logger.info("[SERVER]: ~ NEW SELECT CALL ~");
 
         for (ServerManager::it_t serv_it = this->servers.begin(); serv_it != this->servers.end(); serv_it++)
         {
             Server *server_curr = (*serv_it);
             if (FD_ISSET(server_curr->getServerSocket(), &this->read_pool))
             {
-
                 Client *newClient = new Client();
 
                 newClient->getServerConfig() = server_curr->getServerConfig();
@@ -139,11 +148,19 @@ int ServerManager::run_servers()
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
 
-                FD_SET(newClient->getSocket(), &this->read_backup);
+                if (this->fd_av.size() > 916)
+                {
+                    newClient->isConnected() = false;
+                    FD_SET(newClient->getSocket(), &this->write_backup);
+                    logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
+                    break;
+                }
+                else
+                    FD_SET(newClient->getSocket(), &this->read_backup);
                 fd_av.push_back(newClient->getSocket());
 
                 clients.push_front(newClient);
-                logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()), NO_PRINT_CLASS);
+                logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
         }
 
@@ -157,23 +174,23 @@ int ServerManager::run_servers()
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
-                    fd_av.remove(client_curr->getSocket());
-
-                    client_curr->close_socket();
+                    this->disconnectClient(client_curr);
+//                    delete client_curr;
                     it = clients.erase(it);
-                    logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()), NO_PRINT_CLASS);
+                    logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                     continue;
                 }
 
                 if (client_curr->isValidRequest())
                     FD_SET(client_curr->getSocket(), &this->write_backup);
+                break;
             }
             else
-                logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - read_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"), NO_PRINT_CLASS);
+                logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - read_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"));
 
             if (FD_ISSET(client_curr->getSocket(), &this->write_pool))
             {
-                if (client_curr->isValidRequest() && client_curr->isAvailable())
+                if (client_curr->isValidRequest())
                 {
                     Response rep;
                     std::string response = rep.sendResponse(client_curr);
@@ -182,16 +199,34 @@ int ServerManager::run_servers()
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
 //                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 
-                    if (send(client_curr->getSocket(), response.c_str(), response.length(), 0) != (int) response.length())
-                        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), NO_PRINT_CLASS, -1));
+                    int send_ret = 0;
+                    if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+                    {
+                        if (send_ret == -1)
+                            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
+                        if (send_ret == 0)
+                            client_curr->isConnected() = false;
 
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".", NO_PRINT_CLASS);
+                    }
+
+                    if (!client_curr->isConnected())
+                    {
+                        FD_CLR(client_curr->getSocket(), &this->write_backup);
+                        FD_CLR(client_curr->getSocket(), &this->write_pool);
+                        this->disconnectClient(client_curr);
+                        clients.erase(it);
+                        logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
+                        break;
+                    }
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
+
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);
+                break;
             }
             else
-                logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - write_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"), NO_PRINT_CLASS);
+                logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - write_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"));
         }
     }
 }
@@ -199,4 +234,9 @@ int ServerManager::run_servers()
 std::list<Server *> &ServerManager::getServerList()
 {
     return (this->servers);
+}
+void ServerManager::disconnectClient(Client *client)
+{
+    fd_av.remove(client->getSocket());
+    client->close_socket();
 }

@@ -1953,7 +1953,7 @@ function wp_get_original_referer() {
 }
 
 /**
- * Recursive directory creation based on full path.
+ * Recursive directory creation based on connected path.
  *
  * Will attempt to set permissions on folders.
  *
@@ -2073,7 +2073,7 @@ function path_is_absolute( $path ) {
  * Join two filesystem paths together.
  *
  * For example, 'give me $path relative to $base'. If the $path is absolute,
- * then it the full path is returned.
+ * then it the connected path is returned.
  *
  * @since 2.5.0
  *
@@ -2280,7 +2280,7 @@ function wp_get_upload_dir() {
  * @return array {
  *     Array of information about the upload directory.
  *
- *     @type string       $path    Base directory and subdirectory or full path to upload directory.
+ *     @type string       $path    Base directory and subdirectory or connected path to upload directory.
  *     @type string       $url     Base URL and subdirectory or absolute URL to upload directory.
  *     @type string       $subdir  Subdirectory if uploads use year/month folders option is on.
  *     @type string       $basedir Path without subdir.
@@ -2305,7 +2305,7 @@ function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false
 	 * @param array $uploads {
 	 *     Array of information about the upload directory.
 	 *
-	 *     @type string       $path    Base directory and subdirectory or full path to upload directory.
+	 *     @type string       $path    Base directory and subdirectory or connected path to upload directory.
 	 *     @type string       $url     Base URL and subdirectory or absolute URL to upload directory.
 	 *     @type string       $subdir  Subdirectory if uploads use year/month folders option is on.
 	 *     @type string       $basedir Path without subdir.
@@ -4314,7 +4314,7 @@ function _mce_set_direction( $mce_init ) {
  * The $wp_smiliessearch global is for the regular expression and is set each
  * time the function is called.
  *
- * The full list of smilies can be found in the function and won't be listed in
+ * The connected list of smilies can be found in the function and won't be listed in
  * the description. Probably should create a Codex page for it, so that it is
  * available.
  *

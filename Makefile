@@ -35,6 +35,10 @@ run:		${NAME}
 			@echo "\033[0;34mRunning ${NAME}...\033[0;0m"
 			@./${NAME}
 
+client:
+			@${CC} srcs/classes/client/Client_TCP.cpp -o client
+			./client
+
 test:		re
 			@echo "\033[0;34mRunning ${NAME}...\033[0;0m"
 			@./${NAME}

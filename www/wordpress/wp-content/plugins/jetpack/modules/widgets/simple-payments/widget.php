@@ -10,7 +10,7 @@
 	<div class='jetpack-simple-payments-product'>
 		<div class='jetpack-simple-payments-product-image' <?php if ( empty( $instance['form_product_image_id'] ) ) echo 'style="display:none;"'; ?>>
 			<div class='jetpack-simple-payments-image'>
-				<?php echo wp_get_attachment_image( $instance['form_product_image_id'], 'full' ); ?>
+				<?php echo wp_get_attachment_image( $instance['form_product_image_id'], 'connected' ); ?>
 			</div>
 		</div>
 		<div class='jetpack-simple-payments-details'>

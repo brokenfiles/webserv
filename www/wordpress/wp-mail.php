@@ -179,7 +179,7 @@ for ( $i = 1; $i <= $count; $i++ ) {
 	/**
 	 * Filters the original content of the email.
 	 *
-	 * Give Post-By-Email extending plugins full access to the content, either
+	 * Give Post-By-Email extending plugins connected access to the content, either
 	 * the raw content, or the content of the last quoted-printable section.
 	 *
 	 * @since 2.8.0

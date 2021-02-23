@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Parser.hpp"
 
 Parser::Parser(void)
@@ -23,14 +24,14 @@ void Parser::parseHeader(Request &req, std::string& keeper)
         keeper.erase(0, frontLine.length() + 1);
 
         /* fill header */
-        this->fillHeader(req, keeper);
+		this->fillHeader(req, keeper);
         this->fillQueryString(req);
 
     }
     catch (const std::exception &e)
     {
         keeper.clear();
-        logger.error("[SERVER]: " + logger.to_string(e.what()), NO_PRINT_CLASS, -1);
+        logger.error("[SERVER]: " + logger.to_string(e.what()), -1);
     }
 
 }
@@ -58,7 +59,7 @@ int Parser::fillChunk(std::string &keeper)
                 keeper.erase(0, x + 2);
                 if (size_chunk > 0)
                 {
-                    keeper_tmp += keeper.substr(0,size_chunk + 2);
+                    keeper_tmp += keeper.substr(0,size_chunk);
                     keeper.erase(0 ,size_chunk + 2);
                 }
                 if (size_chunk == 0 && keeper == "\r\n")
@@ -86,20 +87,10 @@ int Parser::fillContentSize(std::string &keeper, std::string strsize)
     return (0);
 }
 
-Query	Parser::parseResponse(std::string strResponse)
-{
-	Request req;
-
-	this->fillHeader(req, strResponse);
-
-	return (req);
-}
-
 void Parser::fillMethod(Request &req, std::string &frontLine)
 {
     std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
     std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
-
 
     //Check la reqMethod
     for (size_t i = 0; i < 9; i++)
@@ -111,19 +102,28 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
         }
     }
 
-    if (req.getMethod().empty())
-        throw BadRequestMethod();
+//    if (req.getMethod().empty())
+//        throw BadRequestMethod();
 }
 
 void Parser::fillPath(Request &req, std::string &frontLine)
 {
-    //get full path (ex: /index.htlm?oui=ahahah)
+    //get connected path (ex: /index.htlm?oui=ahahah)
     size_t start = frontLine.find("/");
     size_t path_length = frontLine.find(" ", start);
 
     std::string fullPath = frontLine.substr(start, path_length - start);
 
     req.setPath(fullPath);
+}
+
+Request	Parser::parseResponse(std::string strResponse)
+{
+	Request req;
+
+	this->fillHeader(req, strResponse);
+
+	return (req);
 }
 
 void Parser::fillHeader(Request& req, std::string& keeper)
@@ -142,16 +142,18 @@ void Parser::fillHeader(Request& req, std::string& keeper)
         std::string line = keeper.substr(0, x);
 //        if (line.at(line.size() - 1) == '\r')
 //        	line.erase(line.size() - 1);
-        if (line.find(':') != std::string::npos)
+		if (line.find(':') != std::string::npos)
         {
-            if (line.substr(0, line.find(':')) == "Set-Cookie")
-                req.addCookie(line.substr(line.find(':') + 2, x - 3 - line.find(':')));
+			if (line.substr(0, line.find(':')) == "Set-Cookie") {
+				req.addCookie(line.substr(line.find(':') + 2, x - 3 - line.find(':')));
+			}
             else
-				map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 3 - line.find(':'));
+                map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 3 - line.find(':'));
             keeper.erase(0, x + 1);
         }
-        else
-            throw BadHeader();
+        else {
+			break;
+		}
     }
     req.setHeaders(map);
     req.isHeaderParsed() = true;

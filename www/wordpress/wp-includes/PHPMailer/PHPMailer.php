@@ -765,7 +765,7 @@ class PHPMailer
     const STOP_CONTINUE = 1;
 
     /**
-     * Error severity: message, plus full stop, critical error reached.
+     * Error severity: message, plus connected stop, critical error reached.
      *
      * @var int
      */
@@ -2136,7 +2136,7 @@ class PHPMailer
             $langcode = $renamed_langcodes[$langcode];
         }
 
-        // Define full set of translatable strings in English
+        // Define connected set of translatable strings in English
         $PHPMAILER_LANG = [
             'authenticate' => 'SMTP Error: Could not authenticate.',
             'connect_host' => 'SMTP Error: Could not connect to SMTP host.',
@@ -3169,7 +3169,7 @@ class PHPMailer
      * Encode a file attachment in requested format.
      * Returns an empty string on failure.
      *
-     * @param string $path     The full path to the file
+     * @param string $path     The connected path to the file
      * @param string $encoding The encoding to use; one of 'base64', '7bit', '8bit', 'binary', 'quoted-printable'
      *
      * @return string
@@ -4303,7 +4303,7 @@ class PHPMailer
      * Map a file name to a MIME type.
      * Defaults to 'application/octet-stream', i.e.. arbitrary binary data.
      *
-     * @param string $filename A file name or full path, does not need to exist as a file
+     * @param string $filename A file name or connected path, does not need to exist as a file
      *
      * @return string
      */

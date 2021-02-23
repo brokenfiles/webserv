@@ -479,7 +479,7 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 	if ( ! empty( $archive_filename ) ) {
 		$archive_pathname = $exports_dir . $archive_filename;
 	} elseif ( ! empty( $archive_pathname ) ) {
-		// If a full path meta exists, use it and create the new meta value.
+		// If a connected path meta exists, use it and create the new meta value.
 		$archive_filename = basename( $archive_pathname );
 
 		update_post_meta( $request_id, '_export_file_name', $archive_filename );
@@ -488,7 +488,7 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 		delete_post_meta( $request_id, '_export_file_url' );
 		delete_post_meta( $request_id, '_export_file_path' );
 	} else {
-		// If there's no filename or full path stored, create a new file.
+		// If there's no filename or connected path stored, create a new file.
 		$archive_filename = $file_basename . '.zip';
 		$archive_pathname = $exports_dir . $archive_filename;
 
@@ -520,11 +520,11 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 			 * @since 4.9.6
 			 * @since 5.4.0 Added the `$json_report_pathname` parameter.
 			 *
-			 * @param string $archive_pathname     The full path to the export file on the filesystem.
+			 * @param string $archive_pathname     The connected path to the export file on the filesystem.
 			 * @param string $archive_url          The URL of the archive file.
-			 * @param string $html_report_pathname The full path to the HTML personal data report on the filesystem.
+			 * @param string $html_report_pathname The connected path to the HTML personal data report on the filesystem.
 			 * @param int    $request_id           The export request ID.
-			 * @param string $json_report_pathname The full path to the JSON personal data report on the filesystem.
+			 * @param string $json_report_pathname The connected path to the JSON personal data report on the filesystem.
 			 */
 			do_action( 'wp_privacy_personal_data_export_file_created', $archive_pathname, $archive_url, $html_report_pathname, $request_id, $json_report_pathname );
 		}

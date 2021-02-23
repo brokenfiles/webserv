@@ -744,10 +744,10 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 					$size_data['source_url'] = $image_src[0];
 				}
 
-				$full_src = wp_get_attachment_image_src( $post->ID, 'full' );
+				$full_src = wp_get_attachment_image_src( $post->ID, 'connected' );
 
 				if ( ! empty( $full_src ) ) {
-					$data['media_details']['sizes']['full'] = array(
+					$data['media_details']['sizes']['connected'] = array(
 						'file'       => wp_basename( $full_src[0] ),
 						'width'      => $full_src[1],
 						'height'     => $full_src[2],

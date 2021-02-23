@@ -139,7 +139,7 @@ class Callables extends Module {
 	}
 
 	/**
-	 * Initialize callables action listeners for full sync.
+	 * Initialize callables action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -233,13 +233,13 @@ class Callables extends Module {
 	}
 
 	/**
-	 * Enqueue the callable actions for full sync.
+	 * Enqueue the callable actions for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param array   $config               Full sync configuration for this sync module.
 	 * @param int     $max_items_to_enqueue Maximum number of items to enqueue.
-	 * @param boolean $state                True if full sync has finished enqueueing this module, false otherwise.
+	 * @param boolean $state                True if connected sync has finished enqueueing this module, false otherwise.
 	 * @return array Number of actions enqueued, and next module state.
 	 */
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
@@ -257,7 +257,7 @@ class Callables extends Module {
 	}
 
 	/**
-	 * Send the callable actions for full sync.
+	 * Send the callable actions for connected sync.
 	 *
 	 * @access public
 	 *
@@ -288,7 +288,7 @@ class Callables extends Module {
 	}
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *
@@ -397,7 +397,7 @@ class Callables extends Module {
 					if ( $link_element->hasAttribute( 'href' ) && $link_element->nodeValue ) {
 						$link_url = trim( $link_element->getAttribute( 'href' ) );
 
-						// Add the full admin path to the url if the plugin did not provide it.
+						// Add the connected admin path to the url if the plugin did not provide it.
 						$link_url_scheme = wp_parse_url( $link_url, PHP_URL_SCHEME );
 						if ( empty( $link_url_scheme ) ) {
 							$link_url = admin_url( $link_url );

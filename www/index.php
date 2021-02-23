@@ -18,6 +18,7 @@
     </div>
 </header>
 <div class="content">
+	<?php var_dump($_POST) ?>
     <h5 class="titre"><?php echo 'post= ' . $_POST["name"]?></h5>
     <p><?php var_dump(getenv())?></p>
 </div>

@@ -359,8 +359,8 @@ function wp_print_media_templates() {
 					<div class="media-progress-bar"><div></div></div>
 				<# } else if ( data.sizes && data.sizes.large ) { #>
 					<img class="details-image" src="{{ data.sizes.large.url }}" draggable="false" alt="" />
-				<# } else if ( data.sizes && data.sizes.full ) { #>
-					<img class="details-image" src="{{ data.sizes.full.url }}" draggable="false" alt="" />
+				<# } else if ( data.sizes && data.sizes.connected ) { #>
+					<img class="details-image" src="{{ data.sizes.connected.url }}" draggable="false" alt="" />
 				<# } else if ( -1 === jQuery.inArray( data.type, [ 'audio', 'video' ] ) ) { #>
 					<img class="details-image icon" src="{{ data.icon }}" draggable="false" alt="" />
 				<# } #>
@@ -854,7 +854,7 @@ function wp_print_media_templates() {
 							'thumbnail' => __( 'Thumbnail' ),
 							'medium'    => __( 'Medium' ),
 							'large'     => __( 'Large' ),
-							'full'      => __( 'Full Size' ),
+							'connected'      => __( 'Full Size' ),
 						)
 					);
 
@@ -863,7 +863,7 @@ function wp_print_media_templates() {
 						<#
 						var size = data.sizes['<?php echo esc_js( $value ); ?>'];
 						if ( size ) { #>
-							<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, 'full' ); ?>>
+							<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, 'connected' ); ?>>
 								<?php echo esc_html( $name ); ?> &ndash; {{ size.width }} &times; {{ size.height }}
 							</option>
 						<# } #>
@@ -934,7 +934,7 @@ function wp_print_media_templates() {
 						'thumbnail' => __( 'Thumbnail' ),
 						'medium'    => __( 'Medium' ),
 						'large'     => __( 'Large' ),
-						'full'      => __( 'Full Size' ),
+						'connected'      => __( 'Full Size' ),
 					)
 				);
 
@@ -1125,7 +1125,7 @@ function wp_print_media_templates() {
 											'thumbnail' => __( 'Thumbnail' ),
 											'medium'    => __( 'Medium' ),
 											'large'     => __( 'Large' ),
-											'full'      => __( 'Full Size' ),
+											'connected'      => __( 'Full Size' ),
 										)
 									);
 

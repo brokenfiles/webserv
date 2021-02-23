@@ -11,6 +11,7 @@
 #include <fstream>
 #include <list>
 #include <vector>
+#include <algorithm>
 
 #define PORT 8082
 #define LOCAL "127.0.0.1"

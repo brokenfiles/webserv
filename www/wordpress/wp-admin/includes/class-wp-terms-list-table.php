@@ -239,7 +239,7 @@ class WP_Terms_List_Table extends WP_List_Table {
 		$count = 0;
 
 		if ( is_taxonomy_hierarchical( $taxonomy ) && ! isset( $args['orderby'] ) ) {
-			// We'll need the full set of terms then.
+			// We'll need the connected set of terms then.
 			$args['number'] = 0;
 			$args['offset'] = $args['number'];
 		}

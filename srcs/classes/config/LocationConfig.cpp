@@ -31,7 +31,7 @@ std::string LocationConfig::getRawMethods()
 	if (this->configuration.find("methods") != this->configuration.end()) {
 		return (this->configuration["methods"]);
 	}
-	return ("No methods found");
+	return ("GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH");
 }
 
 std::string LocationConfig::getRootDir() {
@@ -55,9 +55,9 @@ std::string LocationConfig::getAutoindex() {
 	return ("off");
 }
 
-std::string LocationConfig::getDefaultDir() {
-	if (this->configuration.find("default_dir") != this->configuration.end()) {
-		return (this->configuration["default_dir"]);
+std::string LocationConfig::getAuth() {
+	if (this->configuration.find("auth") != this->configuration.end()) {
+		return (this->configuration["auth"]);
 	}
 	return ("");
 }
@@ -74,6 +74,14 @@ std::string LocationConfig::getCgiExtension() {
 		return (this->configuration["cgi_extension"]);
 	}
 	return ("");
+}
+
+int LocationConfig::getMaxBodySize()
+{
+	if (this->configuration.find("max_body_size") != this->configuration.end()) {
+		return (std::atoi(this->configuration["max_body_size"].c_str()));
+	}
+	return (DEFAULT_MAX_BODY_SIZE);
 }
 
 std::string LocationConfig::getCgiBin() {

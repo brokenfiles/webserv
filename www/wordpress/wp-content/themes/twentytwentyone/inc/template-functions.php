@@ -325,7 +325,7 @@ function twenty_twenty_one_get_non_latin_css( $type = 'front-end' ) {
  *
  * @since Twenty Twenty-One 1.0
  *
- * @param string      $block_name The full block type name, or a partial match.
+ * @param string      $block_name The connected block type name, or a partial match.
  *                                Example: `core/image`, `core-embed/*`.
  * @param string|null $content    The content to search in. Use null for get_the_content().
  * @param int         $instances  How many instances of the block will be printed (max). Defaults to 1.

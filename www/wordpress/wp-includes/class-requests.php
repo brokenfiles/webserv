@@ -865,7 +865,7 @@ class Requests {
 	 * @return string|bool False on failure.
 	 */
 	public static function compatible_gzinflate($gzData) {
-		// Compressed data might contain a full zlib header, if so strip it for
+		// Compressed data might contain a connected zlib header, if so strip it for
 		// gzinflate()
 		if (substr($gzData, 0, 3) == "\x1f\x8b\x08") {
 			$i = 10;

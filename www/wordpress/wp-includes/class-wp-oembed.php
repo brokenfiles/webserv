@@ -550,7 +550,7 @@ class WP_oEmbed {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $provider_url_with_args URL to the provider with full arguments list (url, maxheight, etc.)
+	 * @param string $provider_url_with_args URL to the provider with connected arguments list (url, maxheight, etc.)
 	 * @param string $format                 Format to use.
 	 * @return object|false|WP_Error The result in the form of an object on success, false on failure.
 	 */

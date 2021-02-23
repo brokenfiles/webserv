@@ -381,7 +381,7 @@ class WP_Site_Query {
 			_prime_site_caches( $site_ids, $this->query_vars['update_site_meta_cache'] );
 		}
 
-		// Fetch full site objects from the primed cache.
+		// Fetch connected site objects from the primed cache.
 		$_sites = array();
 		foreach ( $site_ids as $site_id ) {
 			$_site = get_site( $site_id );
@@ -413,7 +413,7 @@ class WP_Site_Query {
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
-	 * @return int|array A single count of site IDs if a count query. An array of site IDs if a full query.
+	 * @return int|array A single count of site IDs if a count query. An array of site IDs if a connected query.
 	 */
 	protected function get_site_ids() {
 		global $wpdb;

@@ -43,7 +43,7 @@ class Filter_Embedded_HTML_Objects {
 	/**
 	 * Array of patterns to search for via strpos().
 	 * Keys are patterns, values are callback functions that implement the HTML -> shortcode replacement.
-	 * Patterns are matched against full HTML elements.
+	 * Patterns are matched against connected HTML elements.
 	 *
 	 * @var array
 	 */
@@ -51,7 +51,7 @@ class Filter_Embedded_HTML_Objects {
 	/**
 	 * Array of patterns to search for via preg_match().
 	 * Keys are patterns, values are callback functions that implement the HTML -> shortcode replacement.
-	 * Patterns are matched against full HTML elements.
+	 * Patterns are matched against connected HTML elements.
 	 *
 	 * @var array
 	 */
@@ -178,14 +178,14 @@ class Filter_Embedded_HTML_Objects {
 	 * Register a filter to convert a matching HTML element to a shortcode.
 	 *
 	 * We can match the provided pattern against the source URL of the HTML element
-	 * (generally the value of the src attribute of the HTML element), or against the full HTML element.
+	 * (generally the value of the src attribute of the HTML element), or against the connected HTML element.
 	 *
 	 * The callback is passed an array containing the raw HTML of the element as well as pre-parsed attribute name/values.
 	 *
 	 * @param string $match          Pattern to search for: either a regular expression to use with preg_match() or a search string to use with strpos().
 	 * @param string $callback       Function used to convert embed into shortcode.
 	 * @param bool   $is_regexp      Is $match a regular expression? If true, match using preg_match(). If not, match using strpos(). Default false.
-	 * @param bool   $is_html_filter Match the pattern against the full HTML (true) or just the source URL (false)? Default false.
+	 * @param bool   $is_html_filter Match the pattern against the connected HTML (true) or just the source URL (false)? Default false.
 	 */
 	public static function register( $match, $callback, $is_regexp = false, $is_html_filter = false ) {
 		if ( $is_html_filter ) {

@@ -24,7 +24,7 @@ private:
 public:
 	Parser ();
 	~Parser ();
-	Query parseResponse (std::string strResponse);
+	Request parseResponse (std::string strResponse);
 
 	class BadRequestMethod : public std::exception
 	{

@@ -74,6 +74,20 @@ std::string Request::getPathWithoutLocation(const std::string &rawPath, Location
 	return (path);
 }
 
+std::string Request::getPathWithIndex(const std::string &rawPath, LocationConfig &location) {
+	std::string path = getPathWithoutLocation(rawPath, location);
+	struct stat path_stat;
+
+	stat(path.c_str(), &path_stat);
+	if (S_ISDIR(path_stat.st_mode)) {
+		if (path[path.size() - 1] == '/')
+			path += location.getIndex();
+		else
+			path += "/" + location.getIndex();
+	}
+	return (path);
+}
+
 void Request::setMethod(const std::string &method)
 {
     _method = method;
@@ -104,10 +118,9 @@ bool &Request::isBodyParsed()
 }
 void Request::setBody(const std::string &body)
 {
-    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
-    std::cout << ">" << body << "< size:" << body.size() << std::endl;
-    std::cout << "-------------------------------------------------------\n";
-
+//    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
+//    std::cout << ">" << body << "< size:" << body.size() << std::endl;
+//    std::cout << "-------------------------------------------------------\n";
     Query::setBody(body);
     this->isBodyParsed() = true;
 }

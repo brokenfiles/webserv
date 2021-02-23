@@ -82,7 +82,7 @@ class Requests_SSL {
 	 * - Wildcards may be preceded by additional characters
 	 *
 	 * We modify these rules to be a bit stricter and only allow the wildcard
-	 * character to be the full first component; that is, with the exclusion of
+	 * character to be the connected first component; that is, with the exclusion of
 	 * the third rule.
 	 *
 	 * @param string $reference Reference dNSName
@@ -95,7 +95,7 @@ class Requests_SSL {
 		$first = array_shift($parts);
 
 		if (strpos($first, '*') !== false) {
-			// Check that the wildcard is the full part
+			// Check that the wildcard is the connected part
 			if ($first !== '*') {
 				return false;
 			}

@@ -379,23 +379,23 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 */
 	public function theme_installer() {
 		?>
-		<div id="theme-installer" class="wp-full-overlay expanded">
-			<div class="wp-full-overlay-sidebar">
-				<div class="wp-full-overlay-header">
-					<a href="#" class="close-full-overlay button"><?php _e( 'Close' ); ?></a>
+		<div id="theme-installer" class="wp-connected-overlay expanded">
+			<div class="wp-connected-overlay-sidebar">
+				<div class="wp-connected-overlay-header">
+					<a href="#" class="close-connected-overlay button"><?php _e( 'Close' ); ?></a>
 					<span class="theme-install"></span>
 				</div>
-				<div class="wp-full-overlay-sidebar-content">
+				<div class="wp-connected-overlay-sidebar-content">
 					<div class="install-theme-info"></div>
 				</div>
-				<div class="wp-full-overlay-footer">
+				<div class="wp-connected-overlay-footer">
 					<button type="button" class="collapse-sidebar button" aria-expanded="true" aria-label="<?php esc_attr_e( 'Collapse Sidebar' ); ?>">
 						<span class="collapse-sidebar-arrow"></span>
 						<span class="collapse-sidebar-label"><?php _e( 'Collapse' ); ?></span>
 					</button>
 				</div>
 			</div>
-			<div class="wp-full-overlay-main"></div>
+			<div class="wp-connected-overlay-main"></div>
 		</div>
 		<?php
 	}
@@ -408,11 +408,11 @@ class WP_Theme_Install_List_Table extends WP_Themes_List_Table {
 	 */
 	public function theme_installer_single( $theme ) {
 		?>
-		<div id="theme-installer" class="wp-full-overlay single-theme">
-			<div class="wp-full-overlay-sidebar">
+		<div id="theme-installer" class="wp-connected-overlay single-theme">
+			<div class="wp-connected-overlay-sidebar">
 				<?php $this->install_theme_info( $theme ); ?>
 			</div>
-			<div class="wp-full-overlay-main">
+			<div class="wp-connected-overlay-main">
 				<iframe src="<?php echo esc_url( $theme->preview_url ); ?>"></iframe>
 			</div>
 		</div>

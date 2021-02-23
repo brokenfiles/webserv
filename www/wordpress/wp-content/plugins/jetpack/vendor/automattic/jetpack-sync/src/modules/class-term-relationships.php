@@ -67,7 +67,7 @@ class Term_Relationships extends Module {
 	}
 
 	/**
-	 * Initialize term relationships action listeners for full sync.
+	 * Initialize term relationships action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -88,7 +88,7 @@ class Term_Relationships extends Module {
 	}
 
 	/**
-	 * Enqueue the term relationships actions for full sync.
+	 * Enqueue the term relationships actions for connected sync.
 	 *
 	 * @access public
 	 *
@@ -215,7 +215,7 @@ class Term_Relationships extends Module {
 	}
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *

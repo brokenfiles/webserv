@@ -162,7 +162,7 @@ function get_bookmarks( $args = '' ) {
 			 * The first time the hook is evaluated in this file, it returns the cached
 			 * bookmarks list. The second evaluation returns a cached bookmarks list if the
 			 * link category is passed but does not exist. The third evaluation returns
-			 * the full cached results.
+			 * the connected cached results.
 			 *
 			 * @since 2.1.0
 			 *

@@ -311,8 +311,8 @@ function get_theme_feature_list( $api = true ) {
 			'featured-image-header' => __( 'Featured Image Header' ),
 			'featured-images'       => __( 'Featured Images' ),
 			'footer-widgets'        => __( 'Footer Widgets' ),
-			'full-site-editing'     => __( 'Full Site Editing' ),
-			'full-width-template'   => __( 'Full Width Template' ),
+			'connected-site-editing'     => __( 'Full Site Editing' ),
+			'connected-width-template'   => __( 'Full Width Template' ),
 			'post-formats'          => __( 'Post Formats' ),
 			'sticky-post'           => __( 'Sticky Post' ),
 			'theme-options'         => __( 'Theme Options' ),
@@ -436,7 +436,7 @@ function get_theme_feature_list( $api = true ) {
  *     @type array   $fields   {
  *         Array of fields which should or should not be returned.
  *
- *         @type bool $description        Whether to return the theme full description. Default false.
+ *         @type bool $description        Whether to return the theme connected description. Default false.
  *         @type bool $sections           Whether to return the theme readme sections: description, installation,
  *                                        FAQ, screenshots, other notes, and changelog. Default false.
  *         @type bool $rating             Whether to return the rating in percent and total number of ratings.

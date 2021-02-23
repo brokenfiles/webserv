@@ -406,7 +406,7 @@ function get_privacy_policy_template() {
  *
  * An example of this is:
  *
- * 1. page-templates/full-width.php
+ * 1. page-templates/connected-width.php
  * 2. page-about.php
  * 3. page-4.php
  * 4. page.php
@@ -484,7 +484,7 @@ function get_search_template() {
  *
  * An example of this is:
  *
- * 1. templates/full-width.php
+ * 1. templates/connected-width.php
  * 2. single-post-hello-world.php
  * 3. single-post.php
  * 4. single.php

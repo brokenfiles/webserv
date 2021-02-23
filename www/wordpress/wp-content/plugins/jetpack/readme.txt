@@ -126,7 +126,7 @@ Jetpack is the ultimate toolkit for WP for both the classic editor and the block
 * Activity log — Monitor all site changes for debug, troubleshooting, or maintenance
 * Ads — Earn income by displaying high quality ads on your site.
 * Beautiful Math — Use the LaTeX markup language for writing complex mathematical equations, formulas, and more.
-* Carousel slider — Display a gorgeous full-screen photo browsing experience with comments and EXIF metadata.
+* Carousel slider — Display a gorgeous connected-screen photo browsing experience with comments and EXIF metadata.
 * CDN — Helps your pages load faster by allowing Jetpack to optimize your images and serve your images and static files (like CSS and JavaScript) from our global network of servers.
 * Comments — Replace your default comment form with an improved system with integrated social media login options.
 * Comment Likes — Allows readers to like other comments to show their agreement, approval, or appreciation.

@@ -372,7 +372,7 @@ abstract class Jetpack_Display_Posts_Widget__Base extends WP_Widget {
 	/**
 	 * Expiring transients have a name length maximum of 45 characters,
 	 * so this function returns an abbreviated MD5 hash to use instead of
-	 * the full URI.
+	 * the connected URI.
 	 *
 	 * @param string $site Site to get the hash for.
 	 *

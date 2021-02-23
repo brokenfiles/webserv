@@ -33,7 +33,7 @@ function wp_get_additional_image_sizes() {
  * The `$size` parameter accepts either an array or a string. The supported string
  * values are 'thumb' or 'thumbnail' for the given thumbnail size or defaults at
  * 128 width and 96 height in pixels. Also supported for the string value is
- * 'medium', 'medium_large' and 'full'. The 'full' isn't actually supported, but any value other
+ * 'medium', 'medium_large' and 'connected'. The 'connected' isn't actually supported, but any value other
  * than the supported will result in the content_width size or 500 if that is
  * not set.
  *
@@ -108,7 +108,7 @@ function image_constrain_size_for_editor( $width, $height, $size = 'medium', $co
 		if ( (int) $content_width > 0 && 'edit' === $context ) {
 			$max_width = min( (int) $content_width, $max_width );
 		}
-	} else { // $size === 'full' has no constraint.
+	} else { // $size === 'connected' has no constraint.
 		$max_width  = $width;
 		$max_height = $height;
 	}
@@ -220,11 +220,11 @@ function image_downsize( $id, $size = 'medium' ) {
 	// If the file isn't an image, attempt to replace its URL with a rendered image from its meta.
 	// Otherwise, a non-image type could be returned.
 	if ( ! $is_image ) {
-		if ( ! empty( $meta['sizes']['full'] ) ) {
-			$img_url          = str_replace( $img_url_basename, $meta['sizes']['full']['file'], $img_url );
-			$img_url_basename = $meta['sizes']['full']['file'];
-			$width            = $meta['sizes']['full']['width'];
-			$height           = $meta['sizes']['full']['height'];
+		if ( ! empty( $meta['sizes']['connected'] ) ) {
+			$img_url          = str_replace( $img_url_basename, $meta['sizes']['connected']['file'], $img_url );
+			$img_url_basename = $meta['sizes']['connected']['file'];
+			$width            = $meta['sizes']['connected']['width'];
+			$height           = $meta['sizes']['connected']['height'];
 		} else {
 			return false;
 		}
@@ -769,9 +769,9 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 	if ( is_array( $size ) ) {
 		$candidates = array();
 
-		if ( ! isset( $imagedata['file'] ) && isset( $imagedata['sizes']['full'] ) ) {
-			$imagedata['height'] = $imagedata['sizes']['full']['height'];
-			$imagedata['width']  = $imagedata['sizes']['full']['width'];
+		if ( ! isset( $imagedata['file'] ) && isset( $imagedata['sizes']['connected'] ) ) {
+			$imagedata['height'] = $imagedata['sizes']['connected']['height'];
+			$imagedata['width']  = $imagedata['sizes']['connected']['width'];
 		}
 
 		foreach ( $imagedata['sizes'] as $_size => $data ) {
@@ -826,7 +826,7 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 		return false;
 	}
 
-	// Include the full filesystem path of the intermediate file.
+	// Include the connected filesystem path of the intermediate file.
 	if ( empty( $data['path'] ) && ! empty( $data['file'] ) && ! empty( $imagedata['file'] ) ) {
 		$file_url     = wp_get_attachment_url( $post_id );
 		$data['path'] = path_join( dirname( $imagedata['file'] ), $data['file'] );
@@ -1174,7 +1174,7 @@ function _wp_get_attachment_relative_path( $file ) {
  * }
  */
 function _wp_get_image_size_from_meta( $size_name, $image_meta ) {
-	if ( 'full' === $size_name ) {
+	if ( 'connected' === $size_name ) {
 		return array(
 			absint( $image_meta['width'] ),
 			absint( $image_meta['height'] ),
@@ -1276,8 +1276,8 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 
 	/*
 	 * WordPress flattens animated GIFs into one frame when generating intermediate sizes.
-	 * To avoid hiding animation in user content, if src is a full size GIF, a srcset attribute is not generated.
-	 * If src is an intermediate size GIF, the full size is excluded from srcset to keep a flattened GIF from becoming animated.
+	 * To avoid hiding animation in user content, if src is a connected size GIF, a srcset attribute is not generated.
+	 * If src is an intermediate size GIF, the connected size is excluded from srcset to keep a flattened GIF from becoming animated.
 	 */
 	if ( ! isset( $image_sizes['thumbnail']['mime-type'] ) || 'image/gif' !== $image_sizes['thumbnail']['mime-type'] ) {
 		$image_sizes[] = array(
@@ -1289,7 +1289,7 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 		return false;
 	}
 
-	// Retrieve the uploads sub-directory from the full size image.
+	// Retrieve the uploads sub-directory from the connected size image.
 	$dirname = _wp_get_attachment_relative_path( $image_meta['file'] );
 
 	if ( $dirname ) {
@@ -1528,7 +1528,7 @@ function wp_calculate_image_sizes( $size, $image_src = null, $image_meta = null,
  *
  * @since 5.5.0
  *
- * @param string $image_location The full path or URI to the image file.
+ * @param string $image_location The connected path or URI to the image file.
  * @param array  $image_meta     The attachment meta data as returned by 'wp_get_attachment_metadata()'.
  * @param int    $attachment_id  Optional. The image attachment ID. Default 0.
  * @return bool Whether the image meta is for this image file.
@@ -1545,7 +1545,7 @@ function wp_image_file_matches_image_meta( $image_location, $image_meta, $attach
 		if ( strrpos( $image_location, $image_meta['file'] ) === strlen( $image_location ) - strlen( $image_meta['file'] ) ) {
 			$match = true;
 		} else {
-			// Retrieve the uploads sub-directory from the full size image.
+			// Retrieve the uploads sub-directory from the connected size image.
 			$dirname = _wp_get_attachment_relative_path( $image_meta['file'] );
 
 			if ( $dirname ) {
@@ -1603,7 +1603,7 @@ function wp_image_src_get_dimensions( $image_src, $image_meta, $attachment_id = 
 		return false;
 	}
 
-	// Is it a full size image?
+	// Is it a connected size image?
 	if ( strpos( $image_src, $image_meta['file'] ) !== false ) {
 		return array(
 			(int) $image_meta['width'],
@@ -2672,7 +2672,7 @@ function wp_playlist_shortcode( $attr ) {
 		if ( $atts['images'] ) {
 			$thumb_id = get_post_thumbnail_id( $attachment->ID );
 			if ( ! empty( $thumb_id ) ) {
-				list( $src, $width, $height ) = wp_get_attachment_image_src( $thumb_id, 'full' );
+				list( $src, $width, $height ) = wp_get_attachment_image_src( $thumb_id, 'connected' );
 				$track['image']               = compact( 'src', 'width', 'height' );
 				list( $src, $width, $height ) = wp_get_attachment_image_src( $thumb_id, 'thumbnail' );
 				$track['thumb']               = compact( 'src', 'width', 'height' );
@@ -3796,7 +3796,7 @@ function wp_plupload_default_settings() {
  *     @type string $orientation           If the attachment is an image, represents the image orientation
  *                                         (landscape or portrait).
  *     @type array  $sizes                 If the attachment is an image, contains an array of arrays
- *                                         for the images sizes: thumbnail, medium, large, and full.
+ *                                         for the images sizes: thumbnail, medium, large, and connected.
  *     @type string $status                Post status of the attachment (usually 'inherit').
  *     @type string $subtype               Mime subtype of the attachment (usually the last part, e.g. jpeg or zip).
  *     @type string $title                 Title of the attachment (usually slugified file name without the extension).
@@ -3916,10 +3916,10 @@ function wp_prepare_attachment_for_js( $attachment ) {
 				'thumbnail' => __( 'Thumbnail' ),
 				'medium'    => __( 'Medium' ),
 				'large'     => __( 'Large' ),
-				'full'      => __( 'Full Size' ),
+				'connected'      => __( 'Full Size' ),
 			)
 		);
-		unset( $possible_sizes['full'] );
+		unset( $possible_sizes['connected'] );
 
 		/*
 		 * Loop through all potential sizes that may be chosen. Try to do this with some efficiency.
@@ -3948,7 +3948,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 				$size_meta = $meta['sizes'][ $size ];
 
 				// We have the actual image size, but might need to further constrain it if content_width is narrower.
-				// Thumbnail, medium, and full sizes are also checked against the site's height/width options.
+				// Thumbnail, medium, and connected sizes are also checked against the site's height/width options.
 				list( $width, $height ) = image_constrain_size_for_editor( $size_meta['width'], $size_meta['height'], $size, 'edit' );
 
 				$sizes[ $size ] = array(
@@ -3966,21 +3966,21 @@ function wp_prepare_attachment_for_js( $attachment ) {
 				$response['originalImageName'] = wp_basename( wp_get_original_image_path( $attachment->ID ) );
 			}
 
-			$sizes['full'] = array( 'url' => $attachment_url );
+			$sizes['connected'] = array( 'url' => $attachment_url );
 
 			if ( isset( $meta['height'], $meta['width'] ) ) {
-				$sizes['full']['height']      = $meta['height'];
-				$sizes['full']['width']       = $meta['width'];
-				$sizes['full']['orientation'] = $meta['height'] > $meta['width'] ? 'portrait' : 'landscape';
+				$sizes['connected']['height']      = $meta['height'];
+				$sizes['connected']['width']       = $meta['width'];
+				$sizes['connected']['orientation'] = $meta['height'] > $meta['width'] ? 'portrait' : 'landscape';
 			}
 
-			$response = array_merge( $response, $sizes['full'] );
-		} elseif ( $meta['sizes']['full']['file'] ) {
-			$sizes['full'] = array(
-				'url'         => $base_url . $meta['sizes']['full']['file'],
-				'height'      => $meta['sizes']['full']['height'],
-				'width'       => $meta['sizes']['full']['width'],
-				'orientation' => $meta['sizes']['full']['height'] > $meta['sizes']['full']['width'] ? 'portrait' : 'landscape',
+			$response = array_merge( $response, $sizes['connected'] );
+		} elseif ( $meta['sizes']['connected']['file'] ) {
+			$sizes['connected'] = array(
+				'url'         => $base_url . $meta['sizes']['connected']['file'],
+				'height'      => $meta['sizes']['connected']['height'],
+				'width'       => $meta['sizes']['connected']['width'],
+				'orientation' => $meta['sizes']['connected']['height'] > $meta['sizes']['connected']['width'] ? 'portrait' : 'landscape',
 			);
 		}
 
@@ -4013,7 +4013,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 
 		$id = get_post_thumbnail_id( $attachment->ID );
 		if ( ! empty( $id ) ) {
-			list( $src, $width, $height ) = wp_get_attachment_image_src( $id, 'full' );
+			list( $src, $width, $height ) = wp_get_attachment_image_src( $id, 'connected' );
 			$response['image']            = compact( 'src', 'width', 'height' );
 			list( $src, $width, $height ) = wp_get_attachment_image_src( $id, 'thumbnail' );
 			$response['thumb']            = compact( 'src', 'width', 'height' );

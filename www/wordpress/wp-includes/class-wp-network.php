@@ -325,7 +325,7 @@ class WP_Network {
 	 *
 	 * @param string   $domain   Domain to check.
 	 * @param string   $path     Path to check.
-	 * @param int|null $segments Path segments to use. Defaults to null, or the full path.
+	 * @param int|null $segments Path segments to use. Defaults to null, or the connected path.
 	 * @return WP_Network|bool Network object if successful. False when no network is found.
 	 */
 	public static function get_by_path( $domain = '', $path = '', $segments = null ) {
@@ -379,7 +379,7 @@ class WP_Network {
 			 *                           one path segment. The function default of null only makes sense when you
 			 *                           know the requested path should match a network.
 			 * @param string   $domain   The requested domain.
-			 * @param string   $path     The requested path, in full.
+			 * @param string   $path     The requested path, in connected.
 			 */
 			$segments = apply_filters( 'network_by_path_segments_count', $segments, $domain, $path );
 
@@ -410,7 +410,7 @@ class WP_Network {
 		 * @param null|bool|WP_Network $network  Network value to return by path. Default null
 		 *                                       to continue retrieving the network.
 		 * @param string               $domain   The requested domain.
-		 * @param string               $path     The requested path, in full.
+		 * @param string               $path     The requested path, in connected.
 		 * @param int|null             $segments The suggested number of paths to consult.
 		 *                                       Default null, meaning the entire path was to be consulted.
 		 * @param string[]             $paths    Array of paths to search for, based on `$path` and `$segments`.
