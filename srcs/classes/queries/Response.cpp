@@ -43,16 +43,21 @@ Response &Response::operator= (const Response &copy)
 std::string Response::sendResponse(Client *client)
 {
 	const std::string method = this->toLower(client->getObjRequest().getMethod());
-	this->_location = this->find_location(client);
+	bool foundLocation = false;
+	try {
+		this->_location = this->find_location(client);
+		foundLocation = true;
+	} catch (const std::exception &exception) {
+		logger.warning("La location n'a pas été trouvée pour cette requête");
+	}
 
 	/* On définie les headers par défaut */
 	this->setDefaultHeaders(client, client->getServerConfig());
 
 	/* Gère si le serveur est unavailable */
-    if (!client->isConnected())
-    {
-        this->handleServerUnavailable(client);
-    }
+	if (!client->isConnected() || !foundLocation)
+		this->handleServerUnavailable(client);
+
 	/* On check si la méthode est gérée par la location */
 	else if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
