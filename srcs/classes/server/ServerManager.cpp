@@ -215,6 +215,7 @@ int ServerManager::run_servers()
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
                         this->disconnectClient(client_curr);
                         clients.erase(it);
+                        logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                         break;
                     }
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
