@@ -36,7 +36,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const COMPLETE_ROUTE = 'indexing/complete';
 
 	/**
-	 * The full indexing complete route constant.
+	 * The connected indexing complete route constant.
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const INDEXABLES_COMPLETE_ROUTE = 'indexing/indexables-complete';
 
 	/**
-	 * The full indexing complete route constant.
+	 * The connected indexing complete route constant.
 	 *
 	 * @var string
 	 */
@@ -64,7 +64,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const PREPARE_ROUTE = 'indexing/prepare';
 
 	/**
-	 * The full indexing prepare route constant.
+	 * The connected indexing prepare route constant.
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const POSTS_ROUTE = 'indexing/posts';
 
 	/**
-	 * The full posts route constant.
+	 * The connected posts route constant.
 	 *
 	 * @var string
 	 */
@@ -92,7 +92,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const TERMS_ROUTE = 'indexing/terms';
 
 	/**
-	 * The full terms route constant.
+	 * The connected terms route constant.
 	 *
 	 * @var string
 	 */
@@ -106,7 +106,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const POST_TYPE_ARCHIVES_ROUTE = 'indexing/post-type-archives';
 
 	/**
-	 * The full terms route constant.
+	 * The connected terms route constant.
 	 *
 	 * @var string
 	 */
@@ -120,7 +120,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const GENERAL_ROUTE = 'indexing/general';
 
 	/**
-	 * The full general route constant.
+	 * The connected general route constant.
 	 *
 	 * @var string
 	 */
@@ -134,7 +134,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const POST_LINKS_INDEXING_ROUTE = 'link-indexing/posts';
 
 	/**
-	 * The full posts route constant.
+	 * The connected posts route constant.
 	 *
 	 * @var string
 	 */
@@ -148,7 +148,7 @@ class Indexing_Route extends Abstract_Indexation_Route {
 	const TERM_LINKS_INDEXING_ROUTE = 'link-indexing/terms';
 
 	/**
-	 * The full terms route constant.
+	 * The connected terms route constant.
 	 *
 	 * @var string
 	 */

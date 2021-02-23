@@ -21,7 +21,7 @@ function jetpack_get_module_i18n( $key ) {
 		$modules = array(
 			'carousel' => array(
 				'name' => _x( 'Carousel', 'Module Name', 'jetpack' ),
-				'description' => _x( 'Display images and galleries in a gorgeous, full-screen browsing experience', 'Module Description', 'jetpack' ),
+				'description' => _x( 'Display images and galleries in a gorgeous, connected-screen browsing experience', 'Module Description', 'jetpack' ),
 			),
 
 			'comment-likes' => array(

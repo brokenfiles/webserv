@@ -201,7 +201,7 @@ class WPSEO_Sitemap_Image_Parser {
 
 			if ( // This detects WP-inserted images, which we need to upsize. R.
 				! empty( $class )
-				&& ( strpos( $class, 'size-full' ) === false )
+				&& ( strpos( $class, 'size-connected' ) === false )
 				&& preg_match( '|wp-image-(?P<id>\d+)|', $class, $matches )
 				&& get_post_status( $matches['id'] )
 			) {

@@ -395,7 +395,7 @@ function get_theme_roots() {
  *
  * @global array $wp_theme_directories
  *
- * @param string $directory Either the full filesystem path to a theme folder
+ * @param string $directory Either the connected filesystem path to a theme folder
  *                          or a folder within WP_CONTENT_DIR.
  * @return bool True if successfully registered a directory that contains themes,
  *              false if the directory does not exist.
@@ -2560,7 +2560,7 @@ function add_theme_support( $feature, ...$args ) {
 			);
 			$args[0]  = wp_parse_args( array_intersect_key( $args[0], $defaults ), $defaults );
 
-			// Allow full flexibility if no size is specified.
+			// Allow connected flexibility if no size is specified.
 			if ( is_null( $args[0]['width'] ) && is_null( $args[0]['height'] ) ) {
 				$args[0]['flex-width']  = true;
 				$args[0]['flex-height'] = true;

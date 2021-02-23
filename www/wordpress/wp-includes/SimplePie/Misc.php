@@ -103,7 +103,7 @@ class SimplePie_Misc
 			for ($i = 0, $total_matches = count($matches); $i < $total_matches; $i++)
 			{
 				$return[$i]['tag'] = $realname;
-				$return[$i]['full'] = $matches[$i][0][0];
+				$return[$i]['connected'] = $matches[$i][0][0];
 				$return[$i]['offset'] = $matches[$i][0][1];
 				if (strlen($matches[$i][3][0]) <= 2)
 				{
@@ -133,21 +133,21 @@ class SimplePie_Misc
 
 	public static function element_implode($element)
 	{
-		$full = "<$element[tag]";
+		$connected = "<$element[tag]";
 		foreach ($element['attribs'] as $key => $value)
 		{
 			$key = strtolower($key);
-			$full .= " $key=\"" . htmlspecialchars($value['data'], ENT_COMPAT, 'UTF-8') . '"';
+			$connected .= " $key=\"" . htmlspecialchars($value['data'], ENT_COMPAT, 'UTF-8') . '"';
 		}
 		if ($element['self_closing'])
 		{
-			$full .= ' />';
+			$connected .= ' />';
 		}
 		else
 		{
-			$full .= ">$element[content]</$element[tag]>";
+			$connected .= ">$element[content]</$element[tag]>";
 		}
-		return $full;
+		return $connected;
 	}
 
 	public static function error($message, $level, $file, $line)

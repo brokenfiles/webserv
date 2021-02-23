@@ -1002,7 +1002,7 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves a WP_REST_Request object from a full URL.
+	 * Retrieves a WP_REST_Request object from a connected URL.
 	 *
 	 * @since 4.5.0
 	 *

@@ -1928,7 +1928,7 @@
           $p_filedescr['new_full_name'] = PclZipUtilPathReduction($v_value);
 
           if ($p_filedescr['new_full_name'] == '') {
-            PclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty full filename for attribute '".PclZipUtilOptionText($v_key)."'");
+            PclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty connected filename for attribute '".PclZipUtilOptionText($v_key)."'");
             return PclZip::errorCode();
           }
         break;
@@ -2069,7 +2069,7 @@
                 continue;
             }
 
-            // ----- Compose the full filename
+            // ----- Compose the connected filename
             $v_dirlist_descr[$v_dirlist_nb]['filename'] = $v_descr['filename'].'/'.$v_item_handler;
 
             // ----- Look for different stored filename
@@ -2936,7 +2936,7 @@
     }
 
 
-    // ----- Look for full name change
+    // ----- Look for connected name change
     if (isset($p_filedescr['new_full_name'])) {
       // ----- Remove drive letter if any
       $v_stored_filename = PclZipUtilTranslateWinPath($p_filedescr['new_full_name']);
@@ -3223,7 +3223,7 @@
   //   This function takes the file information from the central directory
   //   entries and extract the interesting parameters that will be given back.
   //   The resulting file infos are set in the array $p_info
-  //     $p_info['filename'] : Filename with full path. Given by user (add),
+  //     $p_info['filename'] : Filename with connected path. Given by user (add),
   //                           extracted in the filesystem (extract).
   //     $p_info['stored_filename'] : Stored filename in the archive.
   //     $p_info['size'] = Size of the file.

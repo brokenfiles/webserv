@@ -67,7 +67,7 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 			array(
 				'size'              => array(
 					'type'        => 'string',
-					'enum'        => array_merge( get_intermediate_image_sizes(), array( 'full', 'custom' ) ),
+					'enum'        => array_merge( get_intermediate_image_sizes(), array( 'connected', 'custom' ) ),
 					'default'     => 'medium',
 					'description' => __( 'Size' ),
 				),
@@ -211,7 +211,7 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 
 			$size = $instance['size'];
 
-			if ( 'custom' === $size || ! in_array( $size, array_merge( get_intermediate_image_sizes(), array( 'full' ) ), true ) ) {
+			if ( 'custom' === $size || ! in_array( $size, array_merge( get_intermediate_image_sizes(), array( 'connected' ) ), true ) ) {
 				$size  = array( $instance['width'], $instance['height'] );
 				$width = $instance['width'];
 			} else {

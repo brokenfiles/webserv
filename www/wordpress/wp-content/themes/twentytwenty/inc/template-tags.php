@@ -641,9 +641,9 @@ function twentytwenty_body_classes( $classes ) {
 		$classes[] = 'overlay-header';
 	}
 
-	// Check whether the current page has full-width content.
-	if ( is_page_template( array( 'templates/template-full-width.php' ) ) ) {
-		$classes[] = 'has-full-width-content';
+	// Check whether the current page has connected-width content.
+	if ( is_page_template( array( 'templates/template-connected-width.php' ) ) ) {
+		$classes[] = 'has-connected-width-content';
 	}
 
 	// Check for enabled search.

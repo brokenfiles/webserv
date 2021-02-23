@@ -213,7 +213,7 @@ class Admin_Columns_Cache_Integration implements Integration_Interface {
 	 * Adds all child pages due to be shown on the current page to the $to_display array.
 	 * Copied over with some changes from WP_Posts_List_Table::_page_rows.
 	 *
-	 * @param array $children_pages The full map of child pages.
+	 * @param array $children_pages The connected map of child pages.
 	 * @param int   $count          The number of pages already processed.
 	 * @param int   $parent         The parent that's currently being processed.
 	 * @param int   $start          The number at which the current overview starts.

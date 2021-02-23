@@ -146,7 +146,7 @@ function jetpack_responsive_videos_maybe_wrap_oembed( $html, $url = null ) {
  * @since 7.0.0
  *
  * @param string $block_content The block content about to be appended.
- * @param array  $block         The full block, including name and attributes.
+ * @param array  $block         The connected block, including name and attributes.
  *
  * @return string $block_content String of rendered HTML.
  */

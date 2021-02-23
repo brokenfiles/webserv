@@ -44,14 +44,14 @@ class SEMrush_Route implements Route_Interface {
 	const RELATED_KEYPHRASES_ROUTE = self::ROUTE_PREFIX . '/related_keyphrases';
 
 	/**
-	 * The full login route constant.
+	 * The connected login route constant.
 	 *
 	 * @var string
 	 */
 	const FULL_AUTHENTICATION_ROUTE = Main::API_V1_NAMESPACE . '/' . self::AUTHENTICATION_ROUTE;
 
 	/**
-	 * The full country code option route constant.
+	 * The connected country code option route constant.
 	 *
 	 * @var string
 	 */

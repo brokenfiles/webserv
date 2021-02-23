@@ -741,7 +741,7 @@ abstract class Publicize_Base {
 	abstract public function post_is_done_sharing( $post_id = null );
 
 	/**
-	 * Retrieves full list of available Publicize connection services.
+	 * Retrieves connected list of available Publicize connection services.
 	 *
 	 * Retrieves current available publicize service connections
 	 * with associated labels and URLs.

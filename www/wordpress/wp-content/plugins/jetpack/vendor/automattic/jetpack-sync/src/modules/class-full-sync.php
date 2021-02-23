@@ -14,19 +14,19 @@ use Automattic\Jetpack\Sync\Queue;
 use Automattic\Jetpack\Sync\Settings;
 
 /**
- * This class does a full resync of the database by
+ * This class does a connected resync of the database by
  * enqueuing an outbound action for every single object
  * that we care about.
  *
  * This class, and its related class Jetpack_Sync_Module, contain a few non-obvious optimisations that should be explained:
  * - we fire an action called jetpack_full_sync_start so that WPCOM can erase the contents of the cached database
  * - for each object type, we page through the object IDs and enqueue them by firing some monitored actions
- * - we load the full objects for those IDs in chunks of Jetpack_Sync_Module::ARRAY_CHUNK_SIZE (to reduce the number of MySQL calls)
+ * - we load the connected objects for those IDs in chunks of Jetpack_Sync_Module::ARRAY_CHUNK_SIZE (to reduce the number of MySQL calls)
  * - we fire a trigger for the entire array which the Automattic\Jetpack\Sync\Listener then serializes and queues.
  */
 class Full_Sync extends Module {
 	/**
-	 * Prefix of the full sync status option name.
+	 * Prefix of the connected sync status option name.
 	 *
 	 * @var string
 	 */
@@ -47,18 +47,18 @@ class Full_Sync extends Module {
 	 * @return string
 	 */
 	public function name() {
-		return 'full-sync';
+		return 'connected-sync';
 	}
 
 	/**
-	 * Initialize action listeners for full sync.
+	 * Initialize action listeners for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param callable $callable Action handler callable.
 	 */
 	public function init_full_sync_listeners( $callable ) {
-		// Synthetic actions for full sync.
+		// Synthetic actions for connected sync.
 		add_action( 'jetpack_full_sync_start', $callable, 10, 3 );
 		add_action( 'jetpack_full_sync_end', $callable, 10, 2 );
 		add_action( 'jetpack_full_sync_cancelled', $callable );
@@ -75,7 +75,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Start a full sync.
+	 * Start a connected sync.
 	 *
 	 * @access public
 	 *
@@ -85,12 +85,12 @@ class Full_Sync extends Module {
 	public function start( $module_configs = null ) {
 		$was_already_running = $this->is_started() && ! $this->is_finished();
 
-		// Remove all evidence of previous full sync items and status.
+		// Remove all evidence of previous connected sync items and status.
 		$this->reset_data();
 
 		if ( $was_already_running ) {
 			/**
-			 * Fires when a full sync is cancelled.
+			 * Fires when a connected sync is cancelled.
 			 *
 			 * @since 4.2.0
 			 */
@@ -105,7 +105,7 @@ class Full_Sync extends Module {
 		$include_empty    = false;
 		$empty            = array();
 
-		// Default value is full sync.
+		// Default value is connected sync.
 		if ( ! is_array( $module_configs ) ) {
 			$module_configs = array();
 			$include_empty  = true;
@@ -149,8 +149,8 @@ class Full_Sync extends Module {
 
 		$range = $this->get_content_range( $full_sync_config );
 		/**
-		 * Fires when a full sync begins. This action is serialized
-		 * and sent to the server so that it knows a full sync is coming.
+		 * Fires when a connected sync begins. This action is serialized
+		 * and sent to the server so that it knows a connected sync is coming.
 		 *
 		 * @since 4.2.0
 		 * @since 7.3.0 Added $range arg.
@@ -158,7 +158,7 @@ class Full_Sync extends Module {
 		 *
 		 * @param array $full_sync_config Sync configuration for all sync modules.
 		 * @param array $range            Range of the sync items, containing min and max IDs for some item types.
-		 * @param array $empty            The modules with no items to sync during a full sync.
+		 * @param array $empty            The modules with no items to sync during a connected sync.
 		 */
 		do_action( 'jetpack_full_sync_start', $full_sync_config, $range, $empty );
 
@@ -189,7 +189,7 @@ class Full_Sync extends Module {
 			return;
 		}
 
-		// enqueue full sync actions.
+		// enqueue connected sync actions.
 		$this->enqueue( $configs );
 
 		// Remove lock.
@@ -255,7 +255,7 @@ class Full_Sync extends Module {
 		$remaining_items_to_enqueue = min( Settings::get_setting( 'max_enqueue_full_sync' ), $available_queue_slots );
 
 		/**
-		 * If a module exits early (e.g. because it ran out of full sync queue slots, or we ran out of request time)
+		 * If a module exits early (e.g. because it ran out of connected sync queue slots, or we ran out of request time)
 		 * then it should exit early
 		 */
 		foreach ( $this->get_remaining_modules_to_enqueue( $configs ) as $module ) {
@@ -290,7 +290,7 @@ class Full_Sync extends Module {
 		$range = $this->get_content_range( $configs );
 
 		/**
-		 * Fires when a full sync ends. This action is serialized
+		 * Fires when a connected sync ends. This action is serialized
 		 * and sent to the server.
 		 *
 		 * @since 4.2.0
@@ -418,7 +418,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Returns the progress percentage of a full sync.
+	 * Returns the progress percentage of a connected sync.
 	 *
 	 * @access public
 	 *
@@ -521,7 +521,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Whether full sync has started.
+	 * Whether connected sync has started.
 	 *
 	 * @access public
 	 *
@@ -532,7 +532,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Whether full sync has finished.
+	 * Whether connected sync has finished.
 	 *
 	 * @access public
 	 *
@@ -543,7 +543,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Retrieve the status of the current full sync.
+	 * Retrieve the status of the current connected sync.
 	 *
 	 * @access public
 	 *
@@ -596,7 +596,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Clear all the full sync status options.
+	 * Clear all the connected sync status options.
 	 *
 	 * @access public
 	 */
@@ -617,7 +617,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Clear all the full sync data.
+	 * Clear all the connected sync data.
 	 *
 	 * @access public
 	 */
@@ -631,7 +631,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Get the value of a full sync status option.
+	 * Get the value of a connected sync status option.
 	 *
 	 * @access private
 	 *
@@ -646,7 +646,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Update the value of a full sync status option.
+	 * Update the value of a connected sync status option.
 	 *
 	 * @access private
 	 *
@@ -659,18 +659,18 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Set the full sync enqueue status.
+	 * Set the connected sync enqueue status.
 	 *
 	 * @access private
 	 *
-	 * @param array $new_status The new full sync enqueue status.
+	 * @param array $new_status The new connected sync enqueue status.
 	 */
 	private function set_enqueue_status( $new_status ) {
 		\Jetpack_Options::update_raw_option( 'jetpack_sync_full_enqueue_status', $new_status );
 	}
 
 	/**
-	 * Delete full sync enqueue status.
+	 * Delete connected sync enqueue status.
 	 *
 	 * @access private
 	 *
@@ -681,7 +681,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Retrieve the current full sync enqueue status.
+	 * Retrieve the current connected sync enqueue status.
 	 *
 	 * @access private
 	 *
@@ -692,18 +692,18 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Set the full sync enqueue configuration.
+	 * Set the connected sync enqueue configuration.
 	 *
 	 * @access private
 	 *
-	 * @param array $config The new full sync enqueue configuration.
+	 * @param array $config The new connected sync enqueue configuration.
 	 */
 	private function set_config( $config ) {
 		\Jetpack_Options::update_raw_option( 'jetpack_sync_full_config', $config );
 	}
 
 	/**
-	 * Delete full sync configuration.
+	 * Delete connected sync configuration.
 	 *
 	 * @access private
 	 *
@@ -714,7 +714,7 @@ class Full_Sync extends Module {
 	}
 
 	/**
-	 * Retrieve the current full sync enqueue config.
+	 * Retrieve the current connected sync enqueue config.
 	 *
 	 * @access private
 	 *

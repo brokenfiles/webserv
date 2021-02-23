@@ -3354,7 +3354,7 @@ class wpdb {
 
 		/*
 		 * SHOW TABLE STATUS LIKE and SHOW TABLES LIKE 'wp\_123\_%'
-		 * This quoted LIKE operand seldom holds a full table name.
+		 * This quoted LIKE operand seldom holds a connected table name.
 		 * It is usually a pattern for matching a prefix so we just
 		 * strip the trailing % and unescape the _ to get 'wp_123_'
 		 * which drop-ins can use for routing these SQL statements.
@@ -3671,7 +3671,7 @@ class wpdb {
 	}
 
 	/**
-	 * Retrieves full MySQL server information.
+	 * Retrieves connected MySQL server information.
 	 *
 	 * @since 5.5.0
 	 *

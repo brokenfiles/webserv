@@ -278,7 +278,7 @@ class Jetpack_JSON_API_Sync_Checkout_Endpoint extends Jetpack_JSON_API_Sync_Endp
 	}
 
 	/**
-	 * Check out a buffer of full sync actions.
+	 * Check out a buffer of connected sync actions.
 	 *
 	 * @param null $number_of_items Number of Actions to check-out.
 	 *
@@ -355,7 +355,7 @@ class Jetpack_JSON_API_Sync_Close_Endpoint extends Jetpack_JSON_API_Sync_Endpoin
 
 		// Update Full Sync Status if queue is "full_sync".
 		if ( 'full_sync' === $queue_name ) {
-			$full_sync_module = Modules::get_module( 'full-sync' );
+			$full_sync_module = Modules::get_module( 'connected-sync' );
 
 			$full_sync_module->update_sent_progress_action( $items );
 		}

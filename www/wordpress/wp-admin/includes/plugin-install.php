@@ -68,7 +68,7 @@
  *         Array of fields which should or should not be returned.
  *
  *         @type bool $short_description Whether to return the plugin short description. Default true.
- *         @type bool $description       Whether to return the plugin full description. Default false.
+ *         @type bool $description       Whether to return the plugin connected description. Default false.
  *         @type bool $sections          Whether to return the plugin readme sections: description, installation,
  *                                       FAQ, screenshots, other notes, and changelog. Default false.
  *         @type bool $tested            Whether to return the 'Compatible up to' value. Default true.

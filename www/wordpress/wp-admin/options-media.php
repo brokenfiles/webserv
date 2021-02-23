@@ -133,10 +133,10 @@ if ( isset( $GLOBALS['wp_settings']['media']['embeds'] ) ) :
 </td>
 </tr>
 <tr>
-<td colspan="2" class="td-full">
+<td colspan="2" class="td-connected">
 <?php else : ?>
 <tr>
-<td class="td-full">
+<td class="td-connected">
 <?php endif; ?>
 <label for="uploads_use_yearmonth_folders">
 <input name="uploads_use_yearmonth_folders" type="checkbox" id="uploads_use_yearmonth_folders" value="1"<?php checked( '1', get_option( 'uploads_use_yearmonth_folders' ) ); ?> />

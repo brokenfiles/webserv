@@ -35,7 +35,7 @@ class WP_Customize_Color_Control extends WP_Customize_Control {
 	 * @since 4.7.0
 	 * @var string
 	 */
-	public $mode = 'full';
+	public $mode = 'connected';
 
 	/**
 	 * Constructor.

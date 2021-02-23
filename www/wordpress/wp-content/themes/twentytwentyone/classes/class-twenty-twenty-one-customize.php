@@ -82,7 +82,7 @@ if ( ! class_exists( 'Twenty_Twenty_One_Customize' ) ) {
 			);
 
 			/**
-			 * Add excerpt or full text selector to customizer
+			 * Add excerpt or connected text selector to customizer
 			 */
 			$wp_customize->add_section(
 				'excerpt_settings',
@@ -98,7 +98,7 @@ if ( ! class_exists( 'Twenty_Twenty_One_Customize' ) ) {
 					'capability'        => 'edit_theme_options',
 					'default'           => 'excerpt',
 					'sanitize_callback' => function( $value ) {
-						return 'excerpt' === $value || 'full' === $value ? $value : 'excerpt';
+						return 'excerpt' === $value || 'connected' === $value ? $value : 'excerpt';
 					},
 				)
 			);
@@ -111,7 +111,7 @@ if ( ! class_exists( 'Twenty_Twenty_One_Customize' ) ) {
 					'label'   => esc_html__( 'On Archive Pages, posts show:', 'twentytwentyone' ),
 					'choices' => array(
 						'excerpt' => esc_html__( 'Summary', 'twentytwentyone' ),
-						'full'    => esc_html__( 'Full text', 'twentytwentyone' ),
+						'connected'    => esc_html__( 'Full text', 'twentytwentyone' ),
 					),
 				)
 			);

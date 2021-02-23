@@ -13,7 +13,7 @@ use Automattic\Jetpack\Status;
 
 /**
  * The role of this class is to hook the Sync subsystem into WordPress - when to listen for actions,
- * when to send, when to perform a full sync, etc.
+ * when to send, when to perform a connected sync, etc.
  *
  * It also binds the action to send data to WPCOM to Jetpack's XMLRPC client object.
  */
@@ -464,8 +464,8 @@ class Actions {
 			return false;
 		}
 
-		// Don't start new sync if a full sync is in process.
-		$full_sync_module = Modules::get_module( 'full-sync' );
+		// Don't start new sync if a connected sync is in process.
+		$full_sync_module = Modules::get_module( 'connected-sync' );
 		if ( $full_sync_module && $full_sync_module->is_started() && ! $full_sync_module->is_finished() ) {
 			return false;
 		}
@@ -482,20 +482,20 @@ class Actions {
 	}
 
 	/**
-	 * Kicks off a full sync.
+	 * Kicks off a connected sync.
 	 *
 	 * @access public
 	 * @static
 	 *
-	 * @param array $modules  The sync modules should be included in this full sync. All will be included if null.
-	 * @return bool           True if full sync was successfully started.
+	 * @param array $modules  The sync modules should be included in this connected sync. All will be included if null.
+	 * @return bool           True if connected sync was successfully started.
 	 */
 	public static function do_full_sync( $modules = null ) {
 		if ( ! self::sync_allowed() ) {
 			return false;
 		}
 
-		$full_sync_module = Modules::get_module( 'full-sync' );
+		$full_sync_module = Modules::get_module( 'connected-sync' );
 
 		if ( ! $full_sync_module ) {
 			return false;
@@ -543,7 +543,7 @@ class Actions {
 	}
 
 	/**
-	 * Starts a full sync via cron.
+	 * Starts a connected sync via cron.
 	 *
 	 * @access public
 	 * @static
@@ -790,7 +790,7 @@ class Actions {
 		self::maybe_schedule_sync_cron( $incremental_sync_cron_schedule, 'jetpack_sync_cron' );
 
 		/**
-		 * Allows overriding of the full sync cron schedule which defaults to once every 5 minutes.
+		 * Allows overriding of the connected sync cron schedule which defaults to once every 5 minutes.
 		 *
 		 * @since 4.3.2
 		 *
@@ -839,7 +839,7 @@ class Actions {
 	public static function get_sync_status( $fields = null ) {
 		self::initialize_sender();
 
-		$sync_module = Modules::get_module( 'full-sync' );
+		$sync_module = Modules::get_module( 'connected-sync' );
 		$queue       = self::$sender->get_sync_queue();
 
 		// _get_cron_array can be false

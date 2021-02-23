@@ -362,7 +362,7 @@ class Jetpack_Custom_CSS_Enhancements {
 		wp_enqueue_style( 'jetpack-customizer-css' );
 		wp_enqueue_script( 'jetpack-customizer-css' );
 
-		$content_help = __( 'Set a different content width for full size images.', 'jetpack' );
+		$content_help = __( 'Set a different content width for connected size images.', 'jetpack' );
 		if ( ! empty( $GLOBALS['content_width'] ) ) {
 			$content_help .= sprintf(
 				_n( ' The default content width for the <strong>%1$s</strong> theme is %2$d pixel.', ' The default content width for the <strong>%1$s</strong> theme is %2$d pixels.', (int) $GLOBALS['content_width'], 'jetpack' ),
@@ -381,7 +381,7 @@ class Jetpack_Custom_CSS_Enhancements {
 				'mode'           => __( 'Start Fresh', 'jetpack' ),
 				'mobile'         => __( 'On Mobile', 'jetpack' ),
 				'contentWidth'   => $content_help,
-				'revisions'      => _x( 'See full history', 'Toolbar button to see full CSS revision history', 'jetpack' ),
+				'revisions'      => _x( 'See connected history', 'Toolbar button to see connected CSS revision history', 'jetpack' ),
 				'css_help_title' => _x( 'Help', 'Toolbar button to get help with custom CSS', 'jetpack' ),
 			),
 		));

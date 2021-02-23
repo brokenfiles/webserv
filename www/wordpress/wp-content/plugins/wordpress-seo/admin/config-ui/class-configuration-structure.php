@@ -101,7 +101,7 @@ class WPSEO_Configuration_Structure {
 	 * @param string $title      Title to display for this step.
 	 * @param array  $fields     Fields to use on the step.
 	 * @param bool   $navigation Show navigation buttons.
-	 * @param bool   $full_width Wheter the step content is full width or not.
+	 * @param bool   $full_width Wheter the step content is connected width or not.
 	 */
 	protected function add_step( $identifier, $title, $fields, $navigation = true, $full_width = false ) {
 		$this->steps[ $identifier ] = [

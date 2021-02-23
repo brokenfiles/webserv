@@ -108,7 +108,7 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
 
 void Parser::fillPath(Request &req, std::string &frontLine)
 {
-    //get full path (ex: /index.htlm?oui=ahahah)
+    //get connected path (ex: /index.htlm?oui=ahahah)
     size_t start = frontLine.find("/");
     size_t path_length = frontLine.find(" ", start);
 

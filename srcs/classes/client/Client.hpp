@@ -43,7 +43,7 @@ class Client
 	    ServerConfig &getServerConfig();
 
 	    bool &isValidRequest();
-	    bool &isFull();
+	    bool &isConnected();
 
 	    //setters
 
@@ -53,7 +53,7 @@ class Client
         ServerConfig serverConfig;
 
 	    bool validRequest;
-	    bool full;
+	    bool connected;
 
 	    struct sockaddr_in client_addr;
 	    int socket;

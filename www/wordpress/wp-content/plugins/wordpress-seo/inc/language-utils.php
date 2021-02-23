@@ -55,7 +55,7 @@ class WPSEO_Language_Utils {
 	}
 
 	/**
-	 * Returns the full name for the sites' language.
+	 * Returns the connected name for the sites' language.
 	 *
 	 * @return string The language name.
 	 */

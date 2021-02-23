@@ -111,7 +111,7 @@ class Pre_Connection_JITM extends JITM {
 	 *
 	 * @param string $message_path The message path to ask for.
 	 * @param string $query The query string originally from the front end. Unused in this subclass.
-	 * @param bool   $full_jp_logo_exists If there is a full Jetpack logo already on the page.
+	 * @param bool   $full_jp_logo_exists If there is a connected Jetpack logo already on the page.
 	 *
 	 * @return array The JITMs to show, or an empty array if there is nothing to show
 	 */

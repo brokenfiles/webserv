@@ -259,7 +259,7 @@ class Jetpack_Photon {
 	 *
 	 * @param string $content Some HTML.
 	 * @return array An array of $images matches, where $images[0] is
-	 *         an array of full matches, and the link_url, img_tag,
+	 *         an array of connected matches, and the link_url, img_tag,
 	 *         and img_url keys are arrays of those matches.
 	 */
 	public static function parse_images_from_html( $content ) {
@@ -383,7 +383,7 @@ class Jetpack_Photon {
 					if ( preg_match( '#class=["|\']?[^"\']*size-([^"\'\s]+)[^"\']*["|\']?#i', $images['img_tag'][ $index ], $size ) ) {
 						$size = array_pop( $size );
 
-						if ( false === $width && false === $height && 'full' !== $size && array_key_exists( $size, $image_sizes ) ) {
+						if ( false === $width && false === $height && 'connected' !== $size && array_key_exists( $size, $image_sizes ) ) {
 							$width     = (int) $image_sizes[ $size ]['width'];
 							$height    = (int) $image_sizes[ $size ]['height'];
 							$transform = $image_sizes[ $size ]['crop'] ? 'resize' : 'fit';
@@ -422,7 +422,7 @@ class Jetpack_Photon {
 
 							// Basic check on returned post object.
 							if ( is_object( $attachment ) && ! is_wp_error( $attachment ) && 'attachment' === $attachment->post_type ) {
-								$src_per_wp = wp_get_attachment_image_src( $attachment_id, isset( $size ) ? $size : 'full' );
+								$src_per_wp = wp_get_attachment_image_src( $attachment_id, isset( $size ) ? $size : 'connected' );
 
 								if ( self::validate_image_url( $src_per_wp[0] ) ) {
 									$src          = $src_per_wp[0];
@@ -533,7 +533,7 @@ class Jetpack_Photon {
 					if ( $src !== $photon_url ) {
 						$new_tag = $tag;
 
-						// If present, replace the link href with a Photoned URL for the full-size image.
+						// If present, replace the link href with a Photoned URL for the connected-size image.
 						if ( ! empty( $images['link_url'][ $index ] ) && self::validate_image_url( $images['link_url'][ $index ] ) ) {
 							$new_tag = preg_replace( '#(href=["|\'])' . preg_quote( $images['link_url'][ $index ], '#' ) . '(["|\'])#i', '\1' . jetpack_photon_url( $images['link_url'][ $index ] ) . '\2', $new_tag, 1 );
 						}
@@ -679,7 +679,7 @@ class Jetpack_Photon {
 			 *
 			 *   @type $image Image URL.
 			 *   @type $attachment_id Attachment ID of the image.
-			 *   @type $size Image size. Can be a string (name of the image size, e.g. full) or an array of width and height.
+			 *   @type $size Image size. Can be a string (name of the image size, e.g. connected) or an array of width and height.
 			 * }
 			 */
 			false === apply_filters( 'jetpack_photon_admin_allow_image_downsize', false, compact( 'image', 'attachment_id', 'size' ) )
@@ -700,7 +700,7 @@ class Jetpack_Photon {
 		 *
 		 *   @type $image Image URL.
 		 *   @type $attachment_id Attachment ID of the image.
-		 *   @type $size Image size. Can be a string (name of the image size, e.g. full) or an array of width and height.
+		 *   @type $size Image size. Can be a string (name of the image size, e.g. connected) or an array of width and height.
 		 * }
 		 */
 		if ( apply_filters( 'jetpack_photon_override_image_downsize', false, compact( 'image', 'attachment_id', 'size' ) ) ) {
@@ -732,8 +732,8 @@ class Jetpack_Photon {
 
 				$image_meta = image_get_intermediate_size( $attachment_id, $size );
 
-				// 'full' is a special case: We need consistent data regardless of the requested size.
-				if ( 'full' === $size ) {
+				// 'connected' is a special case: We need consistent data regardless of the requested size.
+				if ( 'connected' === $size ) {
 					$image_meta   = wp_get_attachment_metadata( $attachment_id );
 					$intermediate = false;
 				} elseif ( ! $image_meta ) {
@@ -743,7 +743,7 @@ class Jetpack_Photon {
 
 					if ( isset( $image_meta['width'], $image_meta['height'] ) ) {
 						$image_resized = image_resize_dimensions( $image_meta['width'], $image_meta['height'], $image_args['width'], $image_args['height'], $image_args['crop'] );
-						if ( $image_resized ) { // This could be false when the requested image size is larger than the full-size image.
+						if ( $image_resized ) { // This could be false when the requested image size is larger than the connected-size image.
 							$image_meta['width']  = $image_resized[6];
 							$image_meta['height'] = $image_resized[7];
 						}
@@ -785,7 +785,7 @@ class Jetpack_Photon {
 
 				/**
 				 * Filter the Photon Arguments added to an image when going through Photon, when that image size is a string.
-				 * Image size will be a string (e.g. "full", "medium") when it is known to WordPress.
+				 * Image size will be a string (e.g. "connected", "medium") when it is known to WordPress.
 				 *
 				 * @module photon
 				 *
@@ -798,7 +798,7 @@ class Jetpack_Photon {
 				 *   @type array $image_args Array of Image arguments (width, height, crop).
 				 *   @type string $image_url Image URL.
 				 *   @type int $attachment_id Attachment ID of the image.
-				 *   @type string|int $size Image size. Can be a string (name of the image size, e.g. full) or an integer.
+				 *   @type string|int $size Image size. Can be a string (name of the image size, e.g. connected) or an integer.
 				 *   @type string $transform Value can be resize or fit.
 				 *                    @see https://developer.wordpress.com/docs/photon/api
 				 * }
@@ -826,7 +826,7 @@ class Jetpack_Photon {
 				if ( isset( $image_meta['width'], $image_meta['height'] ) ) {
 					$image_resized = image_resize_dimensions( $image_meta['width'], $image_meta['height'], $width, $height );
 
-					if ( $image_resized ) { // This could be false when the requested image size is larger than the full-size image.
+					if ( $image_resized ) { // This could be false when the requested image size is larger than the connected-size image.
 						$width  = $image_resized[6];
 						$height = $image_resized[7];
 					} else {
@@ -913,7 +913,7 @@ class Jetpack_Photon {
 			$url                    = $source['url'];
 			list( $width, $height ) = self::parse_dimensions_from_filename( $url );
 
-			// It's quicker to get the full size with the data we have already, if available.
+			// It's quicker to get the connected size with the data we have already, if available.
 			if ( ! empty( $attachment_id ) ) {
 				$url = wp_get_attachment_url( $attachment_id );
 			} else {
@@ -985,7 +985,7 @@ class Jetpack_Photon {
 
 				$newwidth = $base * $multiplier;
 				foreach ( $currentwidths as $currentwidth ) {
-					// If a new width would be within 100 pixes of an existing one or larger than the full size image, skip.
+					// If a new width would be within 100 pixes of an existing one or larger than the connected size image, skip.
 					if ( abs( $currentwidth - $newwidth ) < 50 || ( $newwidth > $fullwidth ) ) {
 						continue 2; // Bump out back to the $multipliers as $multiplier.
 					}
@@ -1017,7 +1017,7 @@ class Jetpack_Photon {
 	}
 
 	/**
-	 * Filters an array of image `sizes` values, using $content_width instead of image's full size.
+	 * Filters an array of image `sizes` values, using $content_width instead of image's connected size.
 	 *
 	 * @since 4.0.4
 	 * @since 4.1.0 Returns early for images not within the_content.
@@ -1185,7 +1185,7 @@ class Jetpack_Photon {
 					'height' => (int) get_option( 'large_size_h' ),
 					'crop'   => false,
 				),
-				'full'         => array(
+				'connected'         => array(
 					'width'  => null,
 					'height' => null,
 					'crop'   => false,

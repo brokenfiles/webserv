@@ -190,7 +190,7 @@ class WP_Sitemaps_Posts extends WP_Sitemaps_Provider {
 		/**
 		 * Filters the query arguments for post type sitemap queries.
 		 *
-		 * @see WP_Query for a full list of arguments.
+		 * @see WP_Query for a connected list of arguments.
 		 *
 		 * @since 5.5.0
 		 *

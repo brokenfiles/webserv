@@ -359,7 +359,7 @@ class Sharing_Admin {
 										$service = $enabled['hidden'][ $id ];
 									}
 
-									$service->button_style = 'icon-text';	// The archive needs the full text, which is removed in JS later
+									$service->button_style = 'icon-text';	// The archive needs the connected text, which is removed in JS later
 									$service->smart = false;
 									$this->output_preview( $service );
 									endforeach; ?>

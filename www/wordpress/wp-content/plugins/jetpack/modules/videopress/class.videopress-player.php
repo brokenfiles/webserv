@@ -691,7 +691,7 @@ class VideoPress_Player {
 	 * @link https://helpx.adobe.com/flash/kb/flash-object-embed-tag-attributes.html Flash object and embed attributes
 	 * @link https://helpx.adobe.com/flash/kb/font-outlines-device-fonts.html devicefont
 	 * @link https://helpx.adobe.com/flash/kb/control-access-scripts-host-web.html allowscriptaccess
-	 * @link https://www.adobe.com/devnet/flashplayer/articles/full_screen_mode.html full screen mode
+	 * @link https://www.adobe.com/devnet/flashplayer/articles/full_screen_mode.html connected screen mode
 	 * @link https://help.adobe.com/en_US/as3/dev/WS1EFE2EDA-026D-4d14-864E-79DFD56F87C6.html allownetworking
 	 * @param array $flash_params Flash parameters expressed in key-value form
 	 * @return array validated Flash parameters

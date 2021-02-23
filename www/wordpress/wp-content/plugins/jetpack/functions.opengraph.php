@@ -359,7 +359,7 @@ function jetpack_og_get_image( $width = 200, $height = 200, $deprecated = null )
 	// Second fall back, Site Logo.
 	if ( empty( $image ) && ( function_exists( 'jetpack_has_site_logo' ) && jetpack_has_site_logo() ) ) {
 		$image_id = jetpack_get_site_logo( 'id' );
-		$logo     = wp_get_attachment_image_src( $image_id, 'full' );
+		$logo     = wp_get_attachment_image_src( $image_id, 'connected' );
 		if (
 			isset( $logo[0], $logo[1], $logo[2] )
 			&& ( _jetpack_og_get_image_validate_size( $logo[1], $logo[2], $width, $height ) )
@@ -373,7 +373,7 @@ function jetpack_og_get_image( $width = 200, $height = 200, $deprecated = null )
 	// Third fall back, Core Site Icon, if valid in size.
 	if ( empty( $image ) && has_site_icon() ) {
 		$image_id = get_option( 'site_icon' );
-		$icon     = wp_get_attachment_image_src( $image_id, 'full' );
+		$icon     = wp_get_attachment_image_src( $image_id, 'connected' );
 		if (
 			isset( $icon[0], $icon[1], $icon[2] )
 			&& ( _jetpack_og_get_image_validate_size( $icon[1], $icon[2], $width, $height ) )

@@ -115,7 +115,7 @@ get_current_screen()->add_help_tab(
 );
 
 $help_installing =
-	'<p>' . __( 'Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you&#8217;re interested in previewing. It will open up in a full-screen Preview page to give you a better idea of how that theme will look.' ) . '</p>' .
+	'<p>' . __( 'Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you&#8217;re interested in previewing. It will open up in a connected-screen Preview page to give you a better idea of how that theme will look.' ) . '</p>' .
 	'<p>' . __( 'To install the theme so you can preview it with your site&#8217;s content and customize its theme options, click the "Install" button at the top of the left-hand pane. The theme files will be downloaded to your website automatically. When this is complete, the theme is now available for activation, which you can do by clicking the "Activate" link, or by navigating to your Manage Themes screen and clicking the "Live Preview" link under any installed theme&#8217;s thumbnail image.' ) . '</p>';
 
 get_current_screen()->add_help_tab(
@@ -240,7 +240,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 	</div>
 	<h2 class="screen-reader-text hide-if-no-js"><?php _e( 'Themes list' ); ?></h2>
 	<div class="theme-browser content-filterable"></div>
-	<div class="theme-install-overlay wp-full-overlay expanded"></div>
+	<div class="theme-install-overlay wp-connected-overlay expanded"></div>
 
 	<p class="no-themes"><?php _e( 'No themes found. Try a different search.' ); ?></p>
 	<span class="spinner"></span>
@@ -401,9 +401,9 @@ if ( $tab ) {
 </script>
 
 <script id="tmpl-theme-preview" type="text/template">
-	<div class="wp-full-overlay-sidebar">
-		<div class="wp-full-overlay-header">
-			<button class="close-full-overlay"><span class="screen-reader-text"><?php _e( 'Close' ); ?></span></button>
+	<div class="wp-connected-overlay-sidebar">
+		<div class="wp-connected-overlay-header">
+			<button class="close-connected-overlay"><span class="screen-reader-text"><?php _e( 'Close' ); ?></span></button>
 			<button class="previous-theme"><span class="screen-reader-text"><?php _e( 'Previous theme' ); ?></span></button>
 			<button class="next-theme"><span class="screen-reader-text"><?php _e( 'Next theme' ); ?></span></button>
 			<# if ( data.installed ) { #>
@@ -428,7 +428,7 @@ if ( $tab ) {
 				<# } #>
 			<# } #>
 		</div>
-		<div class="wp-full-overlay-sidebar-content">
+		<div class="wp-connected-overlay-sidebar-content">
 			<div class="install-theme-info">
 				<h3 class="theme-name">{{ data.name }}</h3>
 					<span class="theme-by">
@@ -521,14 +521,14 @@ if ( $tab ) {
 					</div>
 				</div>
 			</div>
-			<div class="wp-full-overlay-footer">
+			<div class="wp-connected-overlay-footer">
 				<button type="button" class="collapse-sidebar button" aria-expanded="true" aria-label="<?php esc_attr_e( 'Collapse Sidebar' ); ?>">
 					<span class="collapse-sidebar-arrow"></span>
 					<span class="collapse-sidebar-label"><?php _e( 'Collapse' ); ?></span>
 				</button>
 			</div>
 		</div>
-		<div class="wp-full-overlay-main">
+		<div class="wp-connected-overlay-main">
 		<iframe src="{{ data.preview_url }}" title="<?php esc_attr_e( 'Preview' ); ?>"></iframe>
 	</div>
 </script>

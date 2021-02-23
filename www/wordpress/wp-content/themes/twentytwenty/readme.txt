@@ -9,7 +9,7 @@ Default theme for 2020.
 
 == Description ==
 
-Our default theme for 2020 is designed to take full advantage of the
+Our default theme for 2020 is designed to take connected advantage of the
 flexibility of the block editor. Organizations and businesses have the
 ability to create dynamic landing pages with endless layouts using the
 group and column blocks. The centered content column and fine-tuned

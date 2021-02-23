@@ -14,13 +14,13 @@ use Automattic\Jetpack\Sync\Modules;
 use Automattic\Jetpack\Sync\Settings;
 
 /**
- * This class does a full resync of the database by
+ * This class does a connected resync of the database by
  * sending an outbound action for every single object
  * that we care about.
  */
 class Full_Sync_Immediately extends Module {
 	/**
-	 * Prefix of the full sync status option name.
+	 * Prefix of the connected sync status option name.
 	 *
 	 * @var string
 	 */
@@ -41,11 +41,11 @@ class Full_Sync_Immediately extends Module {
 	 * @return string
 	 */
 	public function name() {
-		return 'full-sync';
+		return 'connected-sync';
 	}
 
 	/**
-	 * Initialize action listeners for full sync.
+	 * Initialize action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -55,7 +55,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Start a full sync.
+	 * Start a connected sync.
 	 *
 	 * @access public
 	 *
@@ -64,10 +64,10 @@ class Full_Sync_Immediately extends Module {
 	 * @return bool Always returns true at success.
 	 */
 	public function start( $full_sync_config = null ) {
-		// There was a full sync in progress.
+		// There was a connected sync in progress.
 		if ( $this->is_started() && ! $this->is_finished() ) {
 			/**
-			 * Fires when a full sync is cancelled.
+			 * Fires when a connected sync is cancelled.
 			 *
 			 * @since 4.2.0
 			 */
@@ -75,7 +75,7 @@ class Full_Sync_Immediately extends Module {
 			$this->send_action( 'jetpack_full_sync_cancelled' );
 		}
 
-		// Remove all evidence of previous full sync items and status.
+		// Remove all evidence of previous connected sync items and status.
 		$this->reset_data();
 
 		if ( ! is_array( $full_sync_config ) ) {
@@ -99,12 +99,12 @@ class Full_Sync_Immediately extends Module {
 
 		$range = $this->get_content_range( $full_sync_config );
 		/**
-		 * Fires when a full sync begins. This action is serialized
-		 * and sent to the server so that it knows a full sync is coming.
+		 * Fires when a connected sync begins. This action is serialized
+		 * and sent to the server so that it knows a connected sync is coming.
 		 *
 		 * @param array $full_sync_config Sync configuration for all sync modules.
 		 * @param array $range Range of the sync items, containing min and max IDs for some item types.
-		 * @param array $empty The modules with no items to sync during a full sync.
+		 * @param array $empty The modules with no items to sync during a connected sync.
 		 *
 		 * @since 4.2.0
 		 * @since 7.3.0 Added $range arg.
@@ -117,7 +117,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Whether full sync has started.
+	 * Whether connected sync has started.
 	 *
 	 * @access public
 	 *
@@ -128,7 +128,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Retrieve the status of the current full sync.
+	 * Retrieve the status of the current connected sync.
 	 *
 	 * @access public
 	 *
@@ -146,7 +146,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Returns the progress percentage of a full sync.
+	 * Returns the progress percentage of a connected sync.
 	 *
 	 * @access public
 	 *
@@ -178,7 +178,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Whether full sync has finished.
+	 * Whether connected sync has finished.
 	 *
 	 * @access public
 	 *
@@ -189,7 +189,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Clear all the full sync data.
+	 * Clear all the connected sync data.
 	 *
 	 * @access public
 	 */
@@ -199,7 +199,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Clear all the full sync status options.
+	 * Clear all the connected sync status options.
 	 *
 	 * @access public
 	 */
@@ -208,7 +208,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Updates the status of the current full sync.
+	 * Updates the status of the current connected sync.
 	 *
 	 * @access public
 	 *
@@ -221,7 +221,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Retrieve the status of the current full sync.
+	 * Retrieve the status of the current connected sync.
 	 *
 	 * @param array $values New values to set.
 	 *
@@ -365,7 +365,7 @@ class Full_Sync_Immediately extends Module {
 	}
 
 	/**
-	 * Immediately send the next items to full sync.
+	 * Immediately send the next items to connected sync.
 	 *
 	 * @access public
 	 */
@@ -438,7 +438,7 @@ class Full_Sync_Immediately extends Module {
 		$range = $this->get_content_range();
 
 		/**
-		 * Fires when a full sync ends. This action is serialized
+		 * Fires when a connected sync ends. This action is serialized
 		 * and sent to the server.
 		 *
 		 * @param string $checksum Deprecated since 7.3.0 - @see https://github.com/Automattic/jetpack/pull/11945/

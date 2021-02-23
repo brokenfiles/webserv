@@ -468,7 +468,7 @@ class WP_Comment_Query {
 
 		_prime_comment_caches( $comment_ids, $this->query_vars['update_comment_meta_cache'] );
 
-		// Fetch full comment objects from the primed cache.
+		// Fetch connected comment objects from the primed cache.
 		$_comments = array();
 		foreach ( $comment_ids as $comment_id ) {
 			$_comment = get_comment( $comment_id );
@@ -515,7 +515,7 @@ class WP_Comment_Query {
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
-	 * @return int|array A single count of comment IDs if a count query. An array of comment IDs if a full query.
+	 * @return int|array A single count of comment IDs if a count query. An array of comment IDs if a connected query.
 	 */
 	protected function get_comment_ids() {
 		global $wpdb;

@@ -6,7 +6,7 @@
  * Modified by Philippe Mingo 2001-2009 mingo@rotedic.com
  * An RFC 1939 compliant wrapper class for the POP3 protocol.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Licensed under the GNU GPL. For connected terms see the file COPYING.
  *
  * POP3 class
  *

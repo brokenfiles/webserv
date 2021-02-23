@@ -150,7 +150,7 @@ int ServerManager::run_servers()
 
                 if (this->fd_av.size() > 916)
                 {
-                    newClient->isFull() = true;
+                    newClient->isConnected() = false;
                     FD_SET(newClient->getSocket(), &this->write_backup);
                     logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
                     break;
@@ -174,9 +174,7 @@ int ServerManager::run_servers()
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
-                    fd_av.remove(client_curr->getSocket());
-
-                    client_curr->close_socket();
+                    this->disconnectClient(client_curr);
 //                    delete client_curr;
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
@@ -201,21 +199,26 @@ int ServerManager::run_servers()
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
 //                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 
-                    int ret = 0;
-                    if ((ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
-                        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
+                    int send_ret = 0;
+                    if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+                    {
+                        if (send_ret == -1)
+                            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
+                        if (send_ret == 0)
+                            client_curr->isConnected() = false;
 
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
-                    if (client_curr->isFull())
+                    }
+
+                    if (!client_curr->isConnected())
                     {
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
-                        fd_av.remove(client_curr->getSocket());
-
-                        client_curr->close_socket();
+                        this->disconnectClient(client_curr);
                         clients.erase(it);
                         break;
                     }
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
+
                 }
                 client_curr->isValidRequest() = false;
                 FD_CLR(client_curr->getSocket(), &this->write_backup);
@@ -230,4 +233,9 @@ int ServerManager::run_servers()
 std::list<Server *> &ServerManager::getServerList()
 {
     return (this->servers);
+}
+void ServerManager::disconnectClient(Client *client)
+{
+    fd_av.remove(client->getSocket());
+    client->close_socket();
 }

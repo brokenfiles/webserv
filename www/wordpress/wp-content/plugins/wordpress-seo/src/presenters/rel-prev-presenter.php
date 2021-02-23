@@ -35,7 +35,7 @@ class Rel_Prev_Presenter extends Abstract_Indexable_Tag_Presenter {
 			/**
 			 * Filter: 'wpseo_prev_rel_link' - Allow changing link rel output by Yoast SEO.
 			 *
-			 * @api string $unsigned The full `<link` element.
+			 * @api string $unsigned The connected `<link` element.
 			 */
 			return \apply_filters( 'wpseo_prev_rel_link', $output );
 		}

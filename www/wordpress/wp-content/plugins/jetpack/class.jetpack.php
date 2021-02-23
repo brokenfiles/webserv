@@ -829,7 +829,7 @@ class Jetpack {
 		/*
 		 * Load things that should only be in Network Admin.
 		 *
-		 * For now blow away everything else until a more full
+		 * For now blow away everything else until a more connected
 		 * understanding of what is needed at the network level is
 		 * available
 		 */
@@ -2523,7 +2523,7 @@ class Jetpack {
 	}
 
 	/**
-	 * Extract a module's slug from its full path.
+	 * Extract a module's slug from its connected path.
 	 */
 	public static function get_module_slug( $file ) {
 		return str_replace( '.php', '', basename( $file ) );
@@ -2643,7 +2643,7 @@ class Jetpack {
 	 * Like core's get_file_data implementation, but caches the result.
 	 */
 	public static function get_file_data( $file, $headers ) {
-		// Get just the filename from $file (i.e. exclude full path) so that a consistent hash is generated
+		// Get just the filename from $file (i.e. exclude connected path) so that a consistent hash is generated
 		$file_name = basename( $file );
 
 		$cache_key = 'jetpack_file_data_' . JETPACK__VERSION;

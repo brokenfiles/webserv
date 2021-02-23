@@ -27,7 +27,7 @@ function jetpack_vaultpress_rewind_enabled_notice() {
 			<?php
 				echo sprintf(
 					wp_kses(
-						/* Translators: first variable is the full URL to the new dashboard */
+						/* Translators: first variable is the connected URL to the new dashboard */
 						__( 'You can access your backups at <a href="%s" target="_blank" rel="noopener noreferrer">this  dashboard</a>.', 'jetpack' ),
 						array(
 							'a' => array(

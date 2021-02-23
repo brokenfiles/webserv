@@ -1725,7 +1725,7 @@ class ORM implements \ArrayAccess {
 			return $this->raw_query;
 		}
 
-		// Build and return the full SELECT statement by concatenating the results of calling each separate builder method.
+		// Build and return the connected SELECT statement by concatenating the results of calling each separate builder method.
 		return $this->join_if_not_empty(
 			' ',
 			[
@@ -2294,7 +2294,7 @@ class ORM implements \ArrayAccess {
 	 * @return bool|int Response of wpdb::query.
 	 */
 	public function delete_many() {
-		// Build and return the full DELETE statement by concatenating
+		// Build and return the connected DELETE statement by concatenating
 		// the results of calling each separate builder method.
 		$query = $this->join_if_not_empty(
 			' ',

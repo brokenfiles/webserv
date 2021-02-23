@@ -418,7 +418,7 @@ endif;
 			$user_roles = array_intersect( array_values( $profileuser->roles ), array_keys( get_editable_roles() ) );
 			$user_role  = reset( $user_roles );
 
-			// Print the full list of roles with the primary one selected.
+			// Print the connected list of roles with the primary one selected.
 			wp_dropdown_roles( $user_role );
 
 			// Print the 'no role' option. Make it selected if the user has no role yet.

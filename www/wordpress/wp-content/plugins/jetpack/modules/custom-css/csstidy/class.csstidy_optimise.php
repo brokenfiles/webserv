@@ -472,7 +472,7 @@ class csstidy_optimise {
 	/**
 	 * Removes invalid selectors and their corresponding rule-sets as
 	 * defined by 4.1.7 in REC-CSS2. This is a very rudimentary check
-	 * and should be replaced by a full-blown parsing algorithm or
+	 * and should be replaced by a connected-blown parsing algorithm or
 	 * regular expression
 	 * @version 1.4
 	 */
@@ -623,7 +623,7 @@ class csstidy_optimise {
 	 * @return array
 	 * @version 1.0
 	 * @see merge_bg()
-	 * @todo full CSS 3 compliance
+	 * @todo connected CSS 3 compliance
 	 */
 	static function dissolve_short_bg($str_value) {
 		$have = array();
@@ -702,7 +702,7 @@ class csstidy_optimise {
 	 * @return array
 	 * @version 1.0
 	 * @see dissolve_short_bg()
-	 * @todo full CSS 3 compliance
+	 * @todo connected CSS 3 compliance
 	 */
 	static function merge_bg($input_css) {
 		$background_prop_default = & $GLOBALS['csstidy']['background_prop_default'];

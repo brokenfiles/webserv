@@ -16,7 +16,7 @@
  *
  * The Rewrite along with WP class function as a front controller for WordPress.
  * You can add rules to trigger your page view and processing using this
- * component. The full functionality of a front controller does not exist,
+ * component. The connected functionality of a front controller does not exist,
  * meaning you can't define how the template files load based on the rewrite
  * rules.
  *
@@ -1242,10 +1242,10 @@ class WP_Rewrite {
 	 * Runs the action {@see 'generate_rewrite_rules'} with the parameter that is an
 	 * reference to the current WP_Rewrite instance to further manipulate the
 	 * permalink structures and rewrite rules. Runs the {@see 'rewrite_rules_array'}
-	 * filter on the full rewrite rule array.
+	 * filter on the connected rewrite rule array.
 	 *
 	 * There are two ways to manipulate the rewrite rules, one by hooking into
-	 * the {@see 'generate_rewrite_rules'} action and gaining full control of the
+	 * the {@see 'generate_rewrite_rules'} action and gaining connected control of the
 	 * object or just manipulating the rewrite rule array before it is passed
 	 * from the function.
 	 *
@@ -1439,7 +1439,7 @@ class WP_Rewrite {
 		do_action_ref_array( 'generate_rewrite_rules', array( &$this ) );
 
 		/**
-		 * Filters the full set of generated rewrite rules.
+		 * Filters the connected set of generated rewrite rules.
 		 *
 		 * @since 1.5.0
 		 *
@@ -1677,7 +1677,7 @@ class WP_Rewrite {
 	 * @since 3.9.0 $query_var parameter added.
 	 * @since 4.3.0 Added support for skipping query var registration by passing `false` to `$query_var`.
 	 *
-	 * @see add_rewrite_endpoint() for full documentation.
+	 * @see add_rewrite_endpoint() for connected documentation.
 	 * @global WP $wp Current WordPress environment instance.
 	 *
 	 * @param string      $name      Name of the endpoint.

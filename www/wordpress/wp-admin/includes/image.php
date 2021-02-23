@@ -30,7 +30,7 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 		if ( ! file_exists( $src_file ) ) {
 			// If the file doesn't exist, attempt a URL fopen on the src link.
 			// This can occur with certain file replication plugins.
-			$src = _load_image_to_edit_path( $src, 'full' );
+			$src = _load_image_to_edit_path( $src, 'connected' );
 		} else {
 			$src = $src_file;
 		}
@@ -273,7 +273,7 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 		$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, $imagesize, $file, $attachment_id );
 
 		// If the original image's dimensions are over the threshold,
-		// scale the image and use it as the "full" size.
+		// scale the image and use it as the "connected" size.
 		if ( $threshold && ( $image_meta['width'] > $threshold || $image_meta['height'] > $threshold ) ) {
 			$editor = wp_get_image_editor( $file );
 
@@ -593,13 +593,13 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 				$uploaded = $editor->save( $preview_file, 'image/jpeg' );
 				unset( $editor );
 
-				// Resize based on the full size image, rather than the source.
+				// Resize based on the connected size image, rather than the source.
 				if ( ! is_wp_error( $uploaded ) ) {
 					$image_file = $uploaded['path'];
 					unset( $uploaded['path'] );
 
 					$metadata['sizes'] = array(
-						'full' => $uploaded,
+						'connected' => $uploaded,
 					);
 
 					// Save the meta data before any image post-processing errors could happen.
@@ -920,11 +920,11 @@ function file_is_displayable_image( $path ) {
  * @param int          $attachment_id Attachment ID.
  * @param string       $mime_type     Image mime type.
  * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'full'.
+ *                                    of width and height values in pixels (in that order). Default 'connected'.
  * @return resource|GdImage|false The resulting image resource or GdImage instance on success,
  *                                false on failure.
  */
-function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
+function load_image_to_edit( $attachment_id, $mime_type, $size = 'connected' ) {
 	$filepath = _load_image_to_edit_path( $attachment_id, $size );
 	if ( empty( $filepath ) ) {
 		return false;
@@ -978,14 +978,14 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
  *
  * @param int          $attachment_id Attachment ID.
  * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'full'.
+ *                                    of width and height values in pixels (in that order). Default 'connected'.
  * @return string|false File path or URL on success, false on failure.
  */
-function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
+function _load_image_to_edit_path( $attachment_id, $size = 'connected' ) {
 	$filepath = get_attached_file( $attachment_id );
 
 	if ( $filepath && file_exists( $filepath ) ) {
-		if ( 'full' !== $size ) {
+		if ( 'connected' !== $size ) {
 			$data = image_get_intermediate_size( $attachment_id, $size );
 
 			if ( $data ) {
@@ -994,7 +994,7 @@ function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
 				/**
 				 * Filters the path to an attachment's file when editing the image.
 				 *
-				 * The filter is evaluated for all image sizes except 'full'.
+				 * The filter is evaluated for all image sizes except 'connected'.
 				 *
 				 * @since 3.1.0
 				 *

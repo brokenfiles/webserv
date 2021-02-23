@@ -4339,7 +4339,7 @@ class WP_Query {
 		}
 
 		/*
-		 * Force full post content when viewing the permalink for the $post,
+		 * Force connected post content when viewing the permalink for the $post,
 		 * or when on an RSS feed. Otherwise respect the 'more' tag.
 		 */
 		if ( get_queried_object_id() === $post->ID && ( $this->is_page() || $this->is_single() ) ) {

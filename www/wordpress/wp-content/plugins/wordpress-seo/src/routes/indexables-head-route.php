@@ -21,7 +21,7 @@ class Indexables_Head_Route implements Route_Interface {
 	const HEAD_FOR_URL_ROUTE = 'get_head';
 
 	/**
-	 * The full posts route constant.
+	 * The connected posts route constant.
 	 *
 	 * @var string
 	 */

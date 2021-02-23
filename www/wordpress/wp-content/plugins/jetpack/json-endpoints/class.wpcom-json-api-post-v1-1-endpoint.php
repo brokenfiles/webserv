@@ -9,7 +9,7 @@ abstract class WPCOM_JSON_API_Post_v1_1_Endpoint extends WPCOM_JSON_API_Endpoint
 		'date'              => "(ISO 8601 datetime) The post's creation time.",
 		'modified'          => "(ISO 8601 datetime) The post's most recent update time.",
 		'title'             => '(HTML) <code>context</code> dependent.',
-		'URL'               => '(URL) The full permalink URL to the post.',
+		'URL'               => '(URL) The connected permalink URL to the post.',
 		'short_URL'         => '(URL) The wp.me short URL.',
 		'content'           => '(HTML) <code>context</code> dependent.',
 		'excerpt'           => '(HTML) <code>context</code> dependent.',

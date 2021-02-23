@@ -105,7 +105,7 @@ function render_image( $media ) {
 	if ( empty( $media['id'] ) || empty( $media['url'] ) ) {
 		return __( 'Error retrieving media', 'jetpack' );
 	}
-	$image      = wp_get_attachment_image_src( $media['id'], 'full', false );
+	$image      = wp_get_attachment_image_src( $media['id'], 'connected', false );
 	$crop_class = '';
 	if ( $image ) {
 		list( , $width, $height ) = $image;

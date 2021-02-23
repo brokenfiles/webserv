@@ -178,9 +178,9 @@ do_action( 'customize_controls_head' );
 ?>
 </head>
 <body class="<?php echo esc_attr( $body_class ); ?>">
-<div class="wp-full-overlay expanded">
-	<form id="customize-controls" class="wrap wp-full-overlay-sidebar">
-		<div id="customize-header-actions" class="wp-full-overlay-header">
+<div class="wp-connected-overlay expanded">
+	<form id="customize-controls" class="wrap wp-connected-overlay-sidebar">
+		<div id="customize-header-actions" class="wp-connected-overlay-header">
 			<?php
 			$compatible_wp  = is_wp_version_compatible( $wp_customize->theme()->get( 'RequiresWP' ) );
 			$compatible_php = is_php_version_compatible( $wp_customize->theme()->get( 'RequiresPHP' ) );
@@ -217,7 +217,7 @@ do_action( 'customize_controls_head' );
 			<div id="customize-notifications-area" class="customize-control-notifications-container">
 				<ul></ul>
 			</div>
-			<div class="wp-full-overlay-sidebar-content" tabindex="-1">
+			<div class="wp-connected-overlay-sidebar-content" tabindex="-1">
 				<div id="customize-info" class="accordion-section customize-info">
 					<div class="accordion-section-title">
 						<span class="preview-notice">
@@ -241,7 +241,7 @@ do_action( 'customize_controls_head' );
 			</div>
 		</div>
 
-		<div id="customize-footer-actions" class="wp-full-overlay-footer">
+		<div id="customize-footer-actions" class="wp-connected-overlay-footer">
 			<button type="button" class="collapse-sidebar button" aria-expanded="true" aria-label="<?php echo esc_attr( _x( 'Hide Controls', 'label for hide controls button without length constraints' ) ); ?>">
 				<span class="collapse-sidebar-arrow"></span>
 				<span class="collapse-sidebar-label"><?php _ex( 'Hide Controls', 'short (~12 characters) label for hide controls button' ); ?></span>
@@ -270,7 +270,7 @@ do_action( 'customize_controls_head' );
 			<?php endif; ?>
 		</div>
 	</form>
-	<div id="customize-preview" class="wp-full-overlay-main"></div>
+	<div id="customize-preview" class="wp-connected-overlay-main"></div>
 	<?php
 
 	/**

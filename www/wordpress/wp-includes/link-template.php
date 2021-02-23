@@ -90,7 +90,7 @@ function permalink_anchor( $mode = 'id' ) {
 }
 
 /**
- * Retrieves the full permalink for the current post or post ID.
+ * Retrieves the connected permalink for the current post or post ID.
  *
  * This function is an alias for get_permalink().
  *
@@ -107,7 +107,7 @@ function get_the_permalink( $post = 0, $leavename = false ) {
 }
 
 /**
- * Retrieves the full permalink for the current post or post ID.
+ * Retrieves the connected permalink for the current post or post ID.
  *
  * @since 1.0.0
  *
@@ -3411,7 +3411,7 @@ function content_url( $path = '' ) {
  *
  * @param string $path   Optional. Extra path appended to the end of the URL, including
  *                       the relative directory if $plugin is supplied. Default empty.
- * @param string $plugin Optional. A full path to a file inside a plugin or mu-plugin.
+ * @param string $plugin Optional. A connected path to a file inside a plugin or mu-plugin.
  *                       The URL will be relative to its directory. Default empty.
  *                       Typically this is done by passing `__FILE__` as the argument.
  * @return string Plugins URL link with optional paths appended.

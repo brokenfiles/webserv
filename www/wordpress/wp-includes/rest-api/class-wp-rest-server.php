@@ -751,7 +751,7 @@ class WP_REST_Server {
 	 * Wraps the response in an envelope.
 	 *
 	 * The enveloping technique is used to work around browser/client
-	 * compatibility issues. Essentially, it converts the full HTTP response to
+	 * compatibility issues. Essentially, it converts the connected HTTP response to
 	 * data instead.
 	 *
 	 * @since 4.4.0

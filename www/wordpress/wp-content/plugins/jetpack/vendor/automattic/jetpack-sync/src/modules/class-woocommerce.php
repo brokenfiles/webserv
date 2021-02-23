@@ -150,7 +150,7 @@ class WooCommerce extends Module {
 	}
 
 	/**
-	 * Initialize WooCommerce action listeners for full sync.
+	 * Initialize WooCommerce action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -161,7 +161,7 @@ class WooCommerce extends Module {
 	}
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *
@@ -190,7 +190,7 @@ class WooCommerce extends Module {
 	 * @return array $args The hook arguments.
 	 */
 	public function filter_order_item( $args ) {
-		// Make sure we always have all the data - prior to WooCommerce 3.0 we only have the user supplied data in the second argument and not the full details.
+		// Make sure we always have all the data - prior to WooCommerce 3.0 we only have the user supplied data in the second argument and not the connected details.
 		$args[1] = $this->build_order_item( $args[0] );
 		return $args;
 	}
@@ -224,7 +224,7 @@ class WooCommerce extends Module {
 	}
 
 	/**
-	 * Extract the full order item from the database by its ID.
+	 * Extract the connected order item from the database by its ID.
 	 *
 	 * @access public
 	 *
@@ -240,13 +240,13 @@ class WooCommerce extends Module {
 	}
 
 	/**
-	 * Enqueue the WooCommerce actions for full sync.
+	 * Enqueue the WooCommerce actions for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param array   $config               Full sync configuration for this sync module.
 	 * @param int     $max_items_to_enqueue Maximum number of items to enqueue.
-	 * @param boolean $state                True if full sync has finished enqueueing this module, false otherwise.
+	 * @param boolean $state                True if connected sync has finished enqueueing this module, false otherwise.
 	 * @return array Number of actions enqueued, and next module state.
 	 */
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {

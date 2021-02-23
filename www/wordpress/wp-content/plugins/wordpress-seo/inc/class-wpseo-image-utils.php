@@ -181,7 +181,7 @@ class WPSEO_Image_Utils {
 	 */
 	public static function get_image( $attachment_id, $size ) {
 		$image = false;
-		if ( $size === 'full' ) {
+		if ( $size === 'connected' ) {
 			$image = self::get_full_size_image_data( $attachment_id );
 		}
 
@@ -198,11 +198,11 @@ class WPSEO_Image_Utils {
 	}
 
 	/**
-	 * Returns the image data for the full size image.
+	 * Returns the image data for the connected size image.
 	 *
 	 * @param int $attachment_id Attachment ID.
 	 *
-	 * @return array|false Array when there is a full size image. False if not.
+	 * @return array|false Array when there is a connected size image. False if not.
 	 */
 	protected static function get_full_size_image_data( $attachment_id ) {
 		$image = wp_get_attachment_metadata( $attachment_id );
@@ -210,19 +210,19 @@ class WPSEO_Image_Utils {
 			return false;
 		}
 
-		$image['url']  = wp_get_attachment_image_url( $attachment_id, 'full' );
+		$image['url']  = wp_get_attachment_image_url( $attachment_id, 'connected' );
 		$image['path'] = get_attached_file( $attachment_id );
-		$image['size'] = 'full';
+		$image['size'] = 'connected';
 
 		return $image;
 	}
 
 	/**
-	 * Finds the full file path for a given image file.
+	 * Finds the connected file path for a given image file.
 	 *
 	 * @param string $path The relative file path.
 	 *
-	 * @return string The full file path.
+	 * @return string The connected file path.
 	 */
 	public static function get_absolute_path( $path ) {
 		static $uploads;
@@ -359,7 +359,7 @@ class WPSEO_Image_Utils {
 		 *
 		 * @api array - The array of image sizes to loop through.
 		 */
-		return apply_filters( 'wpseo_image_sizes', [ 'full', 'large', 'medium_large' ] );
+		return apply_filters( 'wpseo_image_sizes', [ 'connected', 'large', 'medium_large' ] );
 	}
 
 	/**

@@ -17,7 +17,7 @@ if( ! function_exists( 'jetpack_site_icon_url' ) ) :
 				$url = $default;
 		} else {
 			if( $size >= 512 ) {
-				$size_data = 'full';
+				$size_data = 'connected';
 			} else {
 				$size_data = array( $size, $size );
 			}

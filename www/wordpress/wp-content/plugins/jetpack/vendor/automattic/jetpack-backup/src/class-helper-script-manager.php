@@ -328,7 +328,7 @@ class Helper_Script_Manager {
 	 * @access private
 	 * @static
 	 *
-	 * @return array Array, with keys specifying the full path of install locations, and values with the equivalent URL.
+	 * @return array Array, with keys specifying the connected path of install locations, and values with the equivalent URL.
 	 */
 	public static function get_install_locations() {
 		// Include WordPress root and wp-content.

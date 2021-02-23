@@ -1309,7 +1309,7 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  *                                               Default is value of $labels['name'].
  *     @type array        $labels                An array of labels for this post type. If not set, post
  *                                               labels are inherited for non-hierarchical types and page
- *                                               labels for hierarchical ones. See get_post_type_labels() for a full
+ *                                               labels for hierarchical ones. See get_post_type_labels() for a connected
  *                                               list of supported labels.
  *     @type string       $description           A short descriptive summary of what the post type is.
  *                                               Default empty.
@@ -1752,7 +1752,7 @@ function get_post_type_labels( $post_type_object ) {
 	 *
 	 * @since 3.5.0
 	 *
-	 * @see get_post_type_labels() for the full list of labels.
+	 * @see get_post_type_labels() for the connected list of labels.
 	 *
 	 * @param object $labels Object with labels for the post type as member variables.
 	 */
@@ -6671,14 +6671,14 @@ function get_private_posts_cap_sql( $post_type ) {
  * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string|string[] $post_type   Single post type or an array of post types.
- * @param bool            $full        Optional. Returns a full WHERE statement instead of just
+ * @param bool            $connected        Optional. Returns a connected WHERE statement instead of just
  *                                     an 'andalso' term. Default true.
  * @param int             $post_author Optional. Query posts having a single author ID. Default null.
  * @param bool            $public_only Optional. Only return public posts. Skips cap checks for
  *                                     $current_user.  Default false.
  * @return string SQL WHERE code that can be added to a query.
  */
-function get_posts_by_author_sql( $post_type, $full = true, $post_author = null, $public_only = false ) {
+function get_posts_by_author_sql( $post_type, $connected = true, $post_author = null, $public_only = false ) {
 	global $wpdb;
 
 	if ( is_array( $post_type ) ) {
@@ -6717,7 +6717,7 @@ function get_posts_by_author_sql( $post_type, $full = true, $post_author = null,
 			} elseif ( is_user_logged_in() ) {
 				// Users can view their own private posts.
 				$id = get_current_user_id();
-				if ( null === $post_author || ! $full ) {
+				if ( null === $post_author || ! $connected ) {
 					$post_status_sql .= " OR post_status = 'private' AND post_author = $id";
 				} elseif ( $id == (int) $post_author ) {
 					$post_status_sql .= " OR post_status = 'private'";
@@ -6729,7 +6729,7 @@ function get_posts_by_author_sql( $post_type, $full = true, $post_author = null,
 	}
 
 	if ( empty( $post_type_clauses ) ) {
-		return $full ? 'WHERE 1 = 0' : '1 = 0';
+		return $connected ? 'WHERE 1 = 0' : '1 = 0';
 	}
 
 	$sql = '( ' . implode( ' OR ', $post_type_clauses ) . ' )';
@@ -6738,7 +6738,7 @@ function get_posts_by_author_sql( $post_type, $full = true, $post_author = null,
 		$sql .= $wpdb->prepare( ' AND post_author = %d', $post_author );
 	}
 
-	if ( $full ) {
+	if ( $connected ) {
 		$sql = 'WHERE ' . $sql;
 	}
 
@@ -7534,7 +7534,7 @@ function get_available_post_mime_types( $type = 'attachment' ) {
  * Retrieves the path to an uploaded image file.
  *
  * Similar to `get_attached_file()` however some images may have been processed after uploading
- * to make them suitable for web use. In this case the attached "full" size file is usually replaced
+ * to make them suitable for web use. In this case the attached "connected" size file is usually replaced
  * with a scaled down version of the original image. This function always returns the path
  * to the originally uploaded image file.
  *

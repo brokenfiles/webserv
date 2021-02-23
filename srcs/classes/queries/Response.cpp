@@ -49,7 +49,7 @@ std::string Response::sendResponse(Client *client)
 	this->setDefaultHeaders(client, client->getServerConfig());
 
 	/* Gère si le serveur est unavailable */
-    if (client->isFull())
+    if (!client->isConnected())
     {
         this->handleServerUnavailable(client);
     }
@@ -119,12 +119,12 @@ std::string Response::sendResponse(Client *client)
 }
 
 /**
- * Mets un status code 503 si le serveur est full
+ * Mets un status code 503 si le serveur est connected
  * @param client
  */
 void Response::handleServerUnavailable (Client *client)
 {
-	if (client->isFull()) {
+	if (client->isConnected()) {
 		this->_statusCode = getMessageCode(503);
 		this->_headers["Retry-After"] = "120";
 	}

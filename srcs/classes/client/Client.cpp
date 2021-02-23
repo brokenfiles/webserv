@@ -4,7 +4,7 @@ Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest_backup()
 {
     memset(&this->client_addr, 0, sizeof(client_addr));
     this->validRequest = false;
-    this->full = false;
+    this->connected = true;
 }
 
 Client::~Client()
@@ -59,9 +59,9 @@ int Client::read_request(void)
         //Si Header PAS encore parsé, on parse =)
         if (!this->request.isHeaderParsed())
         {
-        //    std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
-        //    std::cout << keeper << std::endl;
-        //    std::cout << "-------------------------------------------------------\n";
+            std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+            std::cout << keeper << std::endl;
+            std::cout << "-------------------------------------------------------\n";
             this->parser.parseHeader(this->request, keeper);
 //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
 //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
@@ -174,9 +174,9 @@ bool &Client::isValidRequest()
 {
     return (this->validRequest);
 }
-bool &Client::isFull()
+bool &Client::isConnected()
 {
-    return (this->full);
+    return (this->connected);
 }
 
 

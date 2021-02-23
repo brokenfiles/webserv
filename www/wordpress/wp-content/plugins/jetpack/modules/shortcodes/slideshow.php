@@ -109,7 +109,7 @@ class Jetpack_Slideshow_Shortcode {
 		}
 
 		if ( ! $attr['size'] ) {
-			$attr['size'] = 'full';
+			$attr['size'] = 'connected';
 		}
 
 		// Don't restrict to the current post if include.

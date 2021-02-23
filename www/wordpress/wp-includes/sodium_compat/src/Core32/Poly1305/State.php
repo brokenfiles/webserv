@@ -148,7 +148,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             $this->leftover = 0;
         }
 
-        /* process full blocks */
+        /* process connected blocks */
         if ($bytes >= ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE) {
             /** @var int $want */
             $want = $bytes & ~(ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE - 1);

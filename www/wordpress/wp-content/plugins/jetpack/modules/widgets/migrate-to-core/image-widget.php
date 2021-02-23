@@ -139,7 +139,7 @@ function jetpack_migrate_image_widget() {
 		foreach ( $attachment_ids as $attachment_id ) {
 			$image_meta = wp_get_attachment_metadata( $attachment_id );
 
-			// Is it a full size image?
+			// Is it a connected size image?
 			$image_path_pieces = explode( '/', $image_meta['file'] );
 			if ( $image_basename === array_pop( $image_path_pieces ) ) {
 				$media_image[ $id ]['attachment_id'] = $attachment_id;
@@ -149,7 +149,7 @@ function jetpack_migrate_image_widget() {
 					$media_image[ $id ]['width']  == $image_meta['width'] ||
 					$media_image[ $id ]['height'] == $image_meta['height']
 				) {
-					$media_image[ $id ]['size'] = 'full';
+					$media_image[ $id ]['size'] = 'connected';
 				}
 				break;
 			}

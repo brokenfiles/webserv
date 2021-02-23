@@ -17,7 +17,7 @@ class Images {
 	 *
 	 * @var string
 	 */
-	public $image_size = 'full';
+	public $image_size = 'connected';
 
 	/**
 	 * Holds the images that have been put out as image.

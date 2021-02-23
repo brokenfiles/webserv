@@ -122,7 +122,7 @@ class Model implements JsonSerializable {
 	 * @param string $table_name   Simple table name.
 	 * @param bool   $yoast_prefix Optional. True to prefix the table name with the Yoast prefix.
 	 *
-	 * @return string Prepared full table name.
+	 * @return string Prepared connected table name.
 	 */
 	public static function get_table_name( $table_name, $yoast_prefix = true ) {
 		global $wpdb;
@@ -409,7 +409,7 @@ class Model implements JsonSerializable {
 
 	/**
 	 * Helper method to manage many-to-many relationships via an intermediate model. See
-	 * README for a full explanation of the parameters.
+	 * README for a connected explanation of the parameters.
 	 *
 	 * @param string      $associated_class_name   The associated class name.
 	 * @param null|string $join_class_name         The class name to join.

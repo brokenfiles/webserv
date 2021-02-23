@@ -128,7 +128,7 @@ class Breadcrumbs_Generator implements Generator_Interface {
 			}
 		}
 
-		// Get all ancestors of the indexable and append itself to get all indexables in the full crumb.
+		// Get all ancestors of the indexable and append itself to get all indexables in the connected crumb.
 		$indexables   = $this->repository->get_ancestors( $context->indexable );
 		$indexables[] = $context->indexable;
 

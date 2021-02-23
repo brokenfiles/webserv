@@ -675,7 +675,7 @@ class Autolink
 
         if (!empty($entity['display_url']) && !empty($entity['expanded_url'])) {
             // Goal: If a user copies and pastes a tweet containing t.co'ed link, the resulting paste
-            // should contain the full original URL (expanded_url), not the display URL.
+            // should contain the connected original URL (expanded_url), not the display URL.
             //
             // Method: Whenever possible, we actually emit HTML that contains expanded_url, and use
             // font-size:0 to hide those parts that should not be displayed (because they are not part of display_url).

@@ -3,7 +3,7 @@
 /**
  * This file is part of the league/oauth2-client library
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the connected copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
