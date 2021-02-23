@@ -10,7 +10,17 @@ ServerManager::ServerManager()
 
 ServerManager::~ServerManager()
 {
+    for (std::list<Server*>::iterator it = servers.begin(); it != servers.end(); it++)
+    {
+        delete (*it);
+        it = servers.erase(it);
+    }
 
+    for (std::list<Client*>::iterator it = clients.begin(); it != clients.end(); it++)
+    {
+        delete (*it);
+        it = clients.erase(it);
+    }
 }
 
 ServerManager::ServerManager(const ServerManager &copy)
@@ -131,7 +141,6 @@ int ServerManager::run_servers()
             Server *server_curr = (*serv_it);
             if (FD_ISSET(server_curr->getServerSocket(), &this->read_pool))
             {
-
                 Client *newClient = new Client();
 
                 newClient->getServerConfig() = server_curr->getServerConfig();
@@ -146,9 +155,8 @@ int ServerManager::run_servers()
                     logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
                     break;
                 }
-
-
-                FD_SET(newClient->getSocket(), &this->read_backup);
+                else
+                    FD_SET(newClient->getSocket(), &this->read_backup);
                 fd_av.push_back(newClient->getSocket());
 
                 clients.push_front(newClient);
@@ -169,6 +177,7 @@ int ServerManager::run_servers()
                     fd_av.remove(client_curr->getSocket());
 
                     client_curr->close_socket();
+//                    delete client_curr;
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                     continue;
@@ -191,7 +200,6 @@ int ServerManager::run_servers()
 //                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
 //                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-
 
                     int ret = 0;
                     if ((ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())

@@ -102,10 +102,10 @@ int Client::read_request(void)
         //Si HEADER et BODY récupéré/parsé, c'est une valid request, on continue =)
         if (this->request.isHeaderParsed() && this->request.isBodyParsed())
         {
-            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ". size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
             this->request.isBodyParsed() = false;
             this->request.isHeaderParsed() = false;
             this->isValidRequest() = true;
+            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".");
             this->_recvRequest_backup.clear();
             return (0);
         }
