@@ -155,7 +155,7 @@ int ServerManager::run_servers()
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
 
-                if (this->fd_av.size() > 30)
+                if (this->fd_av.size() > 916)
                 {
                     newClient->isConnected() = false;
                     newClient->isValidRequest() = true;
