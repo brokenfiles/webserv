@@ -3,3 +3,5 @@ cmake-build-debug/*
 objects
 webserv
 .idea/*
+www/server/upload
+www/server/upload/*

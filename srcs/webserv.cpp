@@ -7,23 +7,36 @@
 #include "../srcs/classes/client/Client.hpp"
 #include "classes/config/Config.hpp"
 
-#define TRUE 1
-#define FALSE 0
+#include <limits>
+#include <ios>
 
 Logger logger;
 
-int main (int ac, char **av, char **env)
+int main (int ac, char **av)
 {
-	(void) av;
-	(void) ac;
 	Config        config;
-	ServerManager serverManager;
+    std::string configFile;
+    ServerManager serverManager;
+    std::string input;
+
+	if (ac == 2)
+        configFile = av[1];
+	else
+	    configFile = "conf/max.conf";
+
+	logger.warning("Run Webserv in silent mode? : [y\\n]", NO_PRINT_CLASS);
+    std::getline(std::cin, input);
+    bool state = !(input == "n" || input == "N");
+    logger.notice("SILENT MODE: " + logger.to_string(state) , NO_PRINT_CLASS);
+    logger.notice("Loading configuration: " + configFile , NO_PRINT_CLASS);
+    logger.silence_mode(state);
 
 	try
 	{
-		config.parseConfig("srcs/webserv.conf");
+		config.parseConfig(configFile);
 		config.checkConfig();
-	} catch (const std::exception &exception)
+	}
+	catch (const std::exception &exception)
 	{
 		std::cerr << exception.what() << std::endl;
 		exit(1);
@@ -32,7 +45,7 @@ int main (int ac, char **av, char **env)
 	try
 	{
 		serverManager.setup_sockets(config);
-		serverManager.run_servers(env);
+		serverManager.run_servers();
 	}
 	catch (const std::exception &exception)
 	{

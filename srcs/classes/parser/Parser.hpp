@@ -3,6 +3,7 @@
 
 #include "../../../includes/includes.h"
 #include "../logger/Logger.hpp"
+#include "../queries/Query.hpp"
 #include "../queries/Request.hpp"
 #include <iostream>
 #include <string>
@@ -10,30 +11,60 @@
 
 class Request;
 
-class Parser {
+class Parser
+{
 
-	private:
-        void fillMethod(Request&, std::string&);
-        void fillPath(Request&, std::string&);
-        void fillHeader(Request&, std::string&);
-        void fillBody(Request&, std::string&);
-        void fillQueryString(Request&);
+private:
+	void fillMethod (Request &, std::string &);
+	void fillPath (Request &, std::string &);
+	void fillHeader (Request &, std::string &);
+	void fillBody (Request &, std::string &);
+	void fillQueryString (Request &);
 
-	public:
-		Parser();
-		~Parser();
+public:
+	Parser ();
+	~Parser ();
+	Query parseResponse (std::string strResponse);
 
-        Request	parse(std::string strRequest);
+	class BadRequestMethod : public std::exception
+	{
+	    public:
+		    virtual const char *what () const throw()
+		    {
+			    return ("Bad Request Method");
+		    }
+	};
 
-        class BadRequestMethod : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return ("Bad Request Method");
-                }
-        };
+	class BadHeader : public std::exception
+	{
+	    public:
+	        virtual const char *what () const throw()
+	        {
+	            return ("Bad Header");
+	        }
+	};
+
+	class BadRequest : public std::exception
+	{
+	    public:
+	        virtual const char *what () const throw()
+	        {
+	            return ("Bad Request");
+	        }
+	};
+
+	class BadChunkedBody : public std::exception
+    {
+        public:
+            virtual const char *what () const throw()
+            {
+                    return ("Bad Chunked Body");
+            }
+    };
+
+	void parseHeader(Request& req, std::string& keeper);
+	int fillChunk(std::string &keeper);
+	int fillContentSize(std::string &keeper, std::string strsize);
 };
-
 
 #endif

@@ -4,6 +4,7 @@
 
 #include "Cgi.hpp"
 #include <sys/types.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 
 Cgi::Cgi()
@@ -20,134 +21,238 @@ Cgi::~Cgi()
  * @param response
  * @action remplace le body de la reponse par le retour du CGI
  */
-void	Cgi::execute(Client *client, Response &response)
+void	Cgi::launch(Client *client, Response &response)
 {
     //on set le nom du fichier qui doit etre executé dans le cgi
-    setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
+	setRequestFile(client->getObjRequest().getDefaultPath(const_cast<LocationConfig &>(response.getLocation())));
+
+	//si le fichier demandé est un .bla on execute le cgi meme si il n'existe pas
+	if (response.getLocation().getCgiExtension() != ".bla")
+	{
+		// on ouvre in filestream
+		std::ifstream fileStream(getRequestFile().c_str());
+
+		// on regarde si le fichier existe
+		if (!fileStream.is_open())
+		{
+			// il n'exite pas on retourne une erreur 404
+			response.setStatusCode(response.getMessageCode(404));
+			return;
+		}
+	}
 
     //on ajoute les META-VARIABLES
-    addMetaVariables(client->getObjRequest(), response);
+    addMetaVariables(response, client);
 
-    //on ajoute le nom du binaire et celuidu fichier dans argv, qui sera passé au CGI dans un execve
+    //on ajoute le nom du binaire et celui du fichier dans argv, qui sera passé au CGI dans un execve
     addArgv(response);
 
-	int												pid;
-	int												pipe_fd[2];
-	int												outfd[2];
-	int												save_in;
-	int												save_out;
-	char 											buffer[BUFFER];
-	std::string										output = "";
+    this->_client = client;
+    this->_requestBody = client->getObjRequest().getBody();
 
-	pipe(pipe_fd);
-	pipe(outfd);
-	save_in = dup(STDIN_FILENO);
-	save_out = dup(STDOUT_FILENO);
-	dup2(outfd[1], 1);
-	pid = fork();
-	if (pid == 0)
+    //on execute le CGI
+    execute(response);
+
+	//on remplace le body de la reponse par le retour du CGI
+    response.setBody(this->_var.output);
+}
+
+void	Cgi::execute(Response &response)
+{
+	//pipe(this->_var.pipe_fd);
+	//pipe(this->_var.outfd);
+	this->_var.save_in = dup(STDIN_FILENO);
+	this->_var.save_out = dup(STDOUT_FILENO);
+
+
+
+	//on fork le processus en 2
+	this->_var.pid = fork();
+	if (this->_var.pid == 0)
 	{
-		close(outfd[1]);
-		dup2(outfd[0], 0);
-		dup2(pipe_fd[1], 1);
-		execve(getArgv()[0], getArgv(), getMetaVarArray());
+		this->_var.input_fd = open("tmpfile_input", O_CREAT | O_RDWR, 0777);
+		this->_var.output_fd = open("tmpfile_output", O_CREAT | O_RDWR, 0777);
+		//processus fils
+		dup2(this->_var.input_fd, STDIN_FILENO);
+		dup2(this->_var.output_fd, STDOUT_FILENO);
+
+		//close(this->_var.outfd[1]);
+		//close(this->_var.pipe_fd[0]);
+
+		//on execute le CGI
+		execve(this->_var.argv[0], this->_var.argv, this->_var.metaVarArray);
 	}
-	else
+	else if (this->_var.pid > 0)
 	{
-		int 		ret;
+		this->_var.input_fd = open("tmpfile_input", O_CREAT | O_RDWR, 0777);
+		this->_var.output_fd = open("tmpfile_output", O_CREAT | O_RDWR, 0777);
+		//processus pere
+		//close(this->_var.outfd[0]);
+		//close(this->_var.pipe_fd[1]);
 
-		close(outfd[0]);
-		if (client->getObjRequest().getMethod() == "POST" && !response.getBody().empty())
-			write(outfd[1], response.getBody().c_str(), response.getBody().length());
-		close(outfd[1]);
-		close(pipe_fd[1]);
-		while ((ret = read(pipe_fd[0], &buffer, BUFFER - 1)) != 0)
+		//si c'est un requete POST on ecrit le body sur STDIN du processus fils
+		if (this->_client->getObjRequest().getMethod() == "POST")
+			std::cerr << "write = " << write(this->_var.input_fd, this->_requestBody.c_str(), this->_requestBody.size()) << std::endl;
+
+		//close(this->_var.outfd[1]);
+
+		waitpid(this->_var.pid, &this->_var.status, 0);
+		std::cerr << "commence a read" << std::endl;
+
+		//on lit le retour du CGI et on le stock dans var.output
+		while ((this->_var.ret = read(this->_var.output_fd, this->_var.buffer, BUFFER - 1)) != 0)
 		{
-			buffer[ret] = 0;
-			output += buffer;
+			this->_var.buffer[this->_var.ret] = 0;
+			this->_var.output += this->_var.buffer;
 		}
-		if (response.getLocation().getCgiExtension() == "php")
-			output.erase(0, 66);
-		response.setBody(output);
-		dup2(save_in, STDIN_FILENO);
-		dup2(save_out, STDOUT_FILENO);
+		std::cerr << this->_var.output << std::endl;
+
+		//on récupère le code de retour du CGI et des headers
+		if (response.getLocation().getCgiExtension() != ".bla" || this->_client->getObjRequest().getMethod() != "GET")
+			getCGIReturn(response);
+
+		//on remet STDIN et STDOUT sur leurs fd respectifs
+		dup2(this->_var.save_in, STDIN_FILENO);
+		dup2(this->_var.save_out, STDOUT_FILENO);
+
+		//on free l'array de variables d'environement
+		for (size_t i = 0; i < this->_metaVarMap.size(); ++i) {
+			free(this->_var.metaVarArray[i]);
+		}
+		free(this->_var.metaVarArray);
+
+		remove("tmpfile_input");
+		remove("tmpfile_output");
+
+		//close(this->_var.pipe_fd[0]);
 	}
 }
 
 /**
- * cette fonction rempli un array avec le nom du binaire de CGI a utiliser
+ * cette fonction rempli un array avec le nom du binaire CGI a utiliser
  * et le path du fichier a executer
  * @param response : contient le nom du binaire dans une locationConfig
  */
 void Cgi::addArgv(Response &response)
 {
-    //on crée un array et on le rempli avec les META-VARIABLES
-    char** argv = new char*[3];
+    std::vector<std::string>        vec;
 
-    for (int i = 0; i < 3; i++)
-        argv[i] = new char;
-    argv[0] = (char*)response.getLocation().getCgiBin().c_str();
-    argv[1] = (char*)getRequestFile().c_str();
-    argv[2] = NULL;
-    setArgv(argv);
+    vec.push_back(response.getLocation().getCgiBin());
+    vec.push_back(getRequestFile());
+    this->_argv = vec;
+	this->_var.argv = vecToArray(this->_argv);
 }
 
 /**
- * Cette fonction definie les META-VARIABLES requise par le cgi pour fonctionner,
+ * cette fonction récupère le status code et les headers retournés par le programme CGI et les stock dans la réponse passée en argument
+ * @param response
+ */
+void	Cgi::getCGIReturn(Response &response)
+{
+	Parser parser;
+	std::string tmp = this->_var.output.substr(0, this->_var.output.find("\r\n\r\n", 0));
+	this->_var.output.erase(0, this->_var.output.find("\r\n\r\n", 0) + 4);
+	Query query = parser.parseResponse(tmp + "\r\n");
+
+	response.setCookies(query.getRawCookies());
+	if (!query.getHeaders().empty()) {
+		std::map<std::string, std::string>::const_iterator begin = query.getHeaders().begin();
+		std::map<std::string, std::string> headers = response.getHeaders();
+
+		for (; begin != query.getHeaders().end(); begin++)
+		{
+			if (begin->first == "Status")
+				response.setStatusCode(query.getHeaders().at("Status"));
+			else
+				headers[begin->first] = begin->second;
+		}
+		response.setHeaders(headers);
+	}
+}
+
+/**
+ * Cette fonction definie les META-VARIABLES requises par le cgi pour fonctionner,
  * elles sont stockées dans une map de la classe CGI
  * @param request : la requete faite par le client
  */
-void		Cgi::addMetaVariables(Request request, Response &response)
+void Cgi::addMetaVariables(Response &response, Client *client)
 {
-    std::map<std::string, std::string>	metaVarMap;
+	this->_metaVarMap["AUTH_TYPE"] = "NULL";
+	this->_metaVarMap["REMOTE_ADDR"] = client->getIP();
+	this->_metaVarMap["REQUEST_METHOD"] = client->getObjRequest().getMethod();
+	this->_metaVarMap["CONTENT_LENGTH"] = Logger::to_string(client->getObjRequest().getBody().size());
+    if (client->getObjRequest().getHeaders().find("Content-Type") != client->getObjRequest().getHeaders().end())
+		this->_metaVarMap["CONTENT_TYPE"] = client->getObjRequest().getHeaders().find("Content-Type")->second;
+	this->_metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
+	this->_metaVarMap["PATH_INFO"] = client->getObjRequest().getPath();
+	this->_metaVarMap["PATH_TRANSLATED"] = getRequestFile();
+	if (client->getObjRequest().getQueryString().empty())
+	    this->_metaVarMap["QUERY_STRING"] = "";
+	else
+	    this->_metaVarMap["QUERY_STRING"] = client->getObjRequest().getQueryString();
+	this->_metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
+	this->_metaVarMap["REQUEST_URI"] = client->getObjRequest().getPath();
+	if (!client->getObjRequest().getQueryString().empty())
+		this->_metaVarMap["REQUEST_URI"] += "?" + client->getObjRequest().getQueryString();
+	this->_metaVarMap["SCRIPT_NAME"] = response.getLocation().getCgiBin();
+	this->_metaVarMap["SERVER_NAME"] = client->getServerConfig().getServerName();
+	this->_metaVarMap["SERVER_PORT"] = Logger::to_string(client->getServerConfig().getPort());
+	this->_metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
+	this->_metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
+	if (client->getObjRequest().getHeaders().find("Cookie") != client->getObjRequest().getHeaders().end())
+		this->_metaVarMap["HTTP_COOKIE"] = client->getObjRequest().getHeaders().at("Cookie");
+    if (client->getObjRequest().getHeaders().find("Accept") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_ACCEPT"] = client->getObjRequest().getHeaders().at("Accept");
+    if (client->getObjRequest().getHeaders().find("Connection") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_CONNECTION"] = client->getObjRequest().getHeaders().at("Connection");
+    if (client->getObjRequest().getHeaders().find("User-Agent") != client->getObjRequest().getHeaders().end())
+        this->_metaVarMap["HTTP_USER_AGENT"] = client->getObjRequest().getHeaders().at("User-Agent");
+    this->_metaVarMap["REMOTE_IDENT"] = "login_user";
+	this->_metaVarMap["REMOTE_USER"] = "user";
 
-    metaVarMap["PATH_INFO"] = getRequestFile();
-    metaVarMap["REQUEST_METHOD"] = request.getMethod();
-    metaVarMap["SERVER_PROTOCOL"] = "HTTP/1.1";
-    metaVarMap["REQUEST_URI"] = request.getPath();
-    metaVarMap["QUERY_STRING"] = setQueryString(request.getQueryString());
-    metaVarMap["REDIRECT_STATUS"] = "200";
-    metaVarMap["SERVER_SOFTWARE"] = "Webserv/1.0";
-    metaVarMap["SERVER_NAME"] = "localhost";
-    metaVarMap["SERVER_PORT"] = Logger::to_string(PORT);
-    metaVarMap["GATEWAY_INTERFACE"] = "CGI/1.1";
-    metaVarMap["SCRIPT_FILENAME"] = getRequestFile();
-    metaVarMap["REMOTE_ADDR"] = "127.0.0.1";
-    metaVarMap["REMOTE_IDENT"] = "login_user";
-    metaVarMap["REMOTE_USER"] = "user";
-    //metaVarMap["HTTP_ACCEPT"] = request.getHeaders().at("Accept");
-    //metaVarMap["HTTP_ACCEPT_LANGUAGE"] = request.getHeaders().at("Accept-Language");
-    //metaVarMap["HTTP_USER_AGENT"] = request.getHeaders().at("User-Agent");
-    metaVarMap["SCRIPT_NAME"] = request.getPath().substr(1, request.getPath().length() - 1);
-    if (request.getHeaders().find("Content-Type") == request.getHeaders().end())
-        metaVarMap["CONTENT_TYPE"] = "";
-    else
-        metaVarMap["CONTENT_TYPE"] = request.getHeaders().find("Content-Type")->second;
-    if (request.getHeaders().find("Content-Length") == request.getHeaders().end())
-        metaVarMap["CONTENT_TYPE"] = "0";
-    else
-        metaVarMap["CONTENT_LENGTH"] = Logger::to_string(response.getBody().length());
-    if (request.getMethod() == "GET" && !metaVarMap["QUERY_STRING"].empty())
-        metaVarMap["REQUEST_URI"] += "?" + request.getQueryString();
+	//cette variable est necessaire pour lancer php-cgi
+    this->_metaVarMap["REDIRECT_STATUS"] = "200";
+	this->_var.metaVarArray = mapToArray(this->_metaVarMap);
+}
 
+/**
+ * cette fonction convertit un vector en char**
+ * @param vec : le vector a convertir
+ * @return un array contenant les valeurs du vector
+ */
+char    **Cgi::vecToArray(std::vector<std::string> &vec)
+{
+    char    **array = new char*[vec.size() + 1];
 
-    //on crée un array et on le rempli avec les META-VARIABLES
-    char** env = new char*[metaVarMap.size()];
-    std::string         tmp;
+    for (size_t i = 0; i < vec.size() ; i++) {
+        array[i] = (char*)vec[i].c_str();
+    }
+    array[vec.size()] = NULL;
+    return (array);
+}
 
-    int i = 0;
-    for (std::map<std::string, std::string>::iterator ite = metaVarMap.begin(); ite != metaVarMap.end(); ite++)
+/**
+ * cette fonction convertit une map en char**
+ * @param map : la map a convertir
+ * @return un array contenant les valeurs de la map
+ */
+
+char    **Cgi::mapToArray(std::map<std::string, std::string> &map)
+{
+    int												i = 0;
+    std::string										tmp;
+    char 											**env;
+
+    if (!(env = (char**)malloc(sizeof(char*) * (map.size() + 1))))
+        return NULL;
+    for (std::map<std::string, std::string>::iterator it = this->_metaVarMap.begin(); it != this->_metaVarMap.end(); it++)
     {
-        env[i] = new char;
-        tmp = "";
-        tmp.insert(0, ite->first);
-        tmp.insert(tmp.length(), "=");
-        tmp.insert(tmp.length(), ite->second);
-        env[i] = (char*)tmp.c_str();
+        tmp = "" + it->first + "=" + it->second;
+        env[i] = ft_strdup(tmp.c_str());
         i++;
     }
     env[i] = NULL;
-    setMetaVarArray(env);
+    return (env);
 }
 
 /**
@@ -165,6 +270,8 @@ bool Cgi::isCGI (Request request, LocationConfig location)
 		size_t dotIndex = path.rfind('.');
 		if (dotIndex != std::string::npos) {
 			std::string extension = path.substr(dotIndex, path.size() - dotIndex);
+			if (extension == ".bla" && request.getMethod() == "GET")
+				return (false);
 			/* on check si le cgibin existe */
 			std::ifstream file(cgiBin.c_str(), std::ifstream::in);
 			if (file.good() && file.is_open())
@@ -172,10 +279,6 @@ bool Cgi::isCGI (Request request, LocationConfig location)
 		}
 	}
 	return (false);
-}
-
-std::string		Cgi::setQueryString(std::string str) {
-	return (str);
 }
 
 const std::string &Cgi::getRequestFile() const {
@@ -193,20 +296,3 @@ const std::string &Cgi::getCgiBin() const {
 void Cgi::setCgiBin(const std::string &cgiBin) {
     _cgiBin = cgiBin;
 }
-
-char **Cgi::getMetaVarArray() const {
-    return _metaVarArray;
-}
-
-void Cgi::setMetaVarArray(char **metaVarArray) {
-    _metaVarArray = metaVarArray;
-}
-
-char **Cgi::getArgv() const {
-    return _argv;
-}
-
-void Cgi::setArgv(char **argv) {
-    _argv = argv;
-}
-

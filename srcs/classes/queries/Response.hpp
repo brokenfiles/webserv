@@ -8,8 +8,6 @@
 #include "../config/ServerConfig.hpp"
 #include "../cgi/Cgi.hpp"
 
-class Client;
-
 class Response : public Query
 {
 private:
@@ -23,6 +21,7 @@ private:
 	LocationConfig _location;
 
 	std::string getDirName(const std::string& file);
+	void removeDir (const std::string &path);
 
 public:
 	Response ();
@@ -40,12 +39,16 @@ public:
 	void setContentType (Client *client);
 	void setDefaultStatusCodes ();
 	void setDefaultExtensions ();
+	void replace(std::string &fileContent, std::string replace, std::string newString);
 
 	/*
 	 * Methods Handlers
 	 */
 	void getHandler (Client *client);
 	void putHandler (Client *client);
+	void postHandler (Client *client);
+	void deleteHandler (Client *client);
+	void handleAcceptLanguage (Client *client);
 
 	/*
 	 * Getters
@@ -64,6 +67,7 @@ public:
 	void setMessageCode (int code, const std::string& message);
 	void setFileCode (int code, const std::string& file);
 	void addError (int code, const std::string &message, const std::string& file);
+	void setStatusCode(const std::string &statusCode);
 	/*
 	 * Exceptions
 	 */

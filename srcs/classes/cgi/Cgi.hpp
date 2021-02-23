@@ -17,37 +17,72 @@
 
 class Client;
 class Response;
+class Request;
 
+//structure contenant toutes les variables necessaires à l'execution du CGI
+typedef struct s_execCGI
+{
+	int			pid;
+	int			input_fd;
+	int			output_fd;
+	int			save_in;
+	int			save_out;
+	int         ret;
+	int 		status;
+	char 		buffer[BUFFER];
+	char        **argv;
+	char        **metaVarArray;
+	std::string	output;
+}               t_execCGI;
+
+
+/**
+ * Cette classe gère l'execution des programes CGI
+ */
 class Cgi
 {
 private:
-        char                                **_metaVarArray;
-        char                                **_argv;
+
+		//une map contenant les variables d'environement passées au CGI lors de l'execution
+        std::map<std::string, std::string>  _metaVarMap;
+
+		//un vector contenant le binaire à utiliser et le fichier à executer
+        std::vector<std::string>            _argv;
+
+        //le fichier à executer
         std::string                         _requestFile;
+
+        //le binaire à utiliser pour l'execution
         std::string                         _cgiBin;
+
+        //les variables necessaire pour le execve
+        t_execCGI							_var;
+
+        Client								*_client;
+
+        std::string							_requestBody;
 public:
         Cgi();
 		virtual ~Cgi();
 
-		//execute function
-		void		execute(Client *client, Response &response);
+		void		launch(Client *client, Response &response);
+		void		execute(Response &response);
 
 		//getters and setters
 		const std::string                       &getRequestFile() const;
-        char                                    **getArgv() const;
-        void                                    setArgv(char **argv);
         void                                    setRequestFile(const std::string &requestFile);
         void                                    setCgiBin(const std::string &cgiBin);
         const std::string                       &getCgiBin() const;
-        char                                    **getMetaVarArray() const;
-        void                                    setMetaVarArray(char **metaVarArray);
         static bool                             isCGI(Request request, LocationConfig location);
 
 		//meta var functions
-		void				        addMetaVariables(Request request, Response &response);
-		std::string			        setQueryString(std::string path);
+        void addMetaVariables(Response &response, Client *Client);
+		void addArgv(Response &response);
+		char **vecToArray(std::vector<std::string> &vec);
+		char **mapToArray(std::map<std::string, std::string> &map);
 
-    void addArgv(Response &response);
+		void	getCGIReturn(Response &response);
+
 };
 
 char		*ft_strdup(const char *str);

@@ -1,5 +1,8 @@
 #include <algorithm>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "Response.hpp"
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
@@ -46,24 +49,39 @@ std::string Response::sendResponse(Client *client)
 	/* On check si la méthode est gérée par la location */
 	if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
-		this->_statusCode = this->getMessageCode(401);
+		this->_statusCode = this->getMessageCode(405);
 	} else {
-		Cgi cgi;
-		/* la méthode est valide */
-		if (method == "get" || method == "head") {
-			this->getHandler(client);
-			if (method == "head")
-				this->setBody("");
-		} else if (method == "put") {
-			this->putHandler(client);
+		// handle max body size
+		if (client->getServerConfig().getMaxBodySize() != DEFAULT_MAX_BODY_SIZE) {
+			if ((int)client->getObjRequest().getBody().size() > client->getServerConfig().getMaxBodySize()) {
+				this->_statusCode = getMessageCode(413);
+			}
 		}
-		// execute CGIs
-		if (Cgi::isCGI(client->getObjRequest(), this->_location))
-			cgi.execute(client, *this);
+		// on vérifie que le status code est à 200
+		if (this->_statusCode == getMessageCode(200)) {
+			if (!Cgi::isCGI(client->getObjRequest(), this->_location)) {
+				/* la méthode est valide */
+				if (method == "get" || method == "head") {
+					this->getHandler(client);
+					if (method == "head")
+						this->setBody("");
+				} else if (method == "put") {
+					this->putHandler(client);
+				} else if (method == "post") {
+					this->postHandler(client);
+				} else if (method == "delete") {
+					this->deleteHandler(client);
+				}
+			} else {
+				Cgi cgi;
+				// execute CGIs
+				cgi.launch(client, *this);
+			}
+		}
 	}
 	// display error codes
 	// si le premier char de l'erreur n'est pas égal à 2, c'est une erreur : afficher l'erreur
-	if (this->_statusCode[0] != '2') {
+	if (this->_statusCode.find("200") == std::string::npos) {
 		this->displayErrors();
 	}
 
@@ -77,7 +95,6 @@ std::string Response::sendResponse(Client *client)
 void Response::getHandler(Client *client)
 {
 	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
-//	std::cout << requestFile << std::endl;
 	// on ouvre in filestream
 	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
 	// on regarde si le fichier existe
@@ -103,29 +120,82 @@ void Response::getHandler(Client *client)
 
 void Response::putHandler(Client *client)
 {
-	std::string requestFile = client->getObjRequest().getDefaultPath(this->_location);
-//	std::cout << requestFile << std::endl;
+	std::string requestFile = this->_location.getUploadDir() +
+			Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
+	bool fileExists = std::ifstream(requestFile.c_str()).good();
 	// on ouvre in filestream
-	std::ifstream fileStream(requestFile.c_str(), std::ifstream::in);
+    std::ofstream fileStream(requestFile.c_str());
 	// on regarde si le fichier existe
-	if (fileStream.good()) {
+	if (fileStream.is_open()) {
 		// il existe
-		if (fileStream.is_open()) {
-			// on peut lire le fichier, on l'ajoute au body
-			// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
-			std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
-									 (std::istreambuf_iterator<char>()    ) );
-
-			this->setBody(fileContent);
-			fileStream.close();
-		} else {
-			// le fichier est inaccessible on retourne une erreur 403 forbidden
-			this->_statusCode = getMessageCode(403);
-		}
+		fileStream << client->getObjRequest().getBody();
+		// on retourne un 200 si le fichier existait avant sinon un 201
+		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
+		fileStream.close();
 	} else {
-		// il n'exite pas on retourne une erreur 404 not found
-		this->_statusCode = getMessageCode(404);
+		// il n'exite pas on retourne une erreur 403
+		this->_statusCode = getMessageCode(403);
 	}
+}
+
+void Response::postHandler(Client *client)
+{
+	std::string requestFile = this->_location.getUploadDir() +
+							  Request::getPathWithoutLocation(client->getObjRequest().getPath(), this->_location);
+	int fd;
+	struct stat sb;
+	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
+	// on ouvre le fichier (on le créé si il n'existe pas ou on l'ouvre en concat)
+	if ((fd = open(requestFile.c_str(), (fileExists ? O_APPEND : O_CREAT) | O_WRONLY, 0666)) == -1) {
+		this->_statusCode = getMessageCode(500);
+	} else {
+		// on écrit dans le fichier
+		int ret = write(fd, client->getObjRequest().getBody().c_str(), client->getObjRequest().getBody().size());
+		logger.info("(Post Request) - File written (path : " + requestFile + ") - Write return : " + Logger::to_string(ret), NO_PRINT_CLASS);
+		// si ret est <= 0, il y a eu une erreur, on retourne une erreur 500
+		if (ret < 0)
+			this->_statusCode = getMessageCode(500);
+		else {
+			this->_statusCode = getMessageCode(fileExists ? 200 : 201);
+			if (this->_statusCode == getMessageCode(200))
+				this->setBody("File updated.");
+		}
+		close(fd);
+	}
+}
+
+void Response::deleteHandler(Client *client)
+{
+	std::string requestFile = this->_location.getUploadDir() + client->getObjRequest().getPath();
+	struct stat sb;
+	bool fileExists = stat(requestFile.c_str(), &sb) != -1;
+
+	if (!fileExists) {
+		this->_statusCode = getMessageCode(404);
+	} else {
+		if (S_ISDIR(sb.st_mode)) {
+			this->removeDir(requestFile);
+		} else {
+			if (std::remove(requestFile.c_str()) == 0) {
+				this->_statusCode = getMessageCode(200);
+			} else {
+				this->_statusCode = getMessageCode(500);
+			}
+		}
+	}
+}
+
+void Response::removeDir(const std::string &path)
+{
+	(void)path;
+}
+
+void Response::handleAcceptLanguage(Client *client)
+{
+	if (client->getObjRequest().getHeaders().find("Accept-Language") == client->getObjRequest().getHeaders().end())
+		return ;
+	std::map<std::string, std::string> headers = client->getObjRequest().getHeaders();
+
 }
 
 /**
@@ -140,6 +210,7 @@ std::string 	Response::stringify() const
 	string = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
 		string += it->first + ": " + it->second + "\n";
+	string += getCookies();
 	string += "\r\n";
 	string += this->getBody();
 
@@ -158,6 +229,7 @@ void Response::setDefaultHeaders(Client *client, ServerConfig &server)
 	this->setContentType(client);
 	this->_headers["Date"] = this->currentDate();
 	this->_headers["Server"] = "Webserv";
+	this->_headers["Content-Length"] = "0";
 }
 
 /**
@@ -280,20 +352,37 @@ std::string Response::getDirName (const std::string& file)
 	return(fileSlash.substr(firstSlash, secondSlash - firstSlash));
 }
 
+void Response::replace(std::string &fileContent, std::string replace, std::string newString)
+{
+    size_t pos = 0;
+
+    while ((pos = fileContent.find(replace)) != std::string::npos)
+    {
+        fileContent.replace(pos, replace.length(), newString);
+        pos += newString.length();
+    }
+}
+
 void Response::displayErrors ()
 {
 	std::map<int, std::pair<std::string, std::string> >::iterator begin = this->_statusMessages.begin();
-	while (begin != this->_statusMessages.end()) {
-		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode) {
-			std::ifstream fileStream(begin->second.second.c_str(), std::ifstream::in);
+	while (begin != this->_statusMessages.end())
+	{
+		if (Logger::to_string(begin->first) + " " + begin->second.first == this->_statusCode)
+		{
+			std::ifstream fileStream("www/server/ErrorTemplate.html", std::ifstream::in);
 			// on regarde si le fichier existe
-			if (fileStream.good()) {
+			if (fileStream.good())
+			{
 				// il existe
-				if (fileStream.is_open()) {
+				if (fileStream.is_open())
+				{
 					// on peut lire le fichier, on l'ajoute au body
 					// pour lire des gros fichiers avec buffer : http://www.cplusplus.com/reference/istream/istream/read/
-					std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ),
-											 (std::istreambuf_iterator<char>()    ) );
+					std::string fileContent( (std::istreambuf_iterator<char>(fileStream) ), (std::istreambuf_iterator<char>()));
+
+					this->replace(fileContent, "ErrorStatus", begin->second.first);
+					this->replace(fileContent, "ErrorCode", logger.to_string(begin->first));
 
 					this->setBody(fileContent);
 					fileStream.close();
@@ -314,17 +403,19 @@ void Response::setDefaultStatusCodes()
 	this->addError(200, "OK", "");
 	this->addError(201, "Created", "");
 	this->addError(202, "Accepted", "");
+	this->addError(204, "No Content", "");
 	this->addError(300, "Multiple Choices", "");
 	this->addError(301, "Moved Permanently", "");
 	this->addError(302, "Found", "");
 	this->addError(310, "Too many Redirects", "");
-	this->addError(400, "Bad request", "srcs/home/server/bad_request.html");
-	this->addError(401, "Unauthorized", "srcs/home/server/unauthorized.html");
-	this->addError(403, "Forbidden", "srcs/home/server/forbidden.html");
-	this->addError(404, "Not found", "srcs/home/server/NotFound.html");
-	this->addError(413, "Request Entity Too Large", "srcs/home/server/NotFound.html");
-	this->addError(500, "Internal Server Error", "srcs/home/server/server_error.html");
-	this->addError(501, "Not implemented", "");
+	this->addError(400, "Bad request", "");
+	this->addError(401, "Unauthorized", "");
+	this->addError(403, "Forbidden", "");
+	this->addError(404, "Not Found", "");
+	this->addError(405, "Method Not Allowed", "");
+	this->addError(413, "Request Entity Too Large", "");
+	this->addError(500, "Internal Server Error", "");
+	this->addError(501, "Not Implemented", "");
 	this->addError(502, "Bad Gateway", "");
 	this->addError(503, "Service Unavailable", "");
 }
@@ -389,6 +480,11 @@ std::map<std::string, std::string> &Response::getContentTypes ()
 LocationConfig &Response::getLocation ()
 {
 	return _location;
+}
+
+void Response::setStatusCode(const std::string &statusCode)
+{
+	_statusCode = statusCode;
 }
 
 const char *Response::NoLocationException::what () const throw()

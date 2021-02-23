@@ -5,17 +5,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-Request::Request() : _path(), _method(), _queryString()
+Request::Request() : _path(), _method(), _queryString(), headerFilled(false), bodyFilled(false)
 {
 
 }
 
 
-Request::Request(std::string &req) : _path(), _method(), _queryString()
+Request::Request(std::string &req) : _path(), _method(), _queryString(), headerFilled(false), bodyFilled(false)
 {
-    Parser parser;
-
-    *this = parser.parse(req);
+	(void)req;
 }
 
 Request::~Request()
@@ -28,8 +26,12 @@ Request &Request::operator=(const Request& copy)
     if (this != &copy)
     {
         this->_path = copy._path;
+        this->_body = copy._body;
+        this->_headers = copy._headers;
         this->_method = copy._method;
         this->_queryString = copy._queryString;
+        this->headerFilled = copy.headerFilled;
+        this->bodyFilled = copy.bodyFilled;
     }
     return (*this);
 }
@@ -48,10 +50,7 @@ const std::string &Request::getPath() const
 std::string Request::getDefaultPath(LocationConfig &location)
 {
 	std::string rootDir = location.getRootDir();
-	std::string rawPath = _path;
-	if (location.getPath() != "/") {
-		rawPath.erase(rawPath.find(location.getPath()), location.getPath().size());
-	}
+	std::string rawPath = getPathWithoutLocation(_path, location);
 
 	std::string path = rootDir + rawPath;
 	struct stat path_stat;
@@ -64,6 +63,15 @@ std::string Request::getDefaultPath(LocationConfig &location)
 			path += "/" + location.getIndex();
 	}
 	return path;
+}
+
+std::string Request::getPathWithoutLocation(const std::string &rawPath, LocationConfig &location) {
+	std::string path = rawPath;
+
+	if (location.getPath() != "/") {
+		path.erase(path.find(location.getPath()), location.getPath().size());
+	}
+	return (path);
 }
 
 void Request::setMethod(const std::string &method)
@@ -84,6 +92,24 @@ const std::string &Request::getQueryString() const
 void Request::setQueryString(const std::string &queryString)
 {
 	_queryString = queryString;
+}
+
+bool &Request::isHeaderParsed()
+{
+	return (headerFilled);
+}
+bool &Request::isBodyParsed()
+{
+	return (bodyFilled);
+}
+void Request::setBody(const std::string &body)
+{
+    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
+    std::cout << ">" << body << "< size:" << body.size() << std::endl;
+    std::cout << "-------------------------------------------------------\n";
+
+    Query::setBody(body);
+    this->isBodyParsed() = true;
 }
 
 std::ostream&	operator<<(std::ostream &o, const Request &q) {
