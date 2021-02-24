@@ -513,6 +513,22 @@ std::string Response::getFilesInDirectory(const std::string &path, Client *clien
 }
 
 /**
+ * Stringify les headers
+ * @return les headers stringifiés
+ */
+std::string	Response::stringifyHeaders() const
+{
+	std::string headers;
+
+	headers = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
+	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
+		headers += it->first + ": " + it->second + "\r\n";
+	headers += getCookies();
+	headers += "\r\n";
+	return headers;
+}
+
+/**
  * Used to stringify the response.cpp class
  * Stringify the function is needed for send it to the client
  * @return stringified response
@@ -521,11 +537,7 @@ std::string 	Response::stringify() const
 {
 	std::string string;
 
-	string = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
-	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
-		string += it->first + ": " + it->second + "\r\n";
-	string += getCookies();
-	string += "\r\n";
+	string += this->stringifyHeaders();
 	string += this->getBody();
 
 	return (string);
