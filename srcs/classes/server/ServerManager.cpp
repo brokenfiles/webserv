@@ -270,13 +270,16 @@ ServerConfig ServerManager::getBestServer(Client *client)
     {
         std::string host;
 
-        if ((*header).second.find(it->getServerName()) != std::string::npos)
-            host = (*header).second.substr(0, (*it).getServerName().size());
-
         if (header != client->getObjRequest().getHeaders().end())
         {
-            if ((*it).getServerName() == host)
-                return ((*it));
+            if ((*header).second.find(it->getServerName()) != std::string::npos)
+                host = (*header).second.substr(0, (*it).getServerName().size());
+
+            if (header != client->getObjRequest().getHeaders().end())
+            {
+                if ((*it).getServerName() == host)
+                    return ((*it));
+            }
         }
     }
 
