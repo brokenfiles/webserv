@@ -42,6 +42,8 @@ int ServerManager::setup_sockets(Config &conf)
     std::list<Server*>::iterator it_serv = servers.begin();
     std::vector<int> port_listening;
 
+    this->set_global_config(conf);
+
     for (std::vector<ServerConfig>::iterator it_conf = conf.getServers().begin(); it_conf != conf.getServers().end(); it_conf++)
     {
         std::vector<int>::iterator it_ip = std::find(port_listening.begin(), port_listening.end(), (*it_conf).getPort());
@@ -161,7 +163,6 @@ int ServerManager::run_servers()
                     newClient->isValidRequest() = true;
                     FD_SET(newClient->getSocket(), &this->write_backup);
                     logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
-//                    break;
                 }
                 else
                     FD_SET(newClient->getSocket(), &this->read_backup);
@@ -183,7 +184,6 @@ int ServerManager::run_servers()
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
                     this->disconnectClient(client_curr);
-//                    delete client_curr;
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                     continue;
@@ -254,6 +254,7 @@ void ServerManager::set_global_config(Config &conf)
 {
     this->configGeneral = conf;
 }
+
 ServerConfig ServerManager::getBestServer(Client *client)
 {
     std::vector<ServerConfig> tmp_conf;

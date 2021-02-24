@@ -39,7 +39,6 @@ int main (int ac, char **av)
 
 	try
 	{
-	    serverManager.set_global_config(config);
 		serverManager.setup_sockets(config);
 		serverManager.run_servers();
 	}
