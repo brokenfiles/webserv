@@ -14,6 +14,9 @@ Parser::~Parser(void)
 
 void Parser::parseHeader(Request &req, std::string& keeper)
 {
+    //std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+    //std::cout << keeper << std::endl;
+    //std::cout << "-------------------------------------------------------\n";
     std::string frontLine = keeper.substr(0, keeper.find('\n'));
     try
     {
@@ -33,7 +36,9 @@ void Parser::parseHeader(Request &req, std::string& keeper)
         keeper.clear();
         logger.error("[SERVER]: " + logger.to_string(e.what()), -1);
     }
-
+    //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
+    //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
+    //            std::cout << "-------------------------------------------------------\n";
 }
 
 

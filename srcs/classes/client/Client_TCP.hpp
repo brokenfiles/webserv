@@ -33,6 +33,21 @@ class Client_TCP
         struct sockaddr_in serv_addr;
 
         int sock;
+
+        struct clientItem
+        {
+            clientItem()
+            {
+                this->socket = -1;
+                this->serv_h = NULL;
+            }
+
+            int socket;
+            struct hostent *serv_h;
+            struct sockaddr_in serv_addr;
+        };
+
+        std::list<struct clientItem*> clientList;
 };
 
 #endif

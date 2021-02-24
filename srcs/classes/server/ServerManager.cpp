@@ -40,19 +40,28 @@ ServerManager &ServerManager::operator=(const ServerManager &copy)
 int ServerManager::setup_sockets(Config &conf)
 {
     std::list<Server*>::iterator it_serv = servers.begin();
+    std::vector<int> port_listening;
+
+    this->set_global_config(conf);
 
     for (std::vector<ServerConfig>::iterator it_conf = conf.getServers().begin(); it_conf != conf.getServers().end(); it_conf++)
     {
-        it_serv = servers.insert(it_serv, new Server());
-        Server* server_curr = (*it_serv);
+        std::vector<int>::iterator it_ip = std::find(port_listening.begin(), port_listening.end(), (*it_conf).getPort());
+        if (it_ip == port_listening.end())
+        {
+            port_listening.push_back((*it_conf).getPort());
+            it_serv = servers.insert(it_serv, new Server());
+            Server *server_curr = (*it_serv);
 
-        server_curr->setServerConfig((*it_conf));
-        if (server_curr->create_socket() < 0)
-            throw SetupSocketError();
+            server_curr->setServerConfig((*it_conf));
+            if (server_curr->create_socket() < 0)
+                throw SetupSocketError();
 
-        logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() +" listen on port " + logger.to_string(server_curr->getServerConfig().getPort()) + ".");
-        FD_SET(server_curr->getServerSocket(), &this->read_backup);
-        fd_av.push_back(server_curr->getServerSocket());
+            logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() + " listen on port " +
+                        logger.to_string(server_curr->getServerConfig().getPort()) + ".");
+            FD_SET(server_curr->getServerSocket(), &this->read_backup);
+            fd_av.push_back(server_curr->getServerSocket());
+        }
     }
     std::cout << "\n";
     return (0);
@@ -143,7 +152,7 @@ int ServerManager::run_servers()
             {
                 Client *newClient = new Client();
 
-                newClient->getServerConfig() = server_curr->getServerConfig();
+                newClient->getListener() = server_curr->getServerConfig().getPort();
 
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
@@ -151,9 +160,9 @@ int ServerManager::run_servers()
                 if (this->fd_av.size() > 916)
                 {
                     newClient->isConnected() = false;
+                    newClient->isValidRequest() = true;
                     FD_SET(newClient->getSocket(), &this->write_backup);
                     logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
-                    break;
                 }
                 else
                     FD_SET(newClient->getSocket(), &this->read_backup);
@@ -175,11 +184,12 @@ int ServerManager::run_servers()
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
                     this->disconnectClient(client_curr);
-//                    delete client_curr;
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                     continue;
                 }
+
+                client_curr->getServerConfig() = this->getBestServer(client_curr);
 
                 if (client_curr->isValidRequest())
                     FD_SET(client_curr->getSocket(), &this->write_backup);
@@ -206,7 +216,6 @@ int ServerManager::run_servers()
                             return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
                         if (send_ret == 0)
                             client_curr->isConnected() = false;
-
                     }
 
                     if (!client_curr->isConnected())
@@ -240,3 +249,37 @@ void ServerManager::disconnectClient(Client *client)
     fd_av.remove(client->getSocket());
     client->close_socket();
 }
+
+void ServerManager::set_global_config(Config &conf)
+{
+    this->configGeneral = conf;
+}
+
+ServerConfig ServerManager::getBestServer(Client *client)
+{
+    std::vector<ServerConfig> tmp_conf;
+
+    for (std::vector<ServerConfig>::iterator it = this->configGeneral.getServers().begin(); it != this->configGeneral.getServers().end(); it++)
+    {
+        if ((*it).getPort() == client->getListener())
+            tmp_conf.push_back(*it);
+    }
+
+    std::map<std::string, std::string>::const_iterator header = client->getObjRequest().getHeaders().find("Host");
+    for (std::vector<ServerConfig>::iterator it = tmp_conf.begin(); it != tmp_conf.end(); it++)
+    {
+        std::string host;
+
+        if ((*header).second.find(it->getServerName()) != std::string::npos)
+            host = (*header).second.substr(0, (*it).getServerName().size());
+
+        if (header != client->getObjRequest().getHeaders().end())
+        {
+            if ((*it).getServerName() == host)
+                return ((*it));
+        }
+    }
+
+    return (tmp_conf.front());
+}
+

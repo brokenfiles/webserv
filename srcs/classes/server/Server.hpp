@@ -31,6 +31,8 @@ class Server
         int create_socket();
         int accept_client(Client *client, fd_set &fd_pool, int &higher_fd);
 
+        void getRightConfig(Config &);
+
         int &getServerSocket(void);
         struct sockaddr_in &getServerAddr();
         void setServerConfig(ServerConfig &);

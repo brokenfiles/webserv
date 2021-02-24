@@ -36,9 +36,12 @@ class Client
 	    int &getSocket();
 
 	    Request& getObjRequest();
+        Parser& getObjParser();
 
 	    std::string &getIP();
 	    int &getPort();
+
+	    int &getListener();
 
 	    ServerConfig &getServerConfig();
 
@@ -57,6 +60,7 @@ class Client
 
 	    struct sockaddr_in client_addr;
 	    int socket;
+        int listen;
 
 	    int port;
 	    std::string ip;
