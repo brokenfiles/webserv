@@ -47,6 +47,7 @@ class Client
 
 	    bool &isValidRequest();
 	    bool &isConnected();
+	    bool &isChunked();
 
 	    //setters
 
@@ -57,9 +58,10 @@ class Client
 
 	    bool validRequest;
 	    bool connected;
+	    bool chunk_rep;
 
-	    struct sockaddr_in client_addr;
-	    int socket;
+        struct sockaddr_in client_addr;
+        int socket;
         int listen;
 
 	    int port;

@@ -53,7 +53,7 @@ void Client_TCP::sendHeader()
     std::queue<std::string> headers;
     std::string request;
 
-    headers.push("POST /index.html HTTP/1.1\r\n");
+    headers.push("POST /directory/youpi.bla HTTP/1.1\r\n");
     headers.push("Transfer-Encoding: chunked\r\n");
     headers.push("\r\n");
 
@@ -63,13 +63,17 @@ void Client_TCP::sendHeader()
         headers.pop();
     }
 
-    send(this->sock, request.c_str(), request.size(), 0);
+    send(this->clientList.begin().operator*()->socket, request.c_str(), request.size(), 0);
 }
 
 void Client_TCP::sendChunkedData()
 {
     std::list<std::string> chunks;
     std::string chunk_str;
+
+    size_t index = 0;
+    while (index < 8000)
+
 
     chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
     chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
@@ -94,7 +98,7 @@ void Client_TCP::sendChunkedData()
         if (it == chunks.end())
             chunk_str += "0\r\n\r\n";
     }
-    send(this->sock, chunk_str.c_str(), chunk_str.size(), 0);
+    send(this->clientList.begin().operator*()->socket, chunk_str.c_str(), chunk_str.size(), 0);
 }
 
 
@@ -102,17 +106,17 @@ int main()
 {
     Client_TCP client;
     std::string host_ip = "127.0.0.1";
-    int port = 8080;
-    int nb_client = 40;
+    int port = 5000;
+    int nb_client = 1;
 
     while (nb_client--)
     {
         client.connectToServer(host_ip, port);
-        usleep(50000);
+        usleep(1);
     }
 
-//    client.sendHeader();
-//    client.sendChunkedData();
+    client.sendHeader();
+    client.sendChunkedData();
 //
 //    char buffer[1024] = { 0 };
 //    int valread = read(client.sock , buffer, 1024);

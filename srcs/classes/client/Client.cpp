@@ -5,6 +5,7 @@ Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest_backup()
     memset(&this->client_addr, 0, sizeof(client_addr));
     this->validRequest = false;
     this->connected = true;
+    this->chunk_rep = false;
 }
 
 Client::~Client()
@@ -161,6 +162,10 @@ Parser &Client::getObjParser()
 int &Client::getListener()
 {
     return (this->listen);
+}
+bool &Client::isChunked()
+{
+    return (this->chunk_rep)
 }
 
 

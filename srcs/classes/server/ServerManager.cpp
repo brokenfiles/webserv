@@ -203,7 +203,21 @@ int ServerManager::run_servers()
                 if (client_curr->isValidRequest())
                 {
                     Response rep;
+
+                    std::map<std::string, std::string>::const_iterator it_h;
+
+                    if (((((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
+                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())) || rep.getBody().size() > 30000)
+                    {
+                        client_curr->isChunked() = true;
+                    }
+
                     std::string response = rep.sendResponse(client_curr);
+
+                    if (client_curr->isChunked() == true)
+                    {
+
+                    }
 
 //                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
@@ -230,8 +244,15 @@ int ServerManager::run_servers()
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
 
                 }
-                client_curr->isValidRequest() = false;
-                FD_CLR(client_curr->getSocket(), &this->write_backup);
+                if (client_curr->isChunked() == true)
+                {
+                        
+                }
+                else
+                {
+                    FD_CLR(client_curr->getSocket(), &this->write_backup);
+                    client_curr->isValidRequest() = false;
+                }
                 break;
             }
             else
