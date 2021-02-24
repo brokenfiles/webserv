@@ -71,17 +71,30 @@ void Client_TCP::sendChunkedData()
     std::list<std::string> chunks;
     std::string chunk_str;
 
-    size_t index = 0;
-    while (index < 8000)
 
+//    chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
+//    chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
+//    chunks.push_back("YO JE SUIS UNE PUTE");
+//    chunks.push_back("YO JE SUIS UN HETEROEXUEL ASPIRANT HELICOPTERE D'ATTAQUE");
+//    chunks.push_back("YO JE SUIS UN louis ^^");
+//    chunks.push_back("YO JE SUIS UN tim ^^");
+//    chunks.push_back("YO");
 
-    chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
-    chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
-    chunks.push_back("YO JE SUIS UNE PUTE");
-    chunks.push_back("YO JE SUIS UN HETEROEXUEL ASPIRANT HELICOPTERE D'ATTAQUE");
-    chunks.push_back("YO JE SUIS UN louis ^^");
-    chunks.push_back("YO JE SUIS UN tim ^^");
-    chunks.push_back("YO");
+    std::string chunkzer;
+    size_t x = 8000;
+    while (x > 0)
+    {
+        chunkzer.append("x");
+        x--;
+    }
+
+    x = 5;
+    while (x > 0)
+    {
+        chunks.push_back(chunkzer);
+        x--;
+    }
+    chunks.push_back("WESH LA TEAM ZER CEST LE DERNIER CHUNK DONT PARLE MIEU");
 
     std::list<std::string>::iterator it = chunks.begin();
     while (it != chunks.end())
@@ -97,8 +110,10 @@ void Client_TCP::sendChunkedData()
         it++;
         if (it == chunks.end())
             chunk_str += "0\r\n\r\n";
+        send(this->clientList.begin().operator*()->socket, chunk_str.c_str(), chunk_str.size(), 0);
+        chunk_str.clear();
+        sleep(1);
     }
-    send(this->clientList.begin().operator*()->socket, chunk_str.c_str(), chunk_str.size(), 0);
 }
 
 
@@ -117,13 +132,16 @@ int main()
 
     client.sendHeader();
     client.sendChunkedData();
-//
-//    char buffer[1024] = { 0 };
-//    int valread = read(client.sock , buffer, 1024);
-//    std::cout << "---------- RESPONSE ----------" << std::endl;
-//    std::cout << buffer << std::endl;
-//    std::cout << "------------ END. ------------" << std::endl;
-//
+
+    sleep(5);
+
+    char buffer[100000] = { 0 };
+    int valread = read(client.clientList.begin().operator*()->socket , buffer, 100000);
+    std::cout << "---------- RESPONSE ----------" << std::endl;
+    buffer[valread] = '\0';
+    std::cout << buffer << std::endl;
+    std::cout << "------------ END. ------------" << std::endl;
+
     std::string input;
     std::cout << "Press anykey to close connexion\n";
     std::getline(std::cin, input);
