@@ -3,10 +3,9 @@
 
 #include "../logger/Logger.hpp"
 #include "../../../includes/includes.h"
-#include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
-//#include "../parser/Parser.hpp"
 #include "../config/ServerConfig.hpp"
+#include "../queries/Response.hpp"
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
@@ -16,6 +15,7 @@
 #include <cstring>
 #include <sstream>
 
+class Response;
 class Parser;
 
 class Client
@@ -26,17 +26,16 @@ class Client
 	    Client(const Client &copy);
 	    Client &operator=(const Client &copy);
 
-	    int send_response(const std::string &req);
 	    int read_request(void);
 	    void close_socket();
-	    void printRequest(void);
 
 	    //getters
 	    struct sockaddr_in &getAddr();
 	    int &getSocket();
 
 	    Request& getObjRequest();
-        Parser& getObjParser();
+        Response& getObjResponse();
+
 
 	    std::string &getIP();
 	    int &getPort();
@@ -48,12 +47,15 @@ class Client
 	    bool &isValidRequest();
 	    bool &isConnected();
 	    bool &isChunked();
+	    bool &isFirstThrough();
 
 	    //setters
 
     private:
         Parser parser;
         Request request;
+        Response response;
+
         ServerConfig serverConfig;
 
 	    bool validRequest;
@@ -63,6 +65,8 @@ class Client
         struct sockaddr_in client_addr;
         int socket;
         int listen;
+
+        bool firstThrough;
 
 	    int port;
 	    std::string ip;

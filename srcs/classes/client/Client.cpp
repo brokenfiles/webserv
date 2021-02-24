@@ -6,6 +6,7 @@ Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest_backup()
     this->validRequest = false;
     this->connected = true;
     this->chunk_rep = false;
+    this->firstThrough = true;
 }
 
 Client::~Client()
@@ -96,23 +97,6 @@ int Client::read_request(void)
     return (0);
 }
 
-int Client::send_response(const std::string &req)
-{
-    if (send(this->socket, req.c_str(), req.length(), 0) != (int) req.length())
-        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
-    return (0);
-}
-
-void Client::printRequest(void)
-{
-//    if (!logger.isSilent())
-//    {
-//        std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
-//        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
-//        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-//    }
-}
-
 void Client::close_socket()
 {
     close(this->socket);
@@ -155,18 +139,24 @@ bool &Client::isConnected()
 {
     return (this->connected);
 }
-Parser &Client::getObjParser()
-{
-    return (this->parser);
-}
+
 int &Client::getListener()
 {
     return (this->listen);
 }
 bool &Client::isChunked()
 {
-    return (this->chunk_rep)
+    return (this->chunk_rep);
 }
+bool &Client::isFirstThrough()
+{
+    return (this->firstThrough);
+}
+Response &Client::getObjResponse()
+{
+    return (this->response);
+}
+
 
 
 

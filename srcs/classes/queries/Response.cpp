@@ -1,13 +1,10 @@
+#include "Response.hpp"
 #include <algorithm>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
-#include "Response.hpp"
-#include "../../../includes/utils.hpp"
-#include "../config/LocationConfig.hpp"
-#include "../config/ServerConfig.hpp"
 
 Response::Response()
 {

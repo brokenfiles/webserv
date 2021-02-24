@@ -7,6 +7,9 @@
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
 #include "../cgi/Cgi.hpp"
+#include "../../../includes/utils.hpp"
+
+
 
 class Response : public Query
 {

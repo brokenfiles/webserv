@@ -202,20 +202,29 @@ int ServerManager::run_servers()
             {
                 if (client_curr->isValidRequest())
                 {
-                    Response rep;
-
+                    std::string response;
                     std::map<std::string, std::string>::const_iterator it_h;
 
                     if (((((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
-                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())) || rep.getBody().size() > 30000)
+                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())) || client_curr->getObjResponse().getBody().size() > 30000)
                     {
                         client_curr->isChunked() = true;
                     }
 
-                    std::string response = rep.sendResponse(client_curr);
+
 
                     if (client_curr->isChunked() == true)
                     {
+                        if (client_curr->isFirstThrough() == true)
+                        {
+                            client_curr->getObjResponse().sendResponse(client_curr);
+                            response = client_curr->getObjResponse().stringifyHeaders();
+                            client_curr->isFirstThrough() = false;
+                        }
+                        else
+                        {
+
+                        }
 
                     }
 
@@ -241,12 +250,12 @@ int ServerManager::run_servers()
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                         break;
                     }
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + client_curr->getObjResponse().getStatusCode() + ".");
 
                 }
                 if (client_curr->isChunked() == true)
                 {
-                        
+                        std::cout << "is chunked :D\n";
                 }
                 else
                 {
