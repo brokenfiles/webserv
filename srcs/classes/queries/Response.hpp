@@ -34,6 +34,7 @@ public:
 	std::string sendResponse (Client *client);
 	LocationConfig find_location (Client *client);
 	std::string stringify () const;
+	std::string stringifyHeaders () const;
 	std::string currentDate ();
 	std::string toLower (std::string string);
 	void setDefaultHeaders (Client *client, ServerConfig &server);
