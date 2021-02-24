@@ -129,7 +129,7 @@ std::string Response::sendResponse(Client *client)
  */
 void Response::handleServerUnavailable (Client *client)
 {
-	if (client->isConnected()) {
+	if (!client->isConnected()) {
 		this->_statusCode = getMessageCode(503);
 		this->_headers["Retry-After"] = "120";
 	}
