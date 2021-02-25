@@ -756,6 +756,11 @@ const std::string &Response::getStatusCode () const
 	return _statusCode;
 }
 
+void Response::setHeader(const std::string &key, const std::string &value)
+{
+	this->_headers[key] = value;
+}
+
 void Response::setDefaultStatusCodes()
 {
 	this->addError(200, "OK");
