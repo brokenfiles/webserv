@@ -77,6 +77,7 @@ public:
 	void addError (int code, const std::string &message);
 	void setStatusCode(const std::string &statusCode);
 	void setHeader (const std::string &key, const std::string &value);
+	void removeHeader (const std::string &key);
 	/*
 	 * Exceptions
 	 */
