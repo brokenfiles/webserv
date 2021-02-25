@@ -10,7 +10,17 @@ ServerManager::ServerManager()
 
 ServerManager::~ServerManager()
 {
+    for (std::list<Server*>::iterator it = servers.begin(); it != servers.end(); it++)
+    {
+        delete (*it);
+        it = servers.erase(it);
+    }
 
+    for (std::list<Client*>::iterator it = clients.begin(); it != clients.end(); it++)
+    {
+        delete (*it);
+        it = clients.erase(it);
+    }
 }
 
 ServerManager::ServerManager(const ServerManager &copy)
@@ -30,19 +40,28 @@ ServerManager &ServerManager::operator=(const ServerManager &copy)
 int ServerManager::setup_sockets(Config &conf)
 {
     std::list<Server*>::iterator it_serv = servers.begin();
+    std::vector<int> port_listening;
+
+    this->set_global_config(conf);
 
     for (std::vector<ServerConfig>::iterator it_conf = conf.getServers().begin(); it_conf != conf.getServers().end(); it_conf++)
     {
-        it_serv = servers.insert(it_serv, new Server());
-        Server* server_curr = (*it_serv);
+        std::vector<int>::iterator it_ip = std::find(port_listening.begin(), port_listening.end(), (*it_conf).getPort());
+        if (it_ip == port_listening.end())
+        {
+            port_listening.push_back((*it_conf).getPort());
+            it_serv = servers.insert(it_serv, new Server());
+            Server *server_curr = (*it_serv);
 
-        server_curr->setServerConfig((*it_conf));
-        if (server_curr->create_socket() < 0)
-            throw SetupSocketError();
+            server_curr->setServerConfig((*it_conf));
+            if (server_curr->create_socket() < 0)
+                throw SetupSocketError();
 
-        logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() +" listen on port " + logger.to_string(server_curr->getServerConfig().getPort()) + ".");
-        FD_SET(server_curr->getServerSocket(), &this->read_backup);
-        fd_av.push_back(server_curr->getServerSocket());
+            logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() + " listen on port " +
+                        logger.to_string(server_curr->getServerConfig().getPort()) + ".");
+            FD_SET(server_curr->getServerSocket(), &this->read_backup);
+            fd_av.push_back(server_curr->getServerSocket());
+        }
     }
     std::cout << "\n";
     return (0);
@@ -131,24 +150,22 @@ int ServerManager::run_servers()
             Server *server_curr = (*serv_it);
             if (FD_ISSET(server_curr->getServerSocket(), &this->read_pool))
             {
-
                 Client *newClient = new Client();
 
-                newClient->getServerConfig() = server_curr->getServerConfig();
+                newClient->getListener() = server_curr->getServerConfig().getPort();
 
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
 
                 if (this->fd_av.size() > 916)
                 {
-                    newClient->isFull() = true;
+                    newClient->isConnected() = false;
+                    newClient->isValidRequest() = true;
                     FD_SET(newClient->getSocket(), &this->write_backup);
                     logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
-                    break;
                 }
-
-
-                FD_SET(newClient->getSocket(), &this->read_backup);
+                else
+                    FD_SET(newClient->getSocket(), &this->read_backup);
                 fd_av.push_back(newClient->getSocket());
 
                 clients.push_front(newClient);
@@ -162,17 +179,20 @@ int ServerManager::run_servers()
 
             if (FD_ISSET(client_curr->getSocket(), &this->read_pool))
             {
+                std::cout << "GETTING READ\n";
+
                 if (client_curr->read_request() < 0)
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
-                    fd_av.remove(client_curr->getSocket());
 //                    delete client_curr;
-                    client_curr->close_socket();
+                    this->disconnectClient(client_curr);
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                     continue;
                 }
+
+                client_curr->getServerConfig() = this->getBestServer(client_curr);
 
                 if (client_curr->isValidRequest())
                     FD_SET(client_curr->getSocket(), &this->write_backup);
@@ -185,32 +205,116 @@ int ServerManager::run_servers()
             {
                 if (client_curr->isValidRequest())
                 {
+                    std::cout << "GETTING WRITE\n";
                     Response rep;
-                    std::string response = rep.sendResponse(client_curr);
+                    std::string response;
+                    std::map<std::string, std::string>::const_iterator it_h;
 
-//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+                    if (((((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
+                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())))
+                    {
+                        client_curr->isChunked() = true;
+                    }
 
 
-                    int ret = 0;
-                    if ((ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
-                        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
+                    if (client_curr->isChunked() == true)
+                    {
+                        logger.warning("PERFORMING CHUNKED RESPONSE");
+                        if (client_curr->isFirstThrough() == true)
+                        {
+                            rep.sendResponse(client_curr);
+                            rep.setHeader("Transfer-Encoding", "chunked");
+                            rep.removeHeader("Content-Length");
+                            client_curr->headerstring = rep.stringifyHeaders();
+                            client_curr->bodystring = rep.getBody();
 
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) +     ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
-                    if (client_curr->isFull())
+                            response = client_curr->headerstring;
+                            client_curr->isFirstThrough() = false;
+                            if (client_curr->bodystring.empty())
+                            {
+                                response += "0\r\n\r\n";
+                                client_curr->isChunked() = false;
+                            }
+                        }
+                        else
+                        {
+                            std::string finalchunk;
+                            size_t size = 0;
+
+                            if (client_curr->bodystring.size() >= 32768)
+                                size = 32768;
+                            else
+                                size = client_curr->bodystring.size();
+
+                            logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size));
+
+                            std::stringstream convert;
+//                            convert << size;
+                            convert << std::hex << size;
+                            std::string size_hex = convert.str();
+
+                            finalchunk += (size_hex + "\r\n");
+                            finalchunk += (client_curr->bodystring.substr(0, size) + "\r\n");
+
+                            if (client_curr->bodystring.size() < 32768)
+                            {
+                                finalchunk += "0\r\n\r\n";
+                                client_curr->isChunked() = false;
+                            }
+                            client_curr->bodystring = client_curr->bodystring.erase(0, size);
+                            if (client_curr->bodystring.empty())
+                            {
+//                                finalchunk += "0\r\n\r\n";
+                                client_curr->isChunked() = false;
+                            }
+                            response = finalchunk;
+                        }
+                    }
+                    else
+                    {
+                        response = rep.sendResponse(client_curr);
+                        logger.warning("PERFORMING CONTENT-LENGTH RESPONSE");
+
+                    }
+
+                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
+                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+//
+//
+//                    std::cout << response << std::endl;
+
+                    int send_ret = 0;
+                    if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+                    {
+                        if (send_ret == -1)
+                            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
+                        if (send_ret == 0)
+                            client_curr->isConnected() = false;
+                    }
+
+                    if (!client_curr->isConnected())
                     {
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
-                        fd_av.remove(client_curr->getSocket());
 //                        delete client_curr;
-                        client_curr->close_socket();
+                        this->disconnectClient(client_curr);
                         clients.erase(it);
+                        logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                         break;
                     }
                 }
-                client_curr->isValidRequest() = false;
-                FD_CLR(client_curr->getSocket(), &this->write_backup);
+
+                if (client_curr->isChunked() == false)
+                {
+                    FD_CLR(client_curr->getSocket(), &this->write_backup);
+                    client_curr->isValidRequest() = false;
+                    client_curr->isFirstThrough() = true;
+                    client_curr->bodystring.clear();
+                    client_curr->headerstring.clear();
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
+                }
+
                 break;
             }
             else
@@ -223,3 +327,45 @@ std::list<Server *> &ServerManager::getServerList()
 {
     return (this->servers);
 }
+void ServerManager::disconnectClient(Client *client)
+{
+    fd_av.remove(client->getSocket());
+    client->close_socket();
+}
+
+void ServerManager::set_global_config(Config &conf)
+{
+    this->configGeneral = conf;
+}
+
+ServerConfig ServerManager::getBestServer(Client *client)
+{
+    std::vector<ServerConfig> tmp_conf;
+
+    for (std::vector<ServerConfig>::iterator it = this->configGeneral.getServers().begin(); it != this->configGeneral.getServers().end(); it++)
+    {
+        if ((*it).getPort() == client->getListener())
+            tmp_conf.push_back(*it);
+    }
+
+    std::map<std::string, std::string>::const_iterator header = client->getObjRequest().getHeaders().find("Host");
+    for (std::vector<ServerConfig>::iterator it = tmp_conf.begin(); it != tmp_conf.end(); it++)
+    {
+        std::string host;
+
+        if (header != client->getObjRequest().getHeaders().end())
+        {
+            if ((*header).second.find(it->getServerName()) != std::string::npos)
+                host = (*header).second.substr(0, (*it).getServerName().size());
+
+            if (header != client->getObjRequest().getHeaders().end())
+            {
+                if ((*it).getServerName() == host)
+                    return ((*it));
+            }
+        }
+    }
+
+    return (tmp_conf.front());
+}
+

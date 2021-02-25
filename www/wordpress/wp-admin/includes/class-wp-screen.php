@@ -1001,7 +1001,7 @@ final class WP_Screen {
 		if ( 'post' === $this->base ) {
 			$expand                 = '<fieldset class="editor-expand hidden"><legend>' . __( 'Additional settings' ) . '</legend><label for="editor-expand-toggle">';
 			$expand                .= '<input type="checkbox" id="editor-expand-toggle"' . checked( get_user_setting( 'editor_expand', 'on' ), 'on', false ) . ' />';
-			$expand                .= __( 'Enable full-height editor and distraction-free functionality.' ) . '</label></fieldset>';
+			$expand                .= __( 'Enable connected-height editor and distraction-free functionality.' ) . '</label></fieldset>';
 			$this->_screen_settings = $expand;
 		}
 

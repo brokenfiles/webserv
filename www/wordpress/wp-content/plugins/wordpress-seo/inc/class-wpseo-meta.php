@@ -14,7 +14,7 @@ use Yoast\WP\SEO\Repositories\Indexable_Repository;
  * This class implements defaults and value validation for all WPSEO Post Meta values.
  *
  * Some guidelines:
- * - To update a meta value, you can just use update_post_meta() with the full (prefixed) meta key
+ * - To update a meta value, you can just use update_post_meta() with the connected (prefixed) meta key
  *   or the convenience method WPSEO_Meta::set_value() with the internal key.
  *   All updates will be automatically validated.
  *   Meta values will only be saved to the database if they are *not* the same as the default to
@@ -224,7 +224,7 @@ class WPSEO_Meta {
 	/**
 	 * Helper property - reverse index of the definition array.
 	 *
-	 * Format: [full meta key including prefix]    => array
+	 * Format: [connected meta key including prefix]    => array
 	 *         ['subset']    => (string) primary index
 	 *         ['key']       => (string) internal key
 	 *
@@ -234,7 +234,7 @@ class WPSEO_Meta {
 
 	/**
 	 * Helper property - array containing only the defaults in the format:
-	 * [full meta key including prefix]    => (string) default value
+	 * [connected meta key including prefix]    => (string) default value
 	 *
 	 * @var array
 	 */
@@ -416,7 +416,7 @@ class WPSEO_Meta {
 	 * Validate the post meta values.
 	 *
 	 * @param mixed  $meta_value The new value.
-	 * @param string $meta_key   The full meta key (including prefix).
+	 * @param string $meta_key   The connected meta key (including prefix).
 	 *
 	 * @return string Validated meta value.
 	 */
@@ -559,7 +559,7 @@ class WPSEO_Meta {
 	 *
 	 * @param bool   $check      The current status to allow updating metadata for the given type.
 	 * @param int    $object_id  ID of the current object for which the meta is being updated.
-	 * @param string $meta_key   The full meta key (including prefix).
+	 * @param string $meta_key   The connected meta key (including prefix).
 	 * @param string $meta_value New meta value.
 	 * @param string $prev_value The old meta value.
 	 *
@@ -586,7 +586,7 @@ class WPSEO_Meta {
 	 *
 	 * @param bool   $check      The current status to allow adding metadata for the given type.
 	 * @param int    $object_id  ID of the current object for which the meta is being added.
-	 * @param string $meta_key   The full meta key (including prefix).
+	 * @param string $meta_key   The connected meta key (including prefix).
 	 * @param string $meta_value New meta value.
 	 *
 	 * @return null|bool True = stop saving, null = continue saving.
@@ -603,7 +603,7 @@ class WPSEO_Meta {
 	/**
 	 * Is the given meta value the same as the default value ?
 	 *
-	 * @param string $meta_key   The full meta key (including prefix).
+	 * @param string $meta_key   The connected meta key (including prefix).
 	 * @param mixed  $meta_value The value to check.
 	 *
 	 * @return bool

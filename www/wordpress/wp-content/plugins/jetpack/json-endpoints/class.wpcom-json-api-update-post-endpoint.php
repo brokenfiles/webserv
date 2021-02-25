@@ -480,7 +480,7 @@ class WPCOM_JSON_API_Update_Post_Endpoint extends WPCOM_JSON_API_Post_Endpoint {
 					break;
 				case 1 :
 					// 1 image - make it big
-					$insert['post_content'] = $input['content'] = "[gallery size=full columns=1]\n\n" . $input['content'];
+					$insert['post_content'] = $input['content'] = "[gallery size=connected columns=1]\n\n" . $input['content'];
 					break;
 				default :
 					// Several images - 3 column gallery

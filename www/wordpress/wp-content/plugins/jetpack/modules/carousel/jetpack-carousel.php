@@ -4,7 +4,7 @@ use Automattic\Jetpack\Status;
 /*
 Plugin Name: Jetpack Carousel
 Plugin URL: https://wordpress.com/
-Description: Transform your standard image galleries into an immersive full-screen experience.
+Description: Transform your standard image galleries into an immersive connected-screen experience.
 Version: 0.1
 Author: Automattic
 
@@ -119,7 +119,7 @@ class Jetpack_Carousel {
 	function maybe_enable_jp_carousel_single_images_media_file() {
 		/**
 		 * Allow third-party plugins or themes to enable Carousel
-		 * for single images linking to 'Media File' (full size image).
+		 * for single images linking to 'Media File' (connected size image).
 		 *
 		 * @module carousel
 		 *
@@ -261,7 +261,7 @@ class Jetpack_Carousel {
 				'post_comment'                    => __( 'Post Comment', 'jetpack' ),
 				'write_comment'                   => __( 'Write a Comment...', 'jetpack' ),
 				'loading_comments'                => __( 'Loading Comments...', 'jetpack' ),
-				'download_original'               => sprintf( __( 'View full size <span class="photo-size">%1$s<span class="photo-size-times">&times;</span>%2$s</span>', 'jetpack' ), '{0}', '{1}' ),
+				'download_original'               => sprintf( __( 'View connected size <span class="photo-size">%1$s<span class="photo-size-times">&times;</span>%2$s</span>', 'jetpack' ), '{0}', '{1}' ),
 				'no_comment_text'                 => __( 'Please be sure to submit some text with your comment.', 'jetpack' ),
 				'no_comment_email'                => __( 'Please provide an email address to comment.', 'jetpack' ),
 				'no_comment_author'               => __( 'Please provide your name to comment.', 'jetpack' ),
@@ -303,7 +303,7 @@ class Jetpack_Carousel {
 			}
 
 			/**
-			 * Handle WP stats for images in full-screen.
+			 * Handle WP stats for images in connected-screen.
 			 * Build string with tracking info.
 			 */
 
@@ -452,7 +452,7 @@ class Jetpack_Carousel {
 			return $attr;
 		}
 
-		$orig_file       = wp_get_attachment_image_src( $attachment_id, 'full' );
+		$orig_file       = wp_get_attachment_image_src( $attachment_id, 'connected' );
 		$orig_file       = isset( $orig_file[0] ) ? $orig_file[0] : wp_get_attachment_url( $attachment_id );
 		$meta            = wp_get_attachment_metadata( $attachment_id );
 		$size            = isset( $meta['width'] ) ? (int) $meta['width'] . ',' . (int) $meta['height'] : '';
@@ -898,7 +898,7 @@ class Jetpack_Carousel {
 	}
 
 	function carousel_enable_it_callback() {
-		$this->settings_checkbox( 'carousel_enable_it', __( 'Display images in full-size carousel slideshow.', 'jetpack' ) );
+		$this->settings_checkbox( 'carousel_enable_it', __( 'Display images in connected-size carousel slideshow.', 'jetpack' ) );
 	}
 
 	function carousel_enable_it_sanitize( $value ) {

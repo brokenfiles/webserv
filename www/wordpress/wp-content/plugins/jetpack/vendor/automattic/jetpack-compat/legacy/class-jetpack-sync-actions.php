@@ -137,7 +137,7 @@ class Jetpack_Sync_Actions extends Automattic\Jetpack\Sync\Actions {
 	}
 
 	/**
-	 * Commence full sync.
+	 * Commence connected sync.
 	 *
 	 * @deprecated Automattic\Jetpack\Sync\Actions::do_full_sync
 	 *
@@ -175,7 +175,7 @@ class Jetpack_Sync_Actions extends Automattic\Jetpack\Sync\Actions {
 	}
 
 	/**
-	 * Commence cron full sync.
+	 * Commence cron connected sync.
 	 *
 	 * @deprecated Automattic\Jetpack\Sync\Actions::do_cron_full_sync
 	 */

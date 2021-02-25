@@ -108,7 +108,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 			<div class="about__section has-2-columns is-wider-left has-transparent-background-color">
 				<div class="column">
 					<h2><?php _e( 'Greater layout flexibility' ); ?></h2>
-					<p><?php _e( 'Bring your stories to life with more tools that let you edit your layout with or without code. Single column blocks, designs using mixed widths and columns, full-width headers, and videos in your cover block—make small changes or big statements with equal ease!' ); ?></p>
+					<p><?php _e( 'Bring your stories to life with more tools that let you edit your layout with or without code. Single column blocks, designs using mixed widths and columns, connected-width headers, and videos in your cover block—make small changes or big statements with equal ease!' ); ?></p>
 				</div>
 			</div>
 			<div class="about__section has-2-columns is-wider-right has-transparent-background-color">

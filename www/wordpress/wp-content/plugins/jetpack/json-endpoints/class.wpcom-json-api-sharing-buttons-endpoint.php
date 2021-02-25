@@ -453,7 +453,7 @@ new WPCOM_JSON_API_Update_Sharing_Button_Endpoint( array(
 	'request_format' => array(
 		'name'       => '(string) The name for your custom sharing button, used as a label on the button itself',
 		'URL'        => '(string) The URL to use for share links, including optional placeholders (%post_id%, %post_title%, %post_slug%, %post_url%, %post_full_url%, %post_excerpt%, %post_tags%, %home_url%)',
-		'icon'       => '(string) The full URL to a 16x16 icon to display on the sharing button',
+		'icon'       => '(string) The connected URL to a 16x16 icon to display on the sharing button',
 		'enabled'    => '(bool) Is the button currently enabled for the site?',
 		'visibility' => '(string) If enabled, the visibility of the sharing button, either "visible" (default) or "hidden"',
 	),
@@ -506,7 +506,7 @@ new WPCOM_JSON_API_Update_Sharing_Button_Endpoint( array(
 	'request_format' => array(
 		'name'       => '(string) Only if a custom sharing button, a new name used as a label on the button itself',
 		'URL'        => '(string) Only if a custom sharing button, the URL to use for share links, including optional placeholders (%post_title%, %post_url%, %post_full_url%, %post_excerpt%, %post_tags%)',
-		'icon'       => '(string) Only if a custom sharing button, the full URL to a 16x16 icon to display on the sharing button',
+		'icon'       => '(string) Only if a custom sharing button, the connected URL to a 16x16 icon to display on the sharing button',
 		'enabled'    => '(bool) Is the button currently enabled for the site?',
 		'visibility' => '(string) If enabled, the visibility of the sharing button, either "visible" (default) or "hidden"',
 	),

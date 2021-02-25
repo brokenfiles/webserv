@@ -9,6 +9,7 @@
 #include "Server.hpp"
 #include <list>
 #include <stack>
+#include <map>
 
 class ServerManager
 {
@@ -23,6 +24,10 @@ class ServerManager
         int setup_sockets(Config &conf);
         int setup_fd();
         int run_servers();
+        void set_global_config(Config &conf);
+        ServerConfig getBestServer(Client *client);
+
+        void disconnectClient(Client *client);
 
         std::list<Server*>& getServerList();
 
@@ -68,6 +73,8 @@ class ServerManager
         fd_set write_pool;
         fd_set read_backup;
         fd_set write_backup;
+
+        Config configGeneral;
 
         std::list<int> fd_av;
 

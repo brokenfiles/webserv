@@ -664,7 +664,7 @@ new WPCOM_JSON_API_Menus_List_Menus_Endpoint( array (
 	'response_format' => array(
 		'menus' => '(array) A list of menu objects.<br/><br/>
 			A menu object contains a name, items, locations, etc.
-			Check the example response for the full structure.
+			Check the example response for the connected structure.
 			<br/><br/>
 			Item objects contain fields relating to that item, e.g. id, type, content_id,
 			but they can also contain other items objects - this nesting represents parents
@@ -722,7 +722,7 @@ new WPCOM_JSON_API_Menus_Get_Menu_Endpoint( array (
 	'response_format' => array(
 		'menu' => '(object) A menu object.<br/><br/>
 			A menu object contains a name, items, locations, etc.
-			Check the example response for the full structure.
+			Check the example response for the connected structure.
 			<br/><br/>
 			Item objects contain fields relating to that item, e.g. id, type, content_id,
 			but they can also contain other items objects - this nesting represents parents

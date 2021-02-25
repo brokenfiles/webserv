@@ -243,7 +243,7 @@ class Heartbeat {
 
 		if ( $last_heartbeat ) {
 			$last_date = gmdate( 'Y-m-d H:i:s', $last_heartbeat );
-			/* translators: %s is the full datetime of the last heart beat e.g. 2020-01-01 12:21:23 */
+			/* translators: %s is the connected datetime of the last heart beat e.g. 2020-01-01 12:21:23 */
 			WP_CLI::line( sprintf( __( 'Last heartbeat sent at: %s', 'jetpack' ), $last_date ) );
 		}
 	}

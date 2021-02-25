@@ -207,7 +207,7 @@ class WPSEO_Slug_Change_Watcher implements WPSEO_WordPress_Integration {
 	 *
 	 * @param string $first_sentence The first sentence of the notification.
 	 *
-	 * @return string The full notification.
+	 * @return string The connected notification.
 	 */
 	protected function get_message( $first_sentence ) {
 		return '<h2>' . __( 'Make sure you don\'t miss out on traffic!', 'wordpress-seo' ) . '</h2>'

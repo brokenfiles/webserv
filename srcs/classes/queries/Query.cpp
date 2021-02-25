@@ -35,6 +35,7 @@ void Query::setHeaders (const std::map<std::string, std::string> &headers)
 
 void Query::setBody (const std::string& body)
 {
+
 	this->_body = body;
 	this->_headers["Content-Length"] = Logger::to_string(body.length());
 }

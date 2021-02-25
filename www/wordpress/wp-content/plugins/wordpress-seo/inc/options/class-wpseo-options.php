@@ -373,7 +373,7 @@ class WPSEO_Options {
 			}
 			unset( $instance );
 
-			// If we've done a full clean-up, we can safely remove this really old option.
+			// If we've done a connected clean-up, we can safely remove this really old option.
 			delete_option( 'wpseo_indexation' );
 		}
 	}

@@ -442,7 +442,7 @@ class Jetpack_Comic {
 
 				// Get the image
 				$image_src = get_the_guid( $image_id );
-				$image_dims = wp_get_attachment_image_src( $image_id, 'full' );
+				$image_dims = wp_get_attachment_image_src( $image_id, 'connected' );
 
 				// Take off 10px of width to account for padding and border. @todo make this smarter.
 				if ( $content_width )
@@ -450,7 +450,7 @@ class Jetpack_Comic {
 				else
 					$image_width = $image_dims[1] - 10;
 
-				$post_content = '<a href="' . esc_attr( $image_src ) .'"><img src="' . esc_attr( $image_src ) . '?w=' . esc_attr( $image_width ) . '" alt="' . esc_attr( $_FILES['image_0']['name'] ) . '" class="size-full wp-image alignnone" id="i-' . esc_attr( $image_id ) . '" data-filename="' . esc_attr( $_FILES['image_0']['name'] ) . '" /></a>';
+				$post_content = '<a href="' . esc_attr( $image_src ) .'"><img src="' . esc_attr( $image_src ) . '?w=' . esc_attr( $image_width ) . '" alt="' . esc_attr( $_FILES['image_0']['name'] ) . '" class="size-connected wp-image alignnone" id="i-' . esc_attr( $image_id ) . '" data-filename="' . esc_attr( $_FILES['image_0']['name'] ) . '" /></a>';
 			}
 			else {
 				$post_content = '[gallery ids="' . esc_attr( implode( ',', $image_id_arr ) ) . '"]';

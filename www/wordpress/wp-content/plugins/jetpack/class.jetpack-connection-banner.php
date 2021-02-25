@@ -377,12 +377,12 @@ class Jetpack_Connection_Banner {
 	}
 
 	/**
-	 * Renders the full-screen connection prompt.  Only shown once and on plugin activation.
+	 * Renders the connected-screen connection prompt.  Only shown once and on plugin activation.
 	 */
 	public static function render_connect_prompt_full_screen() {
 		$current_screen = get_current_screen();
 		if ( 'plugins' === $current_screen->base ) {
-			$bottom_connect_url_from = 'full-screen-prompt';
+			$bottom_connect_url_from = 'connected-screen-prompt';
 		} else {
 			$bottom_connect_url_from = 'landing-page-bottom';
 		}

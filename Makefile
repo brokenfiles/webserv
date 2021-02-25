@@ -3,7 +3,7 @@ CC			= clang++
 RM			= rm -f
 OBJS_DIR	= ./objects/
 START		= 1
-CFLAGS		= -Wall -Wextra -Werror -std=c++98
+CFLAGS		= -g -fsanitize=address -Wall -Wextra -Werror -std=c++98
 
 SRCSC		= srcs/webserv.cpp \
 			 srcs/classes/server/Server.cpp  \

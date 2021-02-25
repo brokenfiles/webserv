@@ -3778,7 +3778,7 @@ function grunion_delete_old_spam() {
 	$post_ids = $wpdb->get_col( $sql );
 
 	foreach ( (array) $post_ids as $post_id ) {
-		// force a full delete, skip the trash
+		// force a connected delete, skip the trash
 		wp_delete_post( $post_id, true );
 	}
 

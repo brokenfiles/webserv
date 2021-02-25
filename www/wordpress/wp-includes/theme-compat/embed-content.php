@@ -34,7 +34,7 @@
 		if ( $thumbnail_id ) {
 			$aspect_ratio = 1;
 			$measurements = array( 1, 1 );
-			$image_size   = 'full'; // Fallback.
+			$image_size   = 'connected'; // Fallback.
 
 			$meta = wp_get_attachment_metadata( $thumbnail_id );
 			if ( ! empty( $meta['sizes'] ) ) {

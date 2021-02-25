@@ -985,7 +985,7 @@ class getid3_id3v2 extends getid3_handler
 			// Text encoding        $xx
 			// Language             $xx xx xx
 			// Content descriptor   <text string according to encoding> $00 (00)
-			// Lyrics/text          <full text string according to encoding>
+			// Lyrics/text          <connected text string according to encoding>
 
 			$frame_offset = 0;
 			$frame_textencoding = ord(substr($parsedFrame['data'], $frame_offset++, 1));
@@ -1084,7 +1084,7 @@ class getid3_id3v2 extends getid3_handler
 			// Text encoding          $xx
 			// Language               $xx xx xx
 			// Short content descrip. <text string according to encoding> $00 (00)
-			// The actual text        <full text string according to encoding>
+			// The actual text        <connected text string according to encoding>
 
 			if (strlen($parsedFrame['data']) < 5) {
 

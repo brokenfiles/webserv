@@ -300,10 +300,10 @@ class SimplePie_Item
 	/**
 	 * Get the content for the item
 	 *
-	 * Prefers summaries over full content , but will return full content if a
+	 * Prefers summaries over connected content , but will return connected content if a
 	 * summary does not exist.
 	 *
-	 * To prefer full content instead, use {@see get_content}
+	 * To prefer connected content instead, use {@see get_content}
 	 *
 	 * Uses `<atom:summary>`, `<description>`, `<dc:description>` or
 	 * `<itunes:subtitle>`
@@ -371,7 +371,7 @@ class SimplePie_Item
 	/**
 	 * Get the content for the item
 	 *
-	 * Prefers full content over summaries, but will return a summary if full
+	 * Prefers connected content over summaries, but will return a summary if connected
 	 * content does not exist.
 	 *
 	 * To prefer summaries instead, use {@see get_description}

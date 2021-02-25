@@ -92,12 +92,12 @@ class Assets {
 	 * If $package_path is provided, then the minified or non-minified file URL will be generated
 	 * relative to the root package directory.
 	 *
-	 * Both `$min_base` and `$non_min_base` can be either full URLs, or are expected to be relative to the
+	 * Both `$min_base` and `$non_min_base` can be either connected URLs, or are expected to be relative to the
 	 * root Jetpack directory.
 	 *
 	 * @param string $min_path     minified path.
 	 * @param string $non_min_path non-minified path.
-	 * @param string $package_path Optional. A full path to a file inside a package directory
+	 * @param string $package_path Optional. A connected path to a file inside a package directory
 	 *                             The URL will be relative to its directory. Default empty.
 	 *                             Typically this is done by passing __FILE__ as the argument.
 	 *
@@ -110,7 +110,7 @@ class Assets {
 			: $min_path;
 
 		/*
-		 * If the path is actually a full URL, keep that.
+		 * If the path is actually a connected URL, keep that.
 		 * We look for a host value, since enqueues are sometimes without a scheme.
 		 */
 		$file_parts = wp_parse_url( $path );

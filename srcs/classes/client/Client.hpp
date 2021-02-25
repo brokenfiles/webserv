@@ -3,9 +3,7 @@
 
 #include "../logger/Logger.hpp"
 #include "../../../includes/includes.h"
-#include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
-//#include "../parser/Parser.hpp"
 #include "../config/ServerConfig.hpp"
 #include <errno.h>
 #include <unistd.h>
@@ -26,10 +24,8 @@ class Client
 	    Client(const Client &copy);
 	    Client &operator=(const Client &copy);
 
-	    int send_response(const std::string &req);
 	    int read_request(void);
 	    void close_socket();
-	    void printRequest(void);
 
 	    //getters
 	    struct sockaddr_in &getAddr();
@@ -37,26 +33,39 @@ class Client
 
 	    Request& getObjRequest();
 
+
 	    std::string &getIP();
 	    int &getPort();
+
+	    int &getListener();
 
 	    ServerConfig &getServerConfig();
 
 	    bool &isValidRequest();
-	    bool &isFull();
+	    bool &isConnected();
+	    bool &isChunked();
+	    bool &isFirstThrough();
 
 	    //setters
+
+	    std::string headerstring;
+	    std::string bodystring;
+
 
     private:
         Parser parser;
         Request request;
+
         ServerConfig serverConfig;
 
 	    bool validRequest;
-	    bool full;
+	    bool connected;
+	    bool chunk_rep;
+        bool firstThrough;
 
-	    struct sockaddr_in client_addr;
-	    int socket;
+        struct sockaddr_in client_addr;
+        int socket;
+        int listen;
 
 	    int port;
 	    std::string ip;

@@ -316,7 +316,7 @@ final class WP_Customize_Selective_Refresh {
 			wp_send_json_error( 'missing_partials', 400 );
 		}
 
-		// Ensure that doing selective refresh on 404 template doesn't result in fallback rendering behavior (full refreshes).
+		// Ensure that doing selective refresh on 404 template doesn't result in fallback rendering behavior (connected refreshes).
 		status_header( 200 );
 
 		$partials = json_decode( wp_unslash( $_POST['partials'] ), true );

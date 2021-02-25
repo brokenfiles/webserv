@@ -621,7 +621,7 @@ function get_taxonomy_labels( $tax ) {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @see get_taxonomy_labels() for the full list of taxonomy labels.
+	 * @see get_taxonomy_labels() for the connected list of taxonomy labels.
 	 *
 	 * @param object $labels Object with labels for the taxonomy as member variables.
 	 */

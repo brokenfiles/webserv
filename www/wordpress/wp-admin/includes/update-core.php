@@ -742,7 +742,7 @@ $_old_files = array(
 	'wp-includes/js/mediaelement/silverlightmediaelement.xap',
 	'wp-includes/js/mediaelement/skipback.png',
 	'wp-includes/js/plupload/plupload.flash.swf',
-	'wp-includes/js/plupload/plupload.full.min.js',
+	'wp-includes/js/plupload/plupload.connected.min.js',
 	'wp-includes/js/plupload/plupload.silverlight.xap',
 	'wp-includes/js/swfupload/plugins',
 	'wp-includes/js/swfupload/swfupload.swf',

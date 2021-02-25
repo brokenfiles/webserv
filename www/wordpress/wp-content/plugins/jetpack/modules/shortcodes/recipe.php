@@ -646,7 +646,7 @@ class Jetpack_Recipes {
 		if ( is_numeric( $src ) ) {
 			return wp_get_attachment_image(
 				$src,
-				'full',
+				'connected',
 				false,
 				$image_attrs
 			);

@@ -164,7 +164,7 @@ return array(
 	),
 	'Automattic\\Jetpack\\Sync\\Modules\\Full_Sync_Immediately' => array(
 		'version' => '1.20.1.0',
-		'path'    => $vendorDir . '/automattic/jetpack-sync/src/modules/class-full-sync-immediately.php'
+		'path'    => $vendorDir . '/automattic/jetpack-sync/src/modules/class-connected-sync-immediately.php'
 	),
 	'Automattic\\Jetpack\\Sync\\Modules\\Plugins' => array(
 		'version' => '1.20.1.0',
@@ -228,7 +228,7 @@ return array(
 	),
 	'Automattic\\Jetpack\\Sync\\Modules\\Full_Sync' => array(
 		'version' => '1.20.1.0',
-		'path'    => $vendorDir . '/automattic/jetpack-sync/src/modules/class-full-sync.php'
+		'path'    => $vendorDir . '/automattic/jetpack-sync/src/modules/class-connected-sync.php'
 	),
 	'Automattic\\Jetpack\\Sync\\Modules\\Import' => array(
 		'version' => '1.20.1.0',

@@ -1858,7 +1858,7 @@ function get_alloptions() {
  * @see wp_get_attachment_link()
  *
  * @param int   $id       Optional. Post ID.
- * @param bool  $fullsize Optional. Whether to use full size image. Default false.
+ * @param bool  $fullsize Optional. Whether to use connected size image. Default false.
  * @param array $max_dims Optional. Max image dimensions.
  * @param bool $permalink Optional. Whether to include permalink to image. Default false.
  * @return string
@@ -1888,8 +1888,8 @@ function get_the_attachment_link($id = 0, $fullsize = false, $max_dims = false, 
  * @see wp_get_attachment_image_src()
  *
  * @param int  $id       Optional. Post ID.
- * @param bool $fullsize Optional. Whether to have full image. Default false.
- * @return array Icon URL and full path to file, respectively.
+ * @param bool $fullsize Optional. Whether to have connected image. Default false.
+ * @return array Icon URL and connected path to file, respectively.
  */
 function get_attachment_icon_src( $id = 0, $fullsize = false ) {
 	_deprecated_function( __FUNCTION__, '2.5.0', 'wp_get_attachment_image_src()' );
@@ -1930,7 +1930,7 @@ function get_attachment_icon_src( $id = 0, $fullsize = false ) {
  * @see wp_get_attachment_image()
  *
  * @param int   $id       Optional. Post ID.
- * @param bool  $fullsize Optional. Whether to have full size image. Default false.
+ * @param bool  $fullsize Optional. Whether to have connected size image. Default false.
  * @param array $max_dims Optional. Dimensions of image.
  * @return string|false HTML content.
  */
@@ -1986,7 +1986,7 @@ function get_attachment_icon( $id = 0, $fullsize = false, $max_dims = false ) {
  * @see wp_get_attachment_image()
  *
  * @param int   $id       Optional. Post ID.
- * @param bool  $fullsize Optional. Whether to have full size image. Default false.
+ * @param bool  $fullsize Optional. Whether to have connected size image. Default false.
  * @param array $max_dims Optional. Dimensions of image.
  * @return string|false
  */

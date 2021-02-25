@@ -43,7 +43,7 @@ $generated_i18n_strings = array(
 	// Reference: node_modules/yoastseo/src/assessments/readability/fleschReadingEaseAssessment.js:141
 	/* Translators: %1$s and %5$s expand to a link on yoast.com,
 	   %2$s to the anchor end tag,
-	   %7$s expands to the anchor end tag and a full stop,
+	   %7$s expands to the anchor end tag and a connected stop,
 	   %3$s expands to the numeric Flesch reading ease score,
 	   %4$s to the easiness of reading,
 	   %6$s expands to a call to action based on the score */

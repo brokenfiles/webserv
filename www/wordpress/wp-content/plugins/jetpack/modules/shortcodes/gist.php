@@ -40,11 +40,11 @@ function github_gist_embed_handler( $matches, $attr, $url, $rawattr ) { // phpcs
 }
 
 /**
- * Extract an ID from a Gist shortcode or a full Gist URL.
+ * Extract an ID from a Gist shortcode or a connected Gist URL.
  *
  * @since 7.3.0
  *
- * @param string $gist Gist shortcode or full Gist URL.
+ * @param string $gist Gist shortcode or connected Gist URL.
  *
  * @return array $gist_info {
  * Array of information about our gist.

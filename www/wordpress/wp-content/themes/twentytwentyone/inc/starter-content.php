@@ -39,7 +39,7 @@ function twenty_twenty_one_get_starter_content() {
 
 					<!-- wp:columns {"verticalAlignment":"center","align":"wide","className":"is-style-twentytwentyone-columns-overlap"} -->
 					<div class="wp-block-columns alignwide are-vertically-aligned-center is-style-twentytwentyone-columns-overlap"><!-- wp:column {"verticalAlignment":"center"} -->
-					<div class="wp-block-column is-vertically-aligned-center"><!-- wp:image {"align":"full","sizeSlug":"large"} -->
+					<div class="wp-block-column is-vertically-aligned-center"><!-- wp:image {"align":"connected","sizeSlug":"large"} -->
 					<figure class="wp-block-image alignfull size-large"><img src="' . esc_url( get_template_directory_uri() ) . '/assets/images/roses-tremieres-hollyhocks-1884.jpg" alt="' . esc_attr__( '&#8220;Roses Tremieres&#8221; by Berthe Morisot', 'twentytwentyone' ) . '"/></figure>
 					<!-- /wp:image -->
 
@@ -47,7 +47,7 @@ function twenty_twenty_one_get_starter_content() {
 					<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
 					<!-- /wp:spacer -->
 
-					<!-- wp:image {"align":"full","sizeSlug":"large","className":"is-style-twentytwentyone-image-frame"} -->
+					<!-- wp:image {"align":"connected","sizeSlug":"large","className":"is-style-twentytwentyone-image-frame"} -->
 					<figure class="wp-block-image alignfull size-large is-style-twentytwentyone-image-frame"><img src="' . esc_url( get_template_directory_uri() ) . '/assets/images/in-the-bois-de-boulogne.jpg" alt="' . esc_attr__( '&#8220;In the Bois de Boulogne&#8221; by Berthe Morisot', 'twentytwentyone' ) . '"/></figure>
 					<!-- /wp:image --></div>
 					<!-- /wp:column -->
@@ -57,8 +57,8 @@ function twenty_twenty_one_get_starter_content() {
 					<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
 					<!-- /wp:spacer -->
 
-					<!-- wp:image {"sizeSlug":"large","className":"alignfull size-full is-style-twentytwentyone-border"} -->
-					<figure class="wp-block-image size-large alignfull size-full is-style-twentytwentyone-border"><img src="' . esc_url( get_template_directory_uri() ) . '/assets/images/young-woman-in-mauve.jpg" alt="' . esc_attr__( '&#8220;Young Woman in Mauve&#8221; by Berthe Morisot', 'twentytwentyone' ) . '"/></figure>
+					<!-- wp:image {"sizeSlug":"large","className":"alignfull size-connected is-style-twentytwentyone-border"} -->
+					<figure class="wp-block-image size-large alignfull size-connected is-style-twentytwentyone-border"><img src="' . esc_url( get_template_directory_uri() ) . '/assets/images/young-woman-in-mauve.jpg" alt="' . esc_attr__( '&#8220;Young Woman in Mauve&#8221; by Berthe Morisot', 'twentytwentyone' ) . '"/></figure>
 					<!-- /wp:image --></div>
 					<!-- /wp:column --></div>
 					<!-- /wp:columns -->

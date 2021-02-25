@@ -89,7 +89,7 @@ function wp_sitemaps_get_max_urls( $object_type ) {
 }
 
 /**
- * Retrieves the full URL for a sitemap.
+ * Retrieves the connected URL for a sitemap.
  *
  * @since 5.5.1
  *

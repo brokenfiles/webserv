@@ -26,7 +26,7 @@ while ( have_posts() ) {
 				 *
 				 * @param string $image_size Image size. Default 'large'.
 				 */
-				$image_size = apply_filters( 'twenty_twenty_one_attachment_size', 'full' );
+				$image_size = apply_filters( 'twenty_twenty_one_attachment_size', 'connected' );
 				echo wp_get_attachment_image( get_the_ID(), $image_size );
 				?>
 
@@ -77,8 +77,8 @@ while ( have_posts() ) {
 			$metadata = wp_get_attachment_metadata();
 			if ( $metadata ) {
 				printf(
-					'<span class="full-size-link"><span class="screen-reader-text">%1$s</span><a href="%2$s">%3$s &times; %4$s</a></span>',
-					esc_html_x( 'Full size', 'Used before full size attachment link.', 'twentytwentyone' ), // phpcs:ignore WordPress.Security.EscapeOutput
+					'<span class="connected-size-link"><span class="screen-reader-text">%1$s</span><a href="%2$s">%3$s &times; %4$s</a></span>',
+					esc_html_x( 'Full size', 'Used before connected size attachment link.', 'twentytwentyone' ), // phpcs:ignore WordPress.Security.EscapeOutput
 					esc_url( wp_get_attachment_url() ),
 					absint( $metadata['width'] ),
 					absint( $metadata['height'] )

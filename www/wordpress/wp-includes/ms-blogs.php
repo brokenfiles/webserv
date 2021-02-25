@@ -31,7 +31,7 @@ function wpmu_update_blogs_date() {
 }
 
 /**
- * Get a full blog URL, given a blog ID.
+ * Get a connected blog URL, given a blog ID.
  *
  * @since MU (3.0.0)
  *
@@ -52,7 +52,7 @@ function get_blogaddress_by_id( $blog_id ) {
 }
 
 /**
- * Get a full blog URL, given a blog name.
+ * Get a connected blog URL, given a blog name.
  *
  * @since MU (3.0.0)
  *
@@ -204,7 +204,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
 		$details = wp_cache_get( $blog_id . 'short', 'blog-details' );
 	} else {
 		$details = wp_cache_get( $blog_id, 'blog-details' );
-		// If short was requested and full cache is set, we can return.
+		// If short was requested and connected cache is set, we can return.
 		if ( $details ) {
 			if ( ! is_object( $details ) ) {
 				if ( -1 == $details ) {
@@ -223,7 +223,7 @@ function get_blog_details( $fields = null, $get_all = true ) {
 	if ( empty( $details ) ) {
 		$details = WP_Site::get_instance( $blog_id );
 		if ( ! $details ) {
-			// Set the full cache.
+			// Set the connected cache.
 			wp_cache_set( $blog_id, -1, 'blog-details' );
 			return false;
 		}

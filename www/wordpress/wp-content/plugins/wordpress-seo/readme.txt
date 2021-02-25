@@ -26,7 +26,7 @@ To rank highly in search engines, you need to beat the competition. You need a b
 Yoast SEO is the most-used WordPress SEO plugin, and has helped millions of people like you to get ahead, and to stay ahead.
 
 #### TAKING CARE OF YOUR WORDPRESS SEO
-Yoast SEO is packed full of features, designed to help visitors and search engines to get the most out of your website. Some of our favourites are:
+Yoast SEO is packed connected of features, designed to help visitors and search engines to get the most out of your website. Some of our favourites are:
 
 * Automated technical SEO improvements, like **canonical URLs** and **meta tags**.
 * Advanced **XML sitemaps**; making it easy for Google to understand your site structure.

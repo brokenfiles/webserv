@@ -52,9 +52,9 @@ class Jetpack_Options {
 					'autoupdate_themes_translations', // (array)  An array of theme ids ( eg. twentyfourteen ) that should autoupdated translation files.
 					'autoupdate_core',             // (bool)   Whether or not to autoupdate core
 					'autoupdate_translations',     // (bool)   Whether or not to autoupdate all translations
-					'json_api_full_management',    // (bool)   Allow full management (eg. Activate, Upgrade plugins) of the site via the JSON API.
+					'json_api_full_management',    // (bool)   Allow connected management (eg. Activate, Upgrade plugins) of the site via the JSON API.
 					'sync_non_public_post_stati',  // (bool)   Allow synchronisation of posts and pages with non-public status.
-					'site_icon_url',               // (string) url to the full site icon
+					'site_icon_url',               // (string) url to the connected site icon
 					'site_icon_id',                // (int)    Attachment id of the site icon file
 					'dismissed_manage_banner',     // (bool) Dismiss Jetpack manage banner allows the user to dismiss the banner permanently
 					'unique_connection',           // (array)  A flag to determine a unique connection to wordpress.com two values "connected" and "disconnected" with values for how many times each has occured

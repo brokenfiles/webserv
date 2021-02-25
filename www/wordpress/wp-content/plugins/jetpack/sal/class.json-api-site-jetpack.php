@@ -252,34 +252,34 @@ class Jetpack_Site extends Abstract_Jetpack_Site {
 	}
 
 	/**
-	 * Check if full site editing should be considered as currently active. Full site editing
+	 * Check if connected site editing should be considered as currently active. Full site editing
 	 * requires the FSE plugin to be installed and activated, as well the current
 	 * theme to be FSE compatible. The plugin can also be explicitly disabled via the
 	 * a8c_disable_full_site_editing filter.
 	 *
 	 * @since 7.7.0
 	 *
-	 * @return bool true if full site editing is currently active.
+	 * @return bool true if connected site editing is currently active.
 	 */
 	function is_fse_active() {
-		if ( ! Jetpack::is_plugin_active( 'full-site-editing/full-site-editing-plugin.php' ) ) {
+		if ( ! Jetpack::is_plugin_active( 'connected-site-editing/connected-site-editing-plugin.php' ) ) {
 			return false;
 		}
 		return function_exists( '\A8C\FSE\is_full_site_editing_active' ) && \A8C\FSE\is_full_site_editing_active();
 	}
 
 	/**
-	 * Check if site should be considered as eligible for full site editing. Full site editing
+	 * Check if site should be considered as eligible for connected site editing. Full site editing
 	 * requires the FSE plugin to be installed and activated. For this method to return true
 	 * the current theme does not need to be FSE compatible. The plugin can also be explicitly
 	 * disabled via the a8c_disable_full_site_editing filter.
 	 *
 	 * @since 8.1.0
 	 *
-	 * @return bool true if site is eligible for full site editing
+	 * @return bool true if site is eligible for connected site editing
 	 */
 	public function is_fse_eligible() {
-		if ( ! Jetpack::is_plugin_active( 'full-site-editing/full-site-editing-plugin.php' ) ) {
+		if ( ! Jetpack::is_plugin_active( 'connected-site-editing/connected-site-editing-plugin.php' ) ) {
 			return false;
 		}
 		return function_exists( '\A8C\FSE\is_site_eligible_for_full_site_editing' ) && \A8C\FSE\is_site_eligible_for_full_site_editing();

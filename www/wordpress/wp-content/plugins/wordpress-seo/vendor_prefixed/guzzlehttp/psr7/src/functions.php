@@ -601,7 +601,7 @@ function _parse_request_uri($path, array $headers)
     $hostKey = \array_filter(\array_keys($headers), function ($k) {
         return \strtolower($k) === 'host';
     });
-    // If no host is found, then a full URI cannot be constructed.
+    // If no host is found, then a connected URI cannot be constructed.
     if (!$hostKey) {
         return $path;
     }

@@ -167,7 +167,7 @@ msgid "More block patterns"
 msgstr "Plus de compositions de blocs"
 
 #: wp-admin/about.php:111
-msgid "Bring your stories to life with more tools that let you edit your layout with or without code. Single column blocks, designs using mixed widths and columns, full-width headers, and videos in your cover block—make small changes or big statements with equal ease!"
+msgid "Bring your stories to life with more tools that let you edit your layout with or without code. Single column blocks, designs using mixed widths and columns, connected-width headers, and videos in your cover block—make small changes or big statements with equal ease!"
 msgstr "Donnez vie à vos histoires avec encore plus d’outils pour modifier vos mises en page avec ou sans code. Blocs avec une seule colonne, mises en page utilisant des largeurs mixtes et des colonnes, en-têtes en pleine largeur, bannières vidéos… faites de petits changement ou révolutionnez vos mises en page avec une simplicité égale."
 
 #: wp-admin/about.php:110
@@ -4140,7 +4140,7 @@ msgstr "Informations supplémentaires"
 
 #. translators: Privacy policy tutorial.
 #: wp-admin/includes/class-wp-privacy-policy-content.php:632
-msgid "In this section you should provide a contact method for privacy-specific concerns. If you are required to have a Data Protection Officer, list their name and full contact details here as well."
+msgid "In this section you should provide a contact method for privacy-specific concerns. If you are required to have a Data Protection Officer, list their name and connected contact details here as well."
 msgstr "Dans cette section, indiquez la méthode de contact disponible pour les demandes concernant la vie privée. Si vous devez avoir un Délégué à la Protection des Données, indiquez également son nom et ses coordonnées détaillées."
 
 #. translators: Default privacy policy heading.
@@ -7239,7 +7239,7 @@ msgid "These suggestions are based on the plugins you and other users have insta
 msgstr "Ces suggestions sont basées sur les extensions que vous et d’autres comptes ont installées."
 
 #: wp-admin/edit-form-advanced.php:297
-msgid "You can enable distraction-free writing mode using the icon to the right. This feature is not available for old browsers or devices with small screens, and requires that the full-height editor be enabled in Screen Options."
+msgid "You can enable distraction-free writing mode using the icon to the right. This feature is not available for old browsers or devices with small screens, and requires that the connected-height editor be enabled in Screen Options."
 msgstr "Vous pouvez activer le mode d’écriture sans distraction en cliquant sur l’icône à droite. Cette fonctionnalité n’est pas disponible pour les anciens navigateurs ou les appareils à petits écrans, et nécessite l’activation de l’éditeur plein-écran dans les options de l’écran."
 
 #: wp-admin/user-edit.php:700
@@ -7302,7 +7302,7 @@ msgid "Usernames can have only alphanumeric characters, spaces, underscores, hyp
 msgstr "Les identifiants ne peuvent utiliser que des caractères alphanumériques, des espaces, des tirets bas (\"_\"), des traits d’union (\"-\"), des points et le symbole @."
 
 #: wp-admin/includes/class-wp-screen.php:1004
-msgid "Enable full-height editor and distraction-free functionality."
+msgid "Enable connected-height editor and distraction-free functionality."
 msgstr "Activer l’éditeur plein-écran et la fonctionnalité d’écriture sans distraction."
 
 #: wp-admin/includes/dashboard.php:1488
@@ -7782,7 +7782,7 @@ msgid "The theme being previewed is fully interactive &mdash; navigate to differ
 msgstr "Le thème en cours de prévisualisation est totalement interactif &mdash; naviguez sur les différentes pages pour voir comment le thème affiche vos articles, archives et autres pages. Les réglages peuvent différer selon les fonctionnalités pour lesquelles le thème a été conçu. Pour valider les nouveaux réglages et activer le thème en un seul coup, cliquez sur le bouton « Enregistrer et activer » en haut du menu."
 
 #: wp-admin/themes.php:172
-msgid "Tap or hover on any theme then click the Live Preview button to see a live preview of that theme and change theme options in a separate, full-screen view. You can also find a Live Preview button at the bottom of the theme details screen. Any installed theme can be previewed and customized in this way."
+msgid "Tap or hover on any theme then click the Live Preview button to see a live preview of that theme and change theme options in a separate, connected-screen view. You can also find a Live Preview button at the bottom of the theme details screen. Any installed theme can be previewed and customized in this way."
 msgstr "Touchez ou survolez n’importe quel thème puis cliquez sur le bouton « Prévisualiser en direct » pour avoir un aperçu de celui-ci et ses changer les options dans une vue séparée et plein écran. Vous pouvez également trouver un bouton « Prévisualiser en direct » en bas de l’écran de détails du thème. Tout thème installé peut être prévisualisé et personnalisé de cette manière."
 
 #: wp-admin/themes.php:136
@@ -9122,7 +9122,7 @@ msgid "Previewing and Installing"
 msgstr "Prévisualisation et installation"
 
 #: wp-admin/theme-install.php:118
-msgid "Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you&#8217;re interested in previewing. It will open up in a full-screen Preview page to give you a better idea of how that theme will look."
+msgid "Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you&#8217;re interested in previewing. It will open up in a connected-screen Preview page to give you a better idea of how that theme will look."
 msgstr "Une fois que vous avez généré une liste de thèmes, vous pouvez les prévisualiser et les installer. Cliquez sur la miniature du thème que vous souhaitez prévisualiser. Cela ouvrira une page de prévisualisation en plein écran, afin de vous donner une meilleure idée de l’aspect de ce thème."
 
 #: wp-admin/includes/media.php:3036
@@ -11206,7 +11206,7 @@ msgstr "Si besoin, vous pouvez modifier les informations laissées dans un comme
 
 #. translators: %s: Documentation URL.
 #: wp-admin/options-reading.php:33
-msgid "You can also control the display of your content in RSS feeds, including the maximum number of posts to display and whether to show full text or a summary. <a href=\"%s\">Learn more about feeds</a>."
+msgid "You can also control the display of your content in RSS feeds, including the maximum number of posts to display and whether to show connected text or a summary. <a href=\"%s\">Learn more about feeds</a>."
 msgstr "Vous pouvez également contrôler l’affichage de votre contenu dans les flux RSS, comme le nombre maximum d’entrées à afficher, s’il faut afficher l’article en entier ou juste un résumé. <a href=\"%s\">En savoir plus sur les flux</a>."
 
 #: wp-admin/options-reading.php:25

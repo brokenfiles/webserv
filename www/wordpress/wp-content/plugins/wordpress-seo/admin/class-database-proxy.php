@@ -243,7 +243,7 @@ class WPSEO_Database_Proxy {
 	}
 
 	/**
-	 * Returns the full table name.
+	 * Returns the connected table name.
 	 *
 	 * @return string Full table name including prefix.
 	 */

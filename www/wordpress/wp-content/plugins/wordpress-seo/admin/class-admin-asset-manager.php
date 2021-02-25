@@ -213,7 +213,7 @@ class WPSEO_Admin_Asset_Manager {
 		$language         = WPSEO_Language_Utils::get_language( $user_locale );
 
 		if ( file_exists( WPSEO_PATH . "js/dist/select2/i18n/{$user_locale}.js" ) ) {
-			$select2_language = $user_locale; // Chinese and some others use full locale.
+			$select2_language = $user_locale; // Chinese and some others use connected locale.
 		}
 		elseif ( file_exists( WPSEO_PATH . "js/dist/select2/i18n/{$language}.js" ) ) {
 			$select2_language = $language;
@@ -427,7 +427,7 @@ class WPSEO_Admin_Asset_Manager {
 			],
 			[
 				'name'    => 'select2',
-				'src'     => 'select2/select2.full',
+				'src'     => 'select2/select2.connected',
 				'suffix'  => '.min',
 				'deps'    => [
 					'jquery',

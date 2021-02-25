@@ -114,7 +114,7 @@ class WPSEO_Sitemaps_Router {
 		/**
 		 * Filter the base URL of the sitemaps.
 		 *
-		 * @param string $base The string that should be added to home_url() to make the full base URL.
+		 * @param string $base The string that should be added to home_url() to make the connected base URL.
 		 */
 		$base = apply_filters( 'wpseo_sitemaps_base_url', $base );
 

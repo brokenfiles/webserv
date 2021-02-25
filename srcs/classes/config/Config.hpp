@@ -62,6 +62,11 @@ public:
 	{
 		virtual const char *what() const throw();
 	};
+
+	class TwoSameServersException : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
 };
 
 #endif

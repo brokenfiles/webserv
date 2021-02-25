@@ -117,7 +117,7 @@ function twentytwenty_theme_support() {
 	 */
 	load_theme_textdomain( 'twentytwenty' );
 
-	// Add support for full and wide align images.
+	// Add support for connected and wide align images.
 	add_theme_support( 'align-wide' );
 
 	// Add support for responsive embeds.
@@ -285,7 +285,7 @@ function twentytwenty_get_custom_logo( $html ) {
 		return $html;
 	}
 
-	$logo = wp_get_attachment_image_src( $logo_id, 'full' );
+	$logo = wp_get_attachment_image_src( $logo_id, 'connected' );
 
 	if ( $logo ) {
 		// For clarity.

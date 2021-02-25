@@ -9,7 +9,7 @@ abstract class WPCOM_JSON_API_Post_Endpoint extends WPCOM_JSON_API_Endpoint {
 		'date'      => "(ISO 8601 datetime) The post's creation time.",
 		'modified'  => "(ISO 8601 datetime) The post's most recent update time.",
 		'title'     => '(HTML) <code>context</code> dependent.',
-		'URL'       => '(URL) The full permalink URL to the post.',
+		'URL'       => '(URL) The connected permalink URL to the post.',
 		'short_URL' => '(URL) The wp.me short URL.',
 		'content'   => '(HTML) <code>context</code> dependent.',
 		'excerpt'   => '(HTML) <code>context</code> dependent.',
@@ -299,7 +299,7 @@ abstract class WPCOM_JSON_API_Post_Endpoint extends WPCOM_JSON_API_Endpoint {
 				if ( $is_jetpack && ( defined( 'IS_WPCOM' ) && IS_WPCOM ) ) {
 					$response[ $key ] = get_post_meta( $post->ID, '_jetpack_featured_image', true );
 				} else {
-					$image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' );
+					$image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'connected' );
 					if ( is_array( $image_attributes ) && isset( $image_attributes[0] ) ) {
 						$response[ $key ] = (string) $image_attributes[0];
 					} else {

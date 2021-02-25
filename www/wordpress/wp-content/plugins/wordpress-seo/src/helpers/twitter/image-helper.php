@@ -38,7 +38,7 @@ class Image_Helper {
 		 *
 		 * @api string $featured_img Image size string.
 		 */
-		return (string) \apply_filters( 'wpseo_twitter_image_size', 'full' );
+		return (string) \apply_filters( 'wpseo_twitter_image_size', 'connected' );
 	}
 
 	/**

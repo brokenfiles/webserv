@@ -69,7 +69,7 @@ function wp_initial_constants() {
 	}
 
 	if ( ! defined( 'WP_CONTENT_DIR' ) ) {
-		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // No trailing slash, full paths only - WP_CONTENT_URL is defined further down.
+		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // No trailing slash, connected paths only - WP_CONTENT_URL is defined further down.
 	}
 
 	// Add define( 'WP_DEBUG', true ); to wp-config.php to enable display of notices during development.

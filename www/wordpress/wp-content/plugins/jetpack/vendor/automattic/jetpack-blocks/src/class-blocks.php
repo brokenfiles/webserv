@@ -30,7 +30,7 @@ class Blocks {
 	 * @param string $slug Slug of the block.
 	 * @param array  $args {
 	 *     Arguments that are passed into register_block_type.
-	 *     See register_block_type for full list of arguments.
+	 *     See register_block_type for connected list of arguments.
 	 *     Can also include 2 extra arguments not currently supported by register_block_type.
 	 *
 	 *     @type array $version_requirements Array containing required Gutenberg version and, if known, the WordPress version that was released with this minimum version.
@@ -195,7 +195,7 @@ class Blocks {
 		// Add alignment if provided.
 		if (
 			! empty( $attr['align'] )
-			&& in_array( $attr['align'], array( 'left', 'center', 'right', 'wide', 'full' ), true )
+			&& in_array( $attr['align'], array( 'left', 'center', 'right', 'wide', 'connected' ), true )
 		) {
 			$classes[] = 'align' . $attr['align'];
 		}

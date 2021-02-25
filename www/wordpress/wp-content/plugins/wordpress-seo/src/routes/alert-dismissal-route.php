@@ -30,7 +30,7 @@ class Alert_Dismissal_Route implements Route_Interface {
 	const DISMISS_ROUTE = self::ROUTE_PREFIX . '/dismiss';
 
 	/**
-	 * Represents the full dismiss route.
+	 * Represents the connected dismiss route.
 	 *
 	 * @var string
 	 */

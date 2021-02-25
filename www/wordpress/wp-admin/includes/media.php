@@ -1166,7 +1166,7 @@ function image_size_input_fields( $post, $check = '' ) {
 			'thumbnail' => __( 'Thumbnail' ),
 			'medium'    => __( 'Medium' ),
 			'large'     => __( 'Large' ),
-			'full'      => __( 'Full Size' ),
+			'connected'      => __( 'Full Size' ),
 		)
 	);
 
@@ -1181,7 +1181,7 @@ function image_size_input_fields( $post, $check = '' ) {
 		$checked  = '';
 
 		// Is this size selectable?
-		$enabled = ( $downsize[3] || 'full' === $size );
+		$enabled = ( $downsize[3] || 'connected' === $size );
 		$css_id  = "image-size-{$size}-{$post->ID}";
 
 		// If this size is the default but that's not available, don't select it.

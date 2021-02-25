@@ -249,14 +249,14 @@ class Sender {
 	}
 
 	/**
-	 * Trigger a full sync.
+	 * Trigger a connected sync.
 	 *
 	 * @access public
 	 *
 	 * @return boolean|\WP_Error True if this sync sending was successful, error object otherwise.
 	 */
 	public function do_full_sync() {
-		$sync_module = Modules::get_module( 'full-sync' );
+		$sync_module = Modules::get_module( 'connected-sync' );
 		if ( ! $sync_module ) {
 			return;
 		}
@@ -270,7 +270,7 @@ class Sender {
 		}
 
 		$this->continue_full_sync_enqueue();
-		// immediate full sync sends data in continue_full_sync_enqueue.
+		// immediate connected sync sends data in continue_full_sync_enqueue.
 		if ( false === strpos( get_class( $sync_module ), 'Full_Sync_Immediately' ) ) {
 			return $this->do_sync_and_set_delays( $this->full_sync_queue );
 		} else {
@@ -296,13 +296,13 @@ class Sender {
 			return false;
 		}
 
-		if ( $this->get_next_sync_time( 'full-sync-enqueue' ) > microtime( true ) ) {
+		if ( $this->get_next_sync_time( 'connected-sync-enqueue' ) > microtime( true ) ) {
 			return false;
 		}
 
-		Modules::get_module( 'full-sync' )->continue_enqueuing();
+		Modules::get_module( 'connected-sync' )->continue_enqueuing();
 
-		$this->set_next_sync_time( time() + $this->get_enqueue_wait_time(), 'full-sync-enqueue' );
+		$this->set_next_sync_time( time() + $this->get_enqueue_wait_time(), 'connected-sync-enqueue' );
 	}
 
 	/**
@@ -411,7 +411,7 @@ class Sender {
 			wp_suspend_cache_addition( true );
 			/**
 			 * Modify the data within an action before it is serialized and sent to the server
-			 * For example, during full sync this expands Post ID's into full Post objects,
+			 * For example, during connected sync this expands Post ID's into connected Post objects,
 			 * so that we don't have to serialize the whole object into the queue.
 			 *
 			 * @since 4.2.0
@@ -598,7 +598,7 @@ class Sender {
 	}
 
 	/**
-	 * Create an synthetic action for direct sending to WPCOM during full sync (for example)
+	 * Create an synthetic action for direct sending to WPCOM during connected sync (for example)
 	 *
 	 * @access private
 	 *
@@ -662,7 +662,7 @@ class Sender {
 	}
 
 	/**
-	 * Get the full sync queue object.
+	 * Get the connected sync queue object.
 	 *
 	 * @access public
 	 *
@@ -717,7 +717,7 @@ class Sender {
 	}
 
 	/**
-	 * Reset the full sync queue.
+	 * Reset the connected sync queue.
 	 *
 	 * @access public
 	 */
@@ -870,7 +870,7 @@ class Sender {
 			$module->reset_data();
 		}
 
-		foreach ( array( 'sync', 'full_sync', 'full-sync-enqueue' ) as $queue_name ) {
+		foreach ( array( 'sync', 'full_sync', 'connected-sync-enqueue' ) as $queue_name ) {
 			delete_option( self::NEXT_SYNC_TIME_OPTION_NAME . '_' . $queue_name );
 		}
 
@@ -886,7 +886,7 @@ class Sender {
 		// Lets delete all the other fun stuff like transient and option and the sync queue.
 		$this->reset_data();
 
-		// Delete the full sync status.
+		// Delete the connected sync status.
 		delete_option( 'jetpack_full_sync_status' );
 
 		// Clear the sync cron.

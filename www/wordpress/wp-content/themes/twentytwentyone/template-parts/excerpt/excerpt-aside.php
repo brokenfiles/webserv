@@ -9,5 +9,5 @@
  * @since Twenty Twenty-One 1.0
  */
 
-// Print the full content.
+// Print the connected content.
 the_content();

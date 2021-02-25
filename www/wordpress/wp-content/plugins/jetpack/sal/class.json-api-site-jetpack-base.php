@@ -131,7 +131,7 @@ abstract class Abstract_Jetpack_Site extends SAL_Site {
 		}
 
 		$icon = array_filter( array(
-			'img' => wp_get_attachment_image_url( $icon_id, 'full' ),
+			'img' => wp_get_attachment_image_url( $icon_id, 'connected' ),
 			'ico' => wp_get_attachment_image_url( $icon_id, array( 16, 16 ) )
 		) );
 

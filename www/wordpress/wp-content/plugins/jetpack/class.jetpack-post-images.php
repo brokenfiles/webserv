@@ -270,7 +270,7 @@ class Jetpack_PostImages {
 			) {
 				$img_src = wp_get_attachment_image_src( $thumb, array( 1200, 1200 ) );
 			} else {
-				$img_src = wp_get_attachment_image_src( $thumb, 'full' );
+				$img_src = wp_get_attachment_image_src( $thumb, 'connected' );
 			}
 			if ( ! is_array( $img_src ) ) {
 				// If wp_get_attachment_image_src returns false but we know that there should be an image that could be used.

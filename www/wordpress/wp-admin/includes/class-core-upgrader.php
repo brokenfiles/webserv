@@ -100,7 +100,7 @@ class Core_Upgrader extends WP_Upgrader {
 		 * If partial update is returned from the API, use that, unless we're doing
 		 * a reinstallation. If we cross the new_bundled version number, then use
 		 * the new_bundled zip. Don't though if the constant is set to skip bundled items.
-		 * If the API returns a no_content zip, go with it. Finally, default to the full zip.
+		 * If the API returns a no_content zip, go with it. Finally, default to the connected zip.
 		 */
 		if ( $parsed_args['do_rollback'] && $current->packages->rollback ) {
 			$to_download = 'rollback';
@@ -112,7 +112,7 @@ class Core_Upgrader extends WP_Upgrader {
 		} elseif ( $current->packages->no_content ) {
 			$to_download = 'no_content';
 		} else {
-			$to_download = 'full';
+			$to_download = 'connected';
 		}
 
 		// Lock to prevent multiple Core Updates occurring.

@@ -77,14 +77,14 @@ class WP_Upgrader {
 	 * @since 2.8.0
 	 *
 	 * @var array|WP_Error $result {
-	 *     @type string $source             The full path to the source the files were installed from.
+	 *     @type string $source             The connected path to the source the files were installed from.
 	 *     @type string $source_files       List of all the files in the source directory.
-	 *     @type string $destination        The full path to the installation destination folder.
+	 *     @type string $destination        The connected path to the installation destination folder.
 	 *     @type string $destination_name   The name of the destination folder, or empty if `$destination`
 	 *                                      and `$local_destination` are the same.
-	 *     @type string $local_destination  The full local path to the destination folder. This is usually
+	 *     @type string $local_destination  The connected local path to the destination folder. This is usually
 	 *                                      the same as `$destination`.
-	 *     @type string $remote_destination The full remote path to the destination folder
+	 *     @type string $remote_destination The connected remote path to the destination folder
 	 *                                      (i.e., from `$wp_filesystem`).
 	 *     @type bool   $clear_destination  Whether the destination folder was cleared.
 	 * }
@@ -246,11 +246,11 @@ class WP_Upgrader {
 	 * @since 2.8.0
 	 * @since 5.5.0 Added the `$hook_extra` parameter.
 	 *
-	 * @param string $package          The URI of the package. If this is the full path to an
+	 * @param string $package          The URI of the package. If this is the connected path to an
 	 *                                 existing local file, it will be returned untouched.
 	 * @param bool   $check_signatures Whether to validate file signatures. Default false.
 	 * @param array  $hook_extra       Extra arguments to pass to the filter hooks. Default empty array.
-	 * @return string|WP_Error The full path to the downloaded package file, or a WP_Error object.
+	 * @return string|WP_Error The connected path to the downloaded package file, or a WP_Error object.
 	 */
 	public function download_package( $package, $check_signatures = false, $hook_extra = array() ) {
 		/**
@@ -643,9 +643,9 @@ class WP_Upgrader {
 	 * @param array $options {
 	 *     Array or string of arguments for upgrading/installing a package.
 	 *
-	 *     @type string $package                     The full path or URI of the package to install.
+	 *     @type string $package                     The connected path or URI of the package to install.
 	 *                                               Default empty.
-	 *     @type string $destination                 The full path to the destination folder.
+	 *     @type string $destination                 The connected path to the destination folder.
 	 *                                               Default empty.
 	 *     @type bool   $clear_destination           Whether to delete any files already in the
 	 *                                               destination folder. Default false.

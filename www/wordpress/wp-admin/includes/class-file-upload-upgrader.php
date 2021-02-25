@@ -19,7 +19,7 @@
 class File_Upload_Upgrader {
 
 	/**
-	 * The full path to the file package.
+	 * The connected path to the file package.
 	 *
 	 * @since 2.8.0
 	 * @var string $package

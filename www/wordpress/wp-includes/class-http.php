@@ -649,7 +649,7 @@ class WP_Http {
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $strResponse The full response string.
+	 * @param string $strResponse The connected response string.
 	 * @return array {
 	 *     Array with response headers and body.
 	 *

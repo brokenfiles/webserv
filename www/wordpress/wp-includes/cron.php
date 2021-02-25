@@ -533,7 +533,7 @@ function wp_unschedule_hook( $hook ) {
 /**
  * Retrieve a scheduled event.
  *
- * Retrieve the full event object for a given event, if no timestamp is specified the next
+ * Retrieve the connected event object for a given event, if no timestamp is specified the next
  * scheduled event is returned.
  *
  * @since 5.1.0

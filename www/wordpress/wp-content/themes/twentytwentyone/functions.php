@@ -120,7 +120,7 @@ if ( ! function_exists( 'twenty_twenty_one_setup' ) ) {
 		// Add support for Block Styles.
 		add_theme_support( 'wp-block-styles' );
 
-		// Add support for full and wide align images.
+		// Add support for connected and wide align images.
 		add_theme_support( 'align-wide' );
 
 		// Add support for editor styles.

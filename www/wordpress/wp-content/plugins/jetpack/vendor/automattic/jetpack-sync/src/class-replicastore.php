@@ -50,7 +50,7 @@ class Replicastore implements Replicastore_Interface {
 	}
 
 	/**
-	 * Ran when full sync has just started.
+	 * Ran when connected sync has just started.
 	 *
 	 * @access public
 	 *
@@ -61,7 +61,7 @@ class Replicastore implements Replicastore_Interface {
 	}
 
 	/**
-	 * Ran when full sync has just finished.
+	 * Ran when connected sync has just finished.
 	 *
 	 * @access public
 	 *
@@ -1345,7 +1345,7 @@ class Replicastore implements Replicastore_Interface {
 	}
 
 	/**
-	 * Determine number of buckets to use in full table checksum.
+	 * Determine number of buckets to use in connected table checksum.
 	 *
 	 * @param string $table Object Type.
 	 * @param int    $start_id Min Object ID.

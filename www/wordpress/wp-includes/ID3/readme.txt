@@ -311,7 +311,7 @@ https://www.getid3.org/phpBB3/viewforum.php?f=7
 * Support for Ogg other than Vorbis, Speex and OggFlac (ie. Ogg+Xvid)
 * Ability to create Xing/LAME VBR header for VBR MP3s that are missing VBR header
 * Ability to "clean" ID3v2 padding (replace invalid padding with valid padding)
-* Warn if MP3s change version mid-stream (in full-scan mode)
+* Warn if MP3s change version mid-stream (in connected-scan mode)
 * check for corrupt/broken mid-file MP3 streams in histogram scan
 * Support for lossless-compression formats
   (http://www.firstpr.com.au/audiocomp/lossless/#Links)

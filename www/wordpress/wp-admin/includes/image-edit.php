@@ -32,8 +32,8 @@ function wp_image_editor( $post_id, $msg = false ) {
 
 	$backup_sizes = get_post_meta( $post_id, '_wp_attachment_backup_sizes', true );
 	$can_restore  = false;
-	if ( ! empty( $backup_sizes ) && isset( $backup_sizes['full-orig'], $meta['file'] ) ) {
-		$can_restore = wp_basename( $meta['file'] ) !== $backup_sizes['full-orig']['file'];
+	if ( ! empty( $backup_sizes ) && isset( $backup_sizes['connected-orig'], $meta['file'] ) ) {
+		$can_restore = wp_basename( $meta['file'] ) !== $backup_sizes['connected-orig']['file'];
 	}
 
 	if ( $msg ) {
@@ -696,8 +696,8 @@ function wp_restore_image( $post_id ) {
 	$suffix        = time() . rand( 100, 999 );
 	$default_sizes = get_intermediate_image_sizes();
 
-	if ( isset( $backup_sizes['full-orig'] ) && is_array( $backup_sizes['full-orig'] ) ) {
-		$data = $backup_sizes['full-orig'];
+	if ( isset( $backup_sizes['connected-orig'] ) && is_array( $backup_sizes['connected-orig'] ) ) {
+		$data = $backup_sizes['connected-orig'];
 
 		if ( $parts['basename'] != $data['file'] ) {
 			if ( defined( 'IMAGE_EDIT_OVERWRITE' ) && IMAGE_EDIT_OVERWRITE ) {
@@ -707,7 +707,7 @@ function wp_restore_image( $post_id ) {
 					wp_delete_file( $file );
 				}
 			} elseif ( isset( $meta['width'], $meta['height'] ) ) {
-				$backup_sizes[ "full-$suffix" ] = array(
+				$backup_sizes[ "connected-$suffix" ] = array(
 					'width'  => $meta['width'],
 					'height' => $meta['height'],
 					'file'   => $parts['basename'],
@@ -780,7 +780,7 @@ function wp_save_image( $post_id ) {
 	$nocrop  = false;
 	$post    = get_post( $post_id );
 
-	$img = wp_get_image_editor( _load_image_to_edit_path( $post_id, 'full' ) );
+	$img = wp_get_image_editor( _load_image_to_edit_path( $post_id, 'connected' ) );
 	if ( is_wp_error( $img ) ) {
 		$return->error = esc_js( __( 'Unable to create new image.' ) );
 		return $return;
@@ -799,7 +799,7 @@ function wp_save_image( $post_id ) {
 		// Check if it has roughly the same w / h ratio.
 		$diff = round( $sX / $sY, 2 ) - round( $fwidth / $fheight, 2 );
 		if ( -0.1 < $diff && $diff < 0.1 ) {
-			// Scale the full size image.
+			// Scale the connected size image.
 			if ( $img->resize( $fwidth, $fheight ) ) {
 				$scaled = true;
 			}
@@ -841,7 +841,7 @@ function wp_save_image( $post_id ) {
 	$suffix   = time() . rand( 100, 999 );
 
 	if ( defined( 'IMAGE_EDIT_OVERWRITE' ) && IMAGE_EDIT_OVERWRITE &&
-		isset( $backup_sizes['full-orig'] ) && $backup_sizes['full-orig']['file'] != $basename ) {
+		isset( $backup_sizes['connected-orig'] ) && $backup_sizes['connected-orig']['file'] != $basename ) {
 
 		if ( 'thumbnail' === $target ) {
 			$new_path = "{$dirname}/{$filename}-temp.{$ext}";
@@ -862,20 +862,20 @@ function wp_save_image( $post_id ) {
 		}
 	}
 
-	// Save the full-size file, also needed to create sub-sizes.
+	// Save the connected-size file, also needed to create sub-sizes.
 	if ( ! wp_save_image_file( $new_path, $img, $post->post_mime_type, $post_id ) ) {
 		$return->error = esc_js( __( 'Unable to save the image.' ) );
 		return $return;
 	}
 
-	if ( 'nothumb' === $target || 'all' === $target || 'full' === $target || $scaled ) {
+	if ( 'nothumb' === $target || 'all' === $target || 'connected' === $target || $scaled ) {
 		$tag = false;
-		if ( isset( $backup_sizes['full-orig'] ) ) {
-			if ( ( ! defined( 'IMAGE_EDIT_OVERWRITE' ) || ! IMAGE_EDIT_OVERWRITE ) && $backup_sizes['full-orig']['file'] !== $basename ) {
-				$tag = "full-$suffix";
+		if ( isset( $backup_sizes['connected-orig'] ) ) {
+			if ( ( ! defined( 'IMAGE_EDIT_OVERWRITE' ) || ! IMAGE_EDIT_OVERWRITE ) && $backup_sizes['connected-orig']['file'] !== $basename ) {
+				$tag = "connected-$suffix";
 			}
 		} else {
-			$tag = 'full-orig';
+			$tag = 'connected-orig';
 		}
 
 		if ( $tag ) {
@@ -969,7 +969,7 @@ function wp_save_image( $post_id ) {
 		wp_update_attachment_metadata( $post_id, $meta );
 		update_post_meta( $post_id, '_wp_attachment_backup_sizes', $backup_sizes );
 
-		if ( 'thumbnail' === $target || 'all' === $target || 'full' === $target ) {
+		if ( 'thumbnail' === $target || 'all' === $target || 'connected' === $target ) {
 			// Check if it's an image edit from attachment edit screen.
 			if ( ! empty( $_REQUEST['context'] ) && 'edit-attachment' === $_REQUEST['context'] ) {
 				$thumb_url         = wp_get_attachment_image_src( $post_id, array( 900, 600 ), true );

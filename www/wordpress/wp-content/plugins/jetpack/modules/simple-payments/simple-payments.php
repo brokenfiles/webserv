@@ -247,7 +247,7 @@ class Jetpack_Simple_Payments {
 			$image = sprintf( '<div class="%1$s"><div class="%2$s">%3$s</div></div>',
 				esc_attr( "${css_prefix}-product-image" ),
 				esc_attr( "${css_prefix}-image" ),
-				get_the_post_thumbnail( $data['id'], 'full' )
+				get_the_post_thumbnail( $data['id'], 'connected' )
 			);
 		}
 

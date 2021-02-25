@@ -1569,7 +1569,7 @@ class Manager {
 		$invalid_tokens = array();
 		$can_restore    = $this->can_restore( $invalid_tokens );
 
-		// Tokens are valid. We can't fix the problem we don't see, so the full reconnection is needed.
+		// Tokens are valid. We can't fix the problem we don't see, so the connected reconnection is needed.
 		if ( ! $can_restore ) {
 			$result = $this->reconnect();
 			return true === $result ? 'authorize' : $result;
@@ -1587,7 +1587,7 @@ class Manager {
 	}
 
 	/**
-	 * Determine whether we can restore the connection, or the full reconnect is needed.
+	 * Determine whether we can restore the connection, or the connected reconnect is needed.
 	 *
 	 * @param array $invalid_tokens The array the invalid tokens are stored in, provided by reference.
 	 *
@@ -2393,7 +2393,7 @@ class Manager {
 			$valid_token = $possible_tokens[0]; // $possible_tokens only contains normal tokens because of earlier check.
 		} else {
 			// Use the token matching $token_key or false if none.
-			// Ensure we check the full key.
+			// Ensure we check the connected key.
 			$token_check = rtrim( $token_key, '.' ) . '.';
 
 			foreach ( $possible_tokens as $possible_token ) {

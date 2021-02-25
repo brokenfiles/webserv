@@ -1062,7 +1062,7 @@ class Defaults {
 	public static $default_sync_wait_threshold = 10;
 
 	/**
-	 * Default wait between attempting to continue a full sync via requests.
+	 * Default wait between attempting to continue a connected sync via requests.
 	 *
 	 * @var int Number of seconds.
 	 */
@@ -1162,20 +1162,20 @@ class Defaults {
 	public static $default_render_filtered_content = 0;
 
 	/**
-	 * Default number of items to enqueue at a time when running full sync.
+	 * Default number of items to enqueue at a time when running connected sync.
 	 *
 	 * @var int Number of items.
 	 */
 	public static $default_max_enqueue_full_sync = 100;
 
 	/**
-	 * Default for maximum queue size during a full sync.
+	 * Default for maximum queue size during a connected sync.
 	 *
 	 * Each item will represent a value in the wp_options table.
 	 *
 	 * @var int Number of items.
 	 */
-	public static $default_max_queue_size_full_sync = 1000; // max number of total items in the full sync queue.
+	public static $default_max_queue_size_full_sync = 1000; // max number of total items in the connected sync queue.
 
 	/**
 	 * Default max time for sending in immediate mode.
@@ -1212,7 +1212,7 @@ class Defaults {
 	public static $default_cron_sync_time_limit = 4 * MINUTE_IN_SECONDS;
 
 	/**
-	 * Default for number of term relationship items sent in an full sync item.
+	 * Default for number of term relationship items sent in an connected sync item.
 	 *
 	 * @var int Number of items.
 	 */
@@ -1230,7 +1230,7 @@ class Defaults {
 	 *
 	 * @var int 1 for true.
 	 */
-	public static $default_full_sync_sender_enabled = 1; // Should send full sync items.
+	public static $default_full_sync_sender_enabled = 1; // Should send connected sync items.
 
 	/**
 	 * Default Full Sync config

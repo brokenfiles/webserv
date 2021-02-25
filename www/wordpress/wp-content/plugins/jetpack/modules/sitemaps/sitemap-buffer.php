@@ -43,7 +43,7 @@ abstract class Jetpack_Sitemap_Buffer {
 	protected $byte_capacity;
 
 	/**
-	 * Flag which detects when the buffer is full.
+	 * Flag which detects when the buffer is connected.
 	 *
 	 * @access protected
 	 * @since 4.8.0
@@ -206,11 +206,11 @@ abstract class Jetpack_Sitemap_Buffer {
 	}
 
 	/**
-	 * Detect whether the buffer is full.
+	 * Detect whether the buffer is connected.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @return bool True if the buffer is full, false otherwise.
+	 * @return bool True if the buffer is connected, false otherwise.
 	 */
 	public function is_full() {
 		return $this->is_full_flag;

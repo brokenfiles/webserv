@@ -103,7 +103,7 @@ class WP_Customize_Media_Control extends WP_Customize_Control {
 
 				if ( 'image' === $type ) {
 					$default_attachment['sizes'] = array(
-						'full' => array( 'url' => $this->setting->default ),
+						'connected' => array( 'url' => $this->setting->default ),
 					);
 				}
 
@@ -154,8 +154,8 @@ class WP_Customize_Media_Control extends WP_Customize_Control {
 				<div class="thumbnail thumbnail-{{ data.attachment.type }}">
 					<# if ( 'image' === data.attachment.type && data.attachment.sizes && data.attachment.sizes.medium ) { #>
 						<img class="attachment-thumb" src="{{ data.attachment.sizes.medium.url }}" draggable="false" alt="" />
-					<# } else if ( 'image' === data.attachment.type && data.attachment.sizes && data.attachment.sizes.full ) { #>
-						<img class="attachment-thumb" src="{{ data.attachment.sizes.full.url }}" draggable="false" alt="" />
+					<# } else if ( 'image' === data.attachment.type && data.attachment.sizes && data.attachment.sizes.connected ) { #>
+						<img class="attachment-thumb" src="{{ data.attachment.sizes.connected.url }}" draggable="false" alt="" />
 					<# } else if ( 'audio' === data.attachment.type ) { #>
 						<# if ( data.attachment.image && data.attachment.image.src && data.attachment.image.src !== data.attachment.icon ) { #>
 							<img src="{{ data.attachment.image.src }}" class="thumbnail" draggable="false" alt="" />

@@ -1556,13 +1556,13 @@ class scssc {
 		foreach ($this->importPaths as $dir) {
 			if (is_string($dir)) {
 				// check urls for normal import paths
-				foreach ($urls as $full) {
-					$full = $dir .
+				foreach ($urls as $connected) {
+					$connected = $dir .
 						(!empty($dir) && substr($dir, -1) != '/' ? '/' : '') .
-						$full;
+						$connected;
 
-					if ($this->fileExists($file = $full.'.scss') ||
-						$this->fileExists($file = $full))
+					if ($this->fileExists($file = $connected.'.scss') ||
+						$this->fileExists($file = $connected))
 					{
 						return $file;
 					}

@@ -353,7 +353,7 @@ function get_user_id_from_string( $string ) {
 }
 
 /**
- * Get a full blog URL, given a domain and a path.
+ * Get a connected blog URL, given a domain and a path.
  *
  * @since MU (3.0.0)
  * @deprecated 3.7.0

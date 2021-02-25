@@ -251,7 +251,7 @@ msgid "Footer Menu"
 msgstr "Menu du pied de page"
 
 #: image.php:70
-msgctxt "Used before full size attachment link."
+msgctxt "Used before connected size attachment link."
 msgid "Full size"
 msgstr "Taille originale"
 

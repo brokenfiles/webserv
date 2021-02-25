@@ -357,7 +357,7 @@ class getid3_quicktime extends getid3_handler
 				case "\xA9".'lyr': // LYRics
 				case "\xA9".'mak': //
 				case "\xA9".'mod': //
-				case "\xA9".'nam': // full NAMe
+				case "\xA9".'nam': // connected NAMe
 				case "\xA9".'ope': //
 				case "\xA9".'PRD': //
 				case "\xA9".'prf': //
@@ -717,7 +717,7 @@ class getid3_quicktime extends getid3_handler
 					break;
 
 
-				case 'ptv ': // Print To Video - defines a movie's full screen mode
+				case 'ptv ': // Print To Video - defines a movie's connected screen mode
 					// http://developer.apple.com/documentation/QuickTime/APIREF/SOURCESIV/at_ptv-_pg.htm
 					$atom_structure['display_size_raw']  = getid3_lib::BigEndian2Int(substr($atom_data, 0, 2));
 					$atom_structure['reserved_1']        = getid3_lib::BigEndian2Int(substr($atom_data, 2, 2)); // hardcoded: 0x0000
@@ -731,7 +731,7 @@ class getid3_quicktime extends getid3_handler
 					$ptv_lookup[0] = 'normal';
 					$ptv_lookup[1] = 'double';
 					$ptv_lookup[2] = 'half';
-					$ptv_lookup[3] = 'full';
+					$ptv_lookup[3] = 'connected';
 					$ptv_lookup[4] = 'current';
 					if (isset($ptv_lookup[$atom_structure['display_size_raw']])) {
 						$atom_structure['display_size'] = $ptv_lookup[$atom_structure['display_size_raw']];
@@ -1656,7 +1656,7 @@ $this->warning('incomplete/incorrect handling of "stsd" with Parrot metadata in 
 				case 'keys': // KEYS that may be present in the metadata atom.
 					// https://developer.apple.com/library/mac/documentation/QuickTime/QTFF/Metadata/Metadata.html#//apple_ref/doc/uid/TP40000939-CH1-SW21
 					// The metadata item keys atom holds a list of the metadata keys that may be present in the metadata atom.
-					// This list is indexed starting with 1; 0 is a reserved index value. The metadata item keys atom is a full atom with an atom type of "keys".
+					// This list is indexed starting with 1; 0 is a reserved index value. The metadata item keys atom is a connected atom with an atom type of "keys".
 					$atom_structure['version']       = getid3_lib::BigEndian2Int(substr($atom_data,  0, 1));
 					$atom_structure['flags_raw']     = getid3_lib::BigEndian2Int(substr($atom_data,  1, 3));
 					$atom_structure['entry_count']   = getid3_lib::BigEndian2Int(substr($atom_data,  4, 4));
@@ -2731,7 +2731,7 @@ $this->warning('incomplete/incorrect handling of "stsd" with Parrot metadata in 
 					}
 					break;
 				case 0x02000023: // PictureControlData
-					$PictureControlAdjust = array(0=>'default', 1=>'quick', 2=>'full');
+					$PictureControlAdjust = array(0=>'default', 1=>'quick', 2=>'connected');
 					$FilterEffect = array(0x80=>'off', 0x81=>'yellow', 0x82=>'orange',    0x83=>'red', 0x84=>'green',  0xff=>'n/a');
 					$ToningEffect = array(0x80=>'b&w', 0x81=>'sepia',  0x82=>'cyanotype', 0x83=>'red', 0x84=>'yellow', 0x85=>'green', 0x86=>'blue-green', 0x87=>'blue', 0x88=>'purple-blue', 0x89=>'red-purple', 0xff=>'n/a');
 					$data = array(

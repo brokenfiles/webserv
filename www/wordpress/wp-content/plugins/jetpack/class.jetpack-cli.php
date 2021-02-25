@@ -29,12 +29,12 @@ class Jetpack_CLI extends WP_CLI_Command {
 	 *
 	 * empty: Leave it empty for basic stats
 	 *
-	 * full: View full stats.  It's the data from the heartbeat
+	 * connected: View connected stats.  It's the data from the heartbeat
 	 *
 	 * ## EXAMPLES
 	 *
 	 * wp jetpack status
-	 * wp jetpack status full
+	 * wp jetpack status connected
 	 */
 	public function status( $args, $assoc_args ) {
 		jetpack_require_lib( 'debugger' );
@@ -42,7 +42,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 		/* translators: %s is the site URL */
 		WP_CLI::line( sprintf( __( 'Checking status for %s', 'jetpack' ), esc_url( get_home_url() ) ) );
 
-		if ( isset( $args[0] ) && 'full' !== $args[0] ) {
+		if ( isset( $args[0] ) && 'connected' !== $args[0] ) {
 			/* translators: %s is a command like "prompt" */
 			WP_CLI::error( sprintf( __( '%s is not a valid command.', 'jetpack' ), $args[0] ) );
 		}
@@ -79,7 +79,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 		 *
 		 * Loop through heartbeat data and organize by priority.
 		 */
-		$all_data = ( isset( $args[0] ) && 'full' == $args[0] ) ? 'full' : false;
+		$all_data = ( isset( $args[0] ) && 'connected' == $args[0] ) ? 'connected' : false;
 		if ( $all_data ) {
 			// Heartbeat data
 			WP_CLI::line( "\n" . __( 'Additional data: ', 'jetpack' ) );
@@ -112,7 +112,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 			}
 		} else {
 			// Just the basics
-			WP_CLI::line( "\n" . _x( "View full status with 'wp jetpack status full'", '"wp jetpack status full" is a command - do not translate', 'jetpack' ) );
+			WP_CLI::line( "\n" . _x( "View connected status with 'wp jetpack status connected'", '"wp jetpack status connected" is a command - do not translate', 'jetpack' ) );
 		}
 	}
 
@@ -806,7 +806,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 	 *
 	 * status   : Print the current sync status
 	 * settings : Prints the current sync settings
-	 * start    : Start a full sync from this site to WordPress.com
+	 * start    : Start a connected sync from this site to WordPress.com
 	 * enable   : Enables sync on the site
 	 * disable  : Disable sync on a site
 	 * reset    : Disables sync and Resets the sync queues on a site
@@ -819,7 +819,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 	 * wp jetpack sync enable
 	 * wp jetpack sync disable
 	 * wp jetpack sync reset
-	 * wp jetpack sync reset --queue=full or regular
+	 * wp jetpack sync reset --queue=connected or regular
 	 *
 	 * @synopsis <status|start> [--<field>=<value>]
 	 */
@@ -883,13 +883,13 @@ class Jetpack_CLI extends WP_CLI_Command {
 							/* translators: %s is the site URL */
 							WP_CLI::log( sprintf( __( 'Reset Regular Sync Queue on %s', 'jetpack' ), get_site_url() ) );
 							break;
-						case 'full':
+						case 'connected':
 							$listener->get_full_sync_queue()->reset();
 							/* translators: %s is the site URL */
 							WP_CLI::log( sprintf( __( 'Reset Full Sync Queue on %s', 'jetpack' ), get_site_url() ) );
 							break;
 						default:
-							WP_CLI::error( __( 'Please specify what type of queue do you want to reset: `full` or `regular`.', 'jetpack' ) );
+							WP_CLI::error( __( 'Please specify what type of queue do you want to reset: `connected` or `regular`.', 'jetpack' ) );
 							break;
 					}
 				}
@@ -961,13 +961,13 @@ class Jetpack_CLI extends WP_CLI_Command {
 					$modules = null;
 				}
 
-				// Kick off a full sync
+				// Kick off a connected sync
 				if ( Actions::do_full_sync( $modules ) ) {
 					if ( $modules ) {
 						/* translators: %s is a comma separated list of Jetpack modules */
-						WP_CLI::log( sprintf( __( 'Initialized a new full sync with modules: %s', 'jetpack' ), join( ', ', array_keys( $modules ) ) ) );
+						WP_CLI::log( sprintf( __( 'Initialized a new connected sync with modules: %s', 'jetpack' ), join( ', ', array_keys( $modules ) ) ) );
 					} else {
-						WP_CLI::log( __( 'Initialized a new full sync', 'jetpack' ) );
+						WP_CLI::log( __( 'Initialized a new connected sync', 'jetpack' ) );
 					}
 				} else {
 
@@ -976,9 +976,9 @@ class Jetpack_CLI extends WP_CLI_Command {
 
 					if ( $modules ) {
 						/* translators: %s is a comma separated list of Jetpack modules */
-						WP_CLI::error( sprintf( __( 'Could not start a new full sync with modules: %s', 'jetpack' ), join( ', ', $modules ) ) );
+						WP_CLI::error( sprintf( __( 'Could not start a new connected sync with modules: %s', 'jetpack' ), join( ', ', $modules ) ) );
 					} else {
-						WP_CLI::error( __( 'Could not start a new full sync', 'jetpack' ) );
+						WP_CLI::error( __( 'Could not start a new connected sync', 'jetpack' ) );
 					}
 				}
 
@@ -1000,7 +1000,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 						}
 
 						// Immediate Full Sync does not wait for WP.com to process data so we need to enforce a wait.
-						if ( false !== strpos( get_class( Modules::get_module( 'full-sync' ) ), 'Full_Sync_Immediately' ) ) {
+						if ( false !== strpos( get_class( Modules::get_module( 'connected-sync' ) ), 'Full_Sync_Immediately' ) ) {
 							sleep( 15 );
 						}
 					}
@@ -1040,7 +1040,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 		// the queue name that the code expects.
 		$queue_name_map    = $allowed_queues = array(
 			'incremental' => 'sync',
-			'full'        => 'full_sync',
+			'connected'        => 'full_sync',
 		);
 		$mapped_queue_name = isset( $queue_name_map[ $queue_name ] ) ? $queue_name_map[ $queue_name ] : $queue_name;
 
@@ -1050,7 +1050,7 @@ class Jetpack_CLI extends WP_CLI_Command {
 				$items = $queue->peek( 100 );
 
 				if ( empty( $items ) ) {
-					/* translators: %s is the name of the queue, either 'incremental' or 'full' */
+					/* translators: %s is the name of the queue, either 'incremental' or 'connected' */
 					WP_CLI::log( sprintf( __( 'Nothing is in the queue: %s', 'jetpack' ), $queue_name ) );
 				} else {
 					$collection = array();

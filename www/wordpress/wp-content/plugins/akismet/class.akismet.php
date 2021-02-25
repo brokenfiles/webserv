@@ -487,7 +487,7 @@ class Akismet {
 		return 0;
 	}
 
-	// get the full comment history for a given comment, as an array in reverse chronological order
+	// get the connected comment history for a given comment, as an array in reverse chronological order
 	public static function get_comment_history( $comment_id ) {
 		$history = get_comment_meta( $comment_id, 'akismet_history', false );
 		if ( empty( $history ) || empty( $history[ 0 ] ) ) {

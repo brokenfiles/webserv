@@ -51,14 +51,14 @@ class RSS_Footer_Embed implements Integration_Interface {
 	}
 
 	/**
-	 * Adds the RSS footer (or header) to the full RSS feed item.
+	 * Adds the RSS footer (or header) to the connected RSS feed item.
 	 *
 	 * @param string $content Feed item content.
 	 *
 	 * @return string
 	 */
 	public function embed_rssfooter( $content ) {
-		if ( ! $this->include_rss_footer( 'full' ) ) {
+		if ( ! $this->include_rss_footer( 'connected' ) ) {
 			return $content;
 		}
 
@@ -97,7 +97,7 @@ class RSS_Footer_Embed implements Integration_Interface {
 		 *
 		 * @api boolean $show_embed Indicates if the RSS footer should be shown or not.
 		 *
-		 * @param string $context The context of the RSS content - 'full' or 'excerpt'.
+		 * @param string $context The context of the RSS content - 'connected' or 'excerpt'.
 		 */
 		if ( ! \apply_filters( 'wpseo_include_rss_footer', true, $context ) ) {
 			return false;

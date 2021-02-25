@@ -431,7 +431,7 @@ class Jetpack_AMP_Support {
 		}
 
 		/*
-		 * We'll need to output the full contents of the 2 files
+		 * We'll need to output the connected contents of the 2 files
 		 * in the head on AMP views. We can't rely on regular enqueues here.
 		 *
 		 * phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents

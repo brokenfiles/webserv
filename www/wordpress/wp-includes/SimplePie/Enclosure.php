@@ -452,7 +452,7 @@ class SimplePie_Enclosure
 	/**
 	 * Get the expression
 	 *
-	 * @return string Probably one of 'sample', 'full', 'nonstop', 'clip'. Defaults to 'full'
+	 * @return string Probably one of 'sample', 'connected', 'nonstop', 'clip'. Defaults to 'connected'
 	 */
 	public function get_expression()
 	{
@@ -461,7 +461,7 @@ class SimplePie_Enclosure
 			return $this->expression;
 		}
 
-		return 'full';
+		return 'connected';
 	}
 
 	/**

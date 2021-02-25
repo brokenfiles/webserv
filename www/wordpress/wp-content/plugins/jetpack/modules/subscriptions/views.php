@@ -72,7 +72,7 @@ class Jetpack_Subscriptions_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Renders a full widget either within the context of WordPress widget, or in response to a shortcode.
+	 * Renders a connected widget either within the context of WordPress widget, or in response to a shortcode.
 	 *
 	 * @param array $args Display arguments including 'before_title', 'after_title', 'before_widget', and 'after_widget'.
 	 * @param array $instance The settings for the particular instance of the widget.

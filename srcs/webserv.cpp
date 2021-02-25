@@ -2,12 +2,7 @@
 #include "../includes/includes.h"
 #include "../srcs/classes/logger/Logger.hpp"
 #include "../srcs/classes/server/ServerManager.hpp"
-#include "../srcs/classes/parser/Parser.hpp"
-#include "../srcs/classes/queries/Request.hpp"
-#include "../srcs/classes/client/Client.hpp"
-#include "classes/config/Config.hpp"
 
-#include <limits>
 #include <ios>
 
 Logger logger;
@@ -22,7 +17,7 @@ int main (int ac, char **av)
 	if (ac == 2)
         configFile = av[1];
 	else
-	    configFile = "conf/max.conf";
+	    configFile = "conf/default.conf";
 
 	logger.warning("Run Webserv in silent mode? : [y\\n]");
     std::getline(std::cin, input);

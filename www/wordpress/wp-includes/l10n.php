@@ -997,7 +997,7 @@ function load_child_theme_textdomain( $domain, $path = false ) {
  *
  * @param string $handle Name of the script to register a translation domain to.
  * @param string $domain Optional. Text domain. Default 'default'.
- * @param string $path   Optional. The full file path to the directory containing translation files.
+ * @param string $path   Optional. The connected file path to the directory containing translation files.
  * @return string|false False if the script textdomain could not be loaded, the translated strings
  *                      in JSON encoding otherwise.
  */
@@ -1088,7 +1088,7 @@ function load_script_textdomain( $handle, $domain = 'default', $path = null ) {
 	 * @since 5.0.2
 	 *
 	 * @param string|false $relative The relative path of the script. False if it could not be determined.
-	 * @param string       $src      The full source URL of the script.
+	 * @param string       $src      The connected source URL of the script.
 	 */
 	$relative = apply_filters( 'load_script_textdomain_relative_path', $relative, $src );
 

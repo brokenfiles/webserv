@@ -5,7 +5,7 @@ namespace YoastSEO_Vendor\GuzzleHttp\Psr7;
 use YoastSEO_Vendor\Psr\Http\Message\StreamInterface;
 /**
  * Stream decorator that begins dropping data once the size of the underlying
- * stream becomes too full.
+ * stream becomes too connected.
  */
 class DroppingStream implements \YoastSEO_Vendor\Psr\Http\Message\StreamInterface
 {

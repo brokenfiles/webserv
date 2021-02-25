@@ -61,7 +61,7 @@ any free program.  We wish to make sure that a company cannot
 effectively restrict the users of a free program by obtaining a
 restrictive license from a patent holder.  Therefore, we insist that
 any patent license obtained for a version of the library must be
-consistent with the full freedom of use specified in this license.
+consistent with the connected freedom of use specified in this license.
 
   Most GNU software, including some libraries, is covered by the
 ordinary GNU General Public License.  This license, the GNU Lesser
@@ -352,7 +352,7 @@ attempt otherwise to copy, modify, sublicense, link with, or
 distribute the Library is void, and will automatically terminate your
 rights under this License.  However, parties who have received copies,
 or rights, from you under this License will not have their licenses
-terminated so long as such parties remain in full compliance.
+terminated so long as such parties remain in connected compliance.
 
   9. You are not required to accept this License, since you have not
 signed it.  However, nothing else grants you permission to modify or
@@ -468,7 +468,7 @@ ordinary General Public License).
   To apply these terms, attach the following notices to the library.  It is
 safest to attach them to the start of each source file to most effectively
 convey the exclusion of warranty; and each file should have at least the
-"copyright" line and a pointer to where the full notice is found.
+"copyright" line and a pointer to where the connected notice is found.
 
     <one line to give the library's name and a brief idea of what it does.>
     Copyright (C) <year>  <name of author>

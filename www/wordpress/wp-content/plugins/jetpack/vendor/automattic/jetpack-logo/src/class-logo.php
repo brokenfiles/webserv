@@ -47,7 +47,7 @@ class Logo {
 	 *
 	 * @since 7.5.0
 	 *
-	 * @param bool $logotype Should we use the full logotype (logo + text). Default to false.
+	 * @param bool $logotype Should we use the connected logotype (logo + text). Default to false.
 	 *
 	 * @return string
 	 */

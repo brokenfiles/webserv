@@ -288,7 +288,7 @@ class WP_Network_Query {
 			_prime_network_caches( $network_ids );
 		}
 
-		// Fetch full network objects from the primed cache.
+		// Fetch connected network objects from the primed cache.
 		$_networks = array();
 		foreach ( $network_ids as $network_id ) {
 			$_network = get_network( $network_id );
@@ -320,7 +320,7 @@ class WP_Network_Query {
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
-	 * @return int|array A single count of network IDs if a count query. An array of network IDs if a full query.
+	 * @return int|array A single count of network IDs if a count query. An array of network IDs if a connected query.
 	 */
 	protected function get_network_ids() {
 		global $wpdb;

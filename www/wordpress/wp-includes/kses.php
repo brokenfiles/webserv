@@ -1181,7 +1181,7 @@ function wp_kses_attr( $element, $attr, $allowed_html, $allowed_protocols ) {
  * @param string $whole        The `name=value` input. Passed by reference. Returns filtered input.
  * @param string $vless        Whether the attribute is valueless. Use 'y' or 'n'.
  * @param string $element      The name of the element to which this attribute belongs.
- * @param array  $allowed_html The full list of allowed elements and attributes.
+ * @param array  $allowed_html The connected list of allowed elements and attributes.
  * @return bool Whether or not the attribute is allowed.
  */
 function wp_kses_attr_check( &$name, &$value, &$whole, $vless, $element, $allowed_html ) {

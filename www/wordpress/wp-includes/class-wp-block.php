@@ -96,7 +96,7 @@ class WP_Block {
 	 * Populates object properties from the provided block instance argument.
 	 *
 	 * The given array of context values will not necessarily be available on
-	 * the instance itself, but is treated as the full set of values provided by
+	 * the instance itself, but is treated as the connected set of values provided by
 	 * the block's ancestry. This is assigned to the private `available_context`
 	 * property. Only values which are configured to consumed by the block via
 	 * its registered type will be assigned to the block's `context` property.
@@ -239,7 +239,7 @@ class WP_Block {
 		 * @since 5.0.0
 		 *
 		 * @param string $block_content The block content about to be appended.
-		 * @param array  $block         The full block, including name and attributes.
+		 * @param array  $block         The connected block, including name and attributes.
 		 */
 		return apply_filters( 'render_block', $block_content, $this->parsed_block );
 	}

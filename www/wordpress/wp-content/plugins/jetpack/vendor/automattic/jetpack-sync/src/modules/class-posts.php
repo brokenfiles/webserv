@@ -177,7 +177,7 @@ class Posts extends Module {
 	}
 
 	/**
-	 * Initialize posts action listeners for full sync.
+	 * Initialize posts action listeners for connected sync.
 	 *
 	 * @access public
 	 *
@@ -200,13 +200,13 @@ class Posts extends Module {
 	}
 
 	/**
-	 * Enqueue the posts actions for full sync.
+	 * Enqueue the posts actions for connected sync.
 	 *
 	 * @access public
 	 *
 	 * @param array   $config               Full sync configuration for this sync module.
 	 * @param int     $max_items_to_enqueue Maximum number of items to enqueue.
-	 * @param boolean $state                True if full sync has finished enqueueing this module, false otherwise.
+	 * @param boolean $state                True if connected sync has finished enqueueing this module, false otherwise.
 	 * @return array Number of actions enqueued, and next module state.
 	 */
 	public function enqueue_full_sync_actions( $config, $max_items_to_enqueue, $state ) {
@@ -255,7 +255,7 @@ class Posts extends Module {
 	}
 
 	/**
-	 * Retrieve the actions that will be sent for this module during a full sync.
+	 * Retrieve the actions that will be sent for this module during a connected sync.
 	 *
 	 * @access public
 	 *
@@ -474,7 +474,7 @@ class Posts extends Module {
 		$this->add_embed();
 
 		if ( has_post_thumbnail( $post->ID ) ) {
-			$image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' );
+			$image_attributes = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'connected' );
 			if ( is_array( $image_attributes ) && isset( $image_attributes[0] ) ) {
 				$post->featured_image = $image_attributes[0];
 			}
@@ -575,7 +575,7 @@ class Posts extends Module {
 		 * WP 5.6 introduced the wp_after_insert_post hook that triggers when
 		 * the post, meta and terms has been updated. We are migrating send_published
 		 * function to this hook to ensure we have all data for WP.com functionality.
-		 * @todo: remove full if statement when WordPress 5.6 is the minimum required version.
+		 * @todo: remove connected if statement when WordPress 5.6 is the minimum required version.
 		 */
 		if ( ! function_exists( 'wp_after_insert_post' ) ) {
 			$this->send_published( $post_ID, $post );

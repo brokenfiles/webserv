@@ -14,6 +14,9 @@ Parser::~Parser(void)
 
 void Parser::parseHeader(Request &req, std::string& keeper)
 {
+    //std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+    //std::cout << keeper << std::endl;
+    //std::cout << "-------------------------------------------------------\n";
     std::string frontLine = keeper.substr(0, keeper.find('\n'));
     try
     {
@@ -33,7 +36,9 @@ void Parser::parseHeader(Request &req, std::string& keeper)
         keeper.clear();
         logger.error("[SERVER]: " + logger.to_string(e.what()), -1);
     }
-
+    //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
+    //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
+    //            std::cout << "-------------------------------------------------------\n";
 }
 
 
@@ -48,6 +53,7 @@ int Parser::fillChunk(std::string &keeper)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
         {
+            std::cout << "PARSER: fillChunk perform line\n";
             std::string line = keeper.substr(0, x);
             if (!line.empty())
             {
@@ -108,7 +114,7 @@ void Parser::fillMethod(Request &req, std::string &frontLine)
 
 void Parser::fillPath(Request &req, std::string &frontLine)
 {
-    //get full path (ex: /index.htlm?oui=ahahah)
+    //get connected path (ex: /index.htlm?oui=ahahah)
     size_t start = frontLine.find("/");
     size_t path_length = frontLine.find(" ", start);
 

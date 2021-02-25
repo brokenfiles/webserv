@@ -75,7 +75,7 @@ class Image_Helper {
 	public function generate_from_attachment_id( $schema_id, $attachment_id, $caption = '' ) {
 		$data = $this->generate_object( $schema_id );
 
-		$data['url'] = $this->image->get_attachment_image_url( $attachment_id, 'full' );
+		$data['url'] = $this->image->get_attachment_image_url( $attachment_id, 'connected' );
 		$data        = $this->add_image_size( $data, $attachment_id );
 		$data        = $this->add_caption( $data, $attachment_id, $caption );
 

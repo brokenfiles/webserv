@@ -265,7 +265,7 @@ class WP_REST_Response extends WP_HTTP_Response {
 		 * Filters extra CURIEs available on REST API responses.
 		 *
 		 * CURIEs allow a shortened version of URI relations. This allows a more
-		 * usable form for custom relations than using the full URI. These work
+		 * usable form for custom relations than using the connected URI. These work
 		 * similarly to how XML namespaces work.
 		 *
 		 * Registered CURIES need to specify a name and URI template. This will
@@ -279,7 +279,7 @@ class WP_REST_Response extends WP_HTTP_Response {
 		 * into `example:term`.
 		 *
 		 * Well-behaved clients should expand and normalise these back to their
-		 * full URI relation, however some naive clients may not resolve these
+		 * connected URI relation, however some naive clients may not resolve these
 		 * correctly, so adding new CURIEs may break backward compatibility.
 		 *
 		 * @since 4.5.0

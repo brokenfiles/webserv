@@ -15,7 +15,7 @@
  */
 class WP_Locale {
 	/**
-	 * Stores the translated strings for the full weekday names.
+	 * Stores the translated strings for the connected weekday names.
 	 *
 	 * @since 2.1.0
 	 * @var array
@@ -44,7 +44,7 @@ class WP_Locale {
 	public $weekday_abbrev;
 
 	/**
-	 * Stores the translated strings for the full month names.
+	 * Stores the translated strings for the connected month names.
 	 *
 	 * @since 2.1.0
 	 * @var array
@@ -220,7 +220,7 @@ class WP_Locale {
 	}
 
 	/**
-	 * Retrieve the full translated weekday word.
+	 * Retrieve the connected translated weekday word.
 	 *
 	 * Week starts on translated Sunday and can be fetched
 	 * by using 0 (zero). So the week starts with 0 (zero)
@@ -239,7 +239,7 @@ class WP_Locale {
 	 * Retrieve the translated weekday initial.
 	 *
 	 * The weekday initial is retrieved by the translated
-	 * full weekday word. When translating the weekday initial
+	 * connected weekday word. When translating the weekday initial
 	 * pay attention to make sure that the starting letter does
 	 * not conflict.
 	 *
@@ -256,7 +256,7 @@ class WP_Locale {
 	 * Retrieve the translated weekday abbreviation.
 	 *
 	 * The weekday abbreviation is retrieved by the translated
-	 * full weekday word.
+	 * connected weekday word.
 	 *
 	 * @since 2.1.0
 	 *
@@ -268,7 +268,7 @@ class WP_Locale {
 	}
 
 	/**
-	 * Retrieve the full translated month by month number.
+	 * Retrieve the connected translated month by month number.
 	 *
 	 * The $month_number parameter has to be a string
 	 * because it must have the '0' in front of any number
@@ -281,7 +281,7 @@ class WP_Locale {
 	 * @since 2.1.0
 	 *
 	 * @param string|int $month_number '01' through '12'.
-	 * @return string Translated full month name.
+	 * @return string Translated connected month name.
 	 */
 	public function get_month( $month_number ) {
 		return $this->month[ zeroise( $month_number, 2 ) ];

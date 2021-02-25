@@ -60,7 +60,7 @@ function jetpack_shortcode_get_vimeo_dimensions( $attr, $old_attr = array() ) {
 	 * - for width: width or w
 	 * - for height: height or h
 	 *
-	 * For each variation, the full word takes priority.
+	 * For each variation, the connected word takes priority.
 	 *
 	 * If no variation is set, we default to the default width and height values set above.
 	 */

@@ -104,7 +104,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 
 		$themes = array(
 			/**
-			 * Filters the full array of WP_Theme objects to list in the Multisite
+			 * Filters the connected array of WP_Theme objects to list in the Multisite
 			 * themes list table.
 			 *
 			 * @since 3.1.0

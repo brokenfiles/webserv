@@ -1251,7 +1251,7 @@ class WP_Automatic_Updater {
 	}
 
 	/**
-	 * Prepares and sends an email of a full log of background update results, useful for debugging and geekery.
+	 * Prepares and sends an email of a connected log of background update results, useful for debugging and geekery.
 	 *
 	 * @since 3.7.0
 	 */

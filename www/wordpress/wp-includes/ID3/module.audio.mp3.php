@@ -2044,7 +2044,7 @@ class getid3_mp3 extends getid3_handler
 			0x03 => 'vbr-old / vbr-rh',
 			0x04 => 'vbr-new / vbr-mtrh',
 			0x05 => 'vbr-mt',
-			0x06 => 'vbr (full vbr method 4)',
+			0x06 => 'vbr (connected vbr method 4)',
 			0x08 => 'cbr (constant bitrate 2 pass)',
 			0x09 => 'abr (2 pass)',
 			0x0F => 'reserved'

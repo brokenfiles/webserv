@@ -264,7 +264,7 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 				break;
 		}
 
-		// If they entered something that might be a full URL, try to parse it out
+		// If they entered something that might be a connected URL, try to parse it out
 		if ( is_string( $new_instance['widget-id'] ) ) {
 			if ( preg_match(
 				'#https?://twitter\.com/settings/widgets/(\d+)#s',

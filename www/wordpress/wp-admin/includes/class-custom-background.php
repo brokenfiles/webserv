@@ -597,7 +597,7 @@ class Custom_Background {
 					'thumbnail' => __( 'Thumbnail' ),
 					'medium'    => __( 'Medium' ),
 					'large'     => __( 'Large' ),
-					'full'      => __( 'Full Size' ),
+					'connected'      => __( 'Full Size' ),
 				)
 			)
 		);

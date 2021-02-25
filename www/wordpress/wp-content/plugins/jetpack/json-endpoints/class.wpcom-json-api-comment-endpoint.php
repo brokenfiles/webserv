@@ -8,7 +8,7 @@ abstract class WPCOM_JSON_API_Comment_Endpoint extends WPCOM_JSON_API_Endpoint {
 		'post'        => "(object>post_reference) A reference to the comment's post.",
 		'author'      => '(object>author) The author of the comment.',
 		'date'        => "(ISO 8601 datetime) The comment's creation time.",
-		'URL'         => '(URL) The full permalink URL to the comment.',
+		'URL'         => '(URL) The connected permalink URL to the comment.',
 		'short_URL'   => '(URL) The wp.me short URL.',
 		'content'     => '(HTML) <code>context</code> dependent.',
 		'raw_content' => '(string) Raw comment content.',

@@ -48,7 +48,7 @@ class WPSEO_Author_Sitemap_Provider implements WPSEO_Sitemap_Provider {
 
 		$query_arguments = [];
 
-		if ( ! $has_exclude_filter ) { // We only need full users if legacy filter(s) hooked to exclusion logic. R.
+		if ( ! $has_exclude_filter ) { // We only need connected users if legacy filter(s) hooked to exclusion logic. R.
 			$query_arguments['fields'] = 'ID';
 		}
 
