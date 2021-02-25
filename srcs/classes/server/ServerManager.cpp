@@ -167,7 +167,7 @@ int ServerManager::run_servers()
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
                     fd_av.remove(client_curr->getSocket());
-
+//                    delete client_curr;
                     client_curr->close_socket();
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
@@ -203,7 +203,7 @@ int ServerManager::run_servers()
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
                         fd_av.remove(client_curr->getSocket());
-
+//                        delete client_curr;
                         client_curr->close_socket();
                         clients.erase(it);
                         break;
