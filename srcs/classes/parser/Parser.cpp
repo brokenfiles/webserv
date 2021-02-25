@@ -53,6 +53,7 @@ int Parser::fillChunk(std::string &keeper)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
         {
+            std::cout << "PARSER: fillChunk perform line\n";
             std::string line = keeper.substr(0, x);
             if (!line.empty())
             {

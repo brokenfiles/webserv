@@ -756,6 +756,18 @@ const std::string &Response::getStatusCode () const
 	return _statusCode;
 }
 
+void Response::setHeader(const std::string &key, const std::string &value)
+{
+	this->_headers[key] = value;
+}
+
+void Response::removeHeader(const std::string &key)
+{
+	if (this->_headers.find(key) != this->_headers.end()) {
+		this->_headers.erase(key);
+	}
+}
+
 void Response::setDefaultStatusCodes()
 {
 	this->addError(200, "OK");
