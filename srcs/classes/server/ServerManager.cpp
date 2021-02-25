@@ -210,8 +210,8 @@ int ServerManager::run_servers()
                     std::string response;
                     std::map<std::string, std::string>::const_iterator it_h;
 
-                    if (((((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
-                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())))
+                    if ((!(client_curr->isChunked()) && (((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
+                         && (it_h->second.compare(0, 7, "chunked") == 0))))
                     {
                         client_curr->isChunked() = true;
                     }
@@ -246,8 +246,6 @@ int ServerManager::run_servers()
                             else
                                 size = client_curr->bodystring.size();
 
-                            logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size));
-
                             std::stringstream convert;
 //                            convert << size;
                             convert << std::hex << size;
@@ -267,6 +265,8 @@ int ServerManager::run_servers()
 //                                finalchunk += "0\r\n\r\n";
                                 client_curr->isChunked() = false;
                             }
+                            logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(client_curr->bodystring.size()));
+
                             response = finalchunk;
                         }
                     }
@@ -277,9 +277,9 @@ int ServerManager::run_servers()
 
                     }
 
-                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
+//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
 //
 //
 //                    std::cout << response << std::endl;
@@ -312,6 +312,7 @@ int ServerManager::run_servers()
                     client_curr->isFirstThrough() = true;
                     client_curr->bodystring.clear();
                     client_curr->headerstring.clear();
+                    client_curr->getObjRequest().setBodyRaw("");
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
                 }
 

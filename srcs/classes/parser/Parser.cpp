@@ -42,19 +42,19 @@ void Parser::parseHeader(Request &req, std::string& keeper)
 }
 
 
-int Parser::fillChunk(std::string &keeper)
+int Parser::fillChunk(std::string &keeper, Request& request)
 {
     std::string keeper_tmp;
-    size_t closed;
     size_t x;
 
-    closed = keeper.find("\r\n\r\n") != std::string::npos;
-    while (closed)
+    std::cout << "fillChunk\n";
+
+    while (1)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
         {
-            std::cout << "PARSER: fillChunk perform line\n";
             std::string line = keeper.substr(0, x);
+//            std::cout << line << std::endl;
             if (!line.empty())
             {
                 int size_chunk = 0;
@@ -62,34 +62,44 @@ int Parser::fillChunk(std::string &keeper)
                 convert << std::hex << line;
                 convert >> size_chunk;
 
-                keeper.erase(0, x + 2);
-                if (size_chunk > 0)
+                if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
-                    keeper_tmp += keeper.substr(0,size_chunk);
-                    keeper.erase(0 ,size_chunk + 2);
+                    std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
+                    keeper.erase(0, x + 2);
+//                    std::cout << keeper.substr(0, size_chunk) << std::endl;
+                    request.appendBody(keeper.substr(0, size_chunk));
+                    keeper.erase(0, size_chunk + 2);
                 }
-                if (size_chunk == 0 && keeper == "\r\n")
-                {
-                    keeper = keeper_tmp;
+
+                if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
                     return (1);
-                }
             }
-//            throw Parser::BadChunkedBody();
+
+            if (keeper.find("\r\n\r\n") != std::string::npos)
+                continue;
+            else
+                return (0);
+
         }
+        else
+            return (0);
     }
     return (0);
 }
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
-    std::stringstream convert;
-    unsigned long size;
+    if (keeper.find("\r\n\r\n") != std::string::npos)
+    {
+        std::stringstream convert;
+        unsigned long size;
 
-    convert << strsize;
-    convert >> size;
+        convert << strsize;
+        convert >> size;
 
-    if (keeper.size() == size)
-        return (1);
+        if (keeper.size() == size)
+            return (1);
+    }
     return (0);
 }
 

@@ -32,6 +32,7 @@ class Client
 	    int &getSocket();
 
 	    Request& getObjRequest();
+	    Parser& getObjParser();
 
 
 	    std::string &getIP();
