@@ -179,6 +179,8 @@ int ServerManager::run_servers()
 
             if (FD_ISSET(client_curr->getSocket(), &this->read_pool))
             {
+                std::cout << "GETTING READ\n";
+
                 if (client_curr->read_request() < 0)
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
@@ -202,6 +204,7 @@ int ServerManager::run_servers()
             {
                 if (client_curr->isValidRequest())
                 {
+                    std::cout << "GETTING WRITE\n";
                     Response rep;
                     std::string response;
                     std::map<std::string, std::string>::const_iterator it_h;
@@ -215,50 +218,70 @@ int ServerManager::run_servers()
 
                     if (client_curr->isChunked() == true)
                     {
+                        logger.warning("PERFORMING CHUNKED RESPONSE");
                         if (client_curr->isFirstThrough() == true)
                         {
                             rep.sendResponse(client_curr);
+                            rep.setHeader("Transfer-Encoding", "chunked");
+                            rep.removeHeader("Content-Length");
                             client_curr->headerstring = rep.stringifyHeaders();
                             client_curr->bodystring = rep.getBody();
 
                             response = client_curr->headerstring;
                             client_curr->isFirstThrough() = false;
+                            if (client_curr->bodystring.empty())
+                            {
+                                response += "0\r\n\r\n";
+                                client_curr->isChunked() = false;
+                            }
                         }
                         else
                         {
                             std::string finalchunk;
                             size_t size = 0;
 
-                            if (client_curr->bodystring.size() >= 8000)
-                                size = 8000;
+                            if (client_curr->bodystring.size() >= 32768)
+                                size = 32768;
                             else
                                 size = client_curr->bodystring.size();
 
                             logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size));
 
                             std::stringstream convert;
+//                            convert << size;
                             convert << std::hex << size;
                             std::string size_hex = convert.str();
 
                             finalchunk += (size_hex + "\r\n");
                             finalchunk += (client_curr->bodystring.substr(0, size) + "\r\n");
 
-                            if (client_curr->bodystring.size() < 8000)
+                            if (client_curr->bodystring.size() < 32768)
                             {
                                 finalchunk += "0\r\n\r\n";
                                 client_curr->isChunked() = false;
                             }
                             client_curr->bodystring = client_curr->bodystring.erase(0, size);
-
+                            if (client_curr->bodystring.empty())
+                            {
+//                                finalchunk += "0\r\n\r\n";
+                                client_curr->isChunked() = false;
+                            }
                             response = finalchunk;
                         }
                     }
                     else
+                    {
                         response = rep.sendResponse(client_curr);
+                        logger.warning("PERFORMING CONTENT-LENGTH RESPONSE");
 
-//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+                    }
+
+                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
+                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+//
+//
+//                    std::cout << response << std::endl;
 
                     int send_ret = 0;
                     if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
@@ -279,12 +302,17 @@ int ServerManager::run_servers()
                         break;
                     }
                 }
+
                 if (client_curr->isChunked() == false)
                 {
                     FD_CLR(client_curr->getSocket(), &this->write_backup);
                     client_curr->isValidRequest() = false;
+                    client_curr->isFirstThrough() = true;
+                    client_curr->bodystring.clear();
+                    client_curr->headerstring.clear();
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
                 }
+
                 break;
             }
             else

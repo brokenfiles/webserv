@@ -40,7 +40,7 @@ int Client::read_request(void)
 
     memset((void*)buffer, 0, BUFFER);
 
-    while ((read = recv(this->getSocket(), buffer, BUFFER, 0)) > 0)
+    while ((read = recv(this->getSocket(), buffer, BUFFER - 1, 0)) > 0)
     {
         buffer[read] = '\0';
         keeper += buffer;
@@ -57,6 +57,9 @@ int Client::read_request(void)
 
     if (keeper.find("\r\n\r\n") != std::string::npos)
     {
+//        std::cout << RED_TEXT << "------------ REQUEST BEFORE PARSING -----------" << COLOR_RESET << std::endl;
+//        std::cout << GREY_TEXT << keeper << COLOR_RESET << std::endl;
+//        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
         if (!this->request.isHeaderParsed())
             this->parser.parseHeader(this->request, keeper);
 
