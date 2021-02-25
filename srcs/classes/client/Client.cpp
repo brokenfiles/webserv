@@ -83,10 +83,8 @@ int Client::read_request(void)
             this->request.isBodyParsed() = false;
             this->request.isHeaderParsed() = false;
             this->isValidRequest() = true;
-            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".");
+            logger.success("[SERVER]: Client: " + logger.to_string(this->getSocket()) + " Request completed. Valid Request: " + logger.to_string(this->validRequest) + ". Total size: " + logger.to_string(this->request.getBody().size()) + ".");
             this->_recvRequest_backup.clear();
-
-            std::vector<std::string>::iterator  it_header;
             return (0);
         }
     }
@@ -152,10 +150,7 @@ bool &Client::isFirstThrough()
 {
     return (this->firstThrough);
 }
-Response &Client::getObjResponse()
-{
-    return (this->response);
-}
+
 
 
 

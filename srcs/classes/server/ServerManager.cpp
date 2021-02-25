@@ -202,31 +202,59 @@ int ServerManager::run_servers()
             {
                 if (client_curr->isValidRequest())
                 {
+                    Response rep;
                     std::string response;
                     std::map<std::string, std::string>::const_iterator it_h;
 
                     if (((((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
-                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())) || client_curr->getObjResponse().getBody().size() > 30000)
+                         && (it_h->second.compare(0, 7, "chunked") == 0)) && !(client_curr->isChunked())))
                     {
                         client_curr->isChunked() = true;
                     }
-
 
 
                     if (client_curr->isChunked() == true)
                     {
                         if (client_curr->isFirstThrough() == true)
                         {
-                            client_curr->getObjResponse().sendResponse(client_curr);
-                            response = client_curr->getObjResponse().stringifyHeaders();
+                            rep.sendResponse(client_curr);
+                            client_curr->headerstring = rep.stringifyHeaders();
+                            client_curr->bodystring = rep.getBody();
+
+                            response = client_curr->headerstring;
                             client_curr->isFirstThrough() = false;
                         }
                         else
                         {
+                            std::string finalchunk;
+                            size_t size = 0;
 
+                            if (client_curr->bodystring.size() >= 8000)
+                                size = 8000;
+                            else
+                                size = client_curr->bodystring.size();
+
+                            logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size));
+
+                            std::stringstream convert;
+                            convert << std::hex << size;
+                            std::string size_hex = convert.str();
+
+                            finalchunk += (size_hex + "\r\n");
+                            finalchunk += (client_curr->bodystring.substr(0, size) + "\r\n");
+
+                            if (client_curr->bodystring.size() < 8000)
+                            {
+                                finalchunk += "0\r\n\r\n";
+                                client_curr->isChunked() = false;
+                            }
+                            client_curr->bodystring = client_curr->bodystring.erase(0, size);
+
+                            response = finalchunk;
                         }
-
                     }
+                    else
+                        response = rep.sendResponse(client_curr);
 
 //                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
@@ -250,17 +278,12 @@ int ServerManager::run_servers()
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                         break;
                     }
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + client_curr->getObjResponse().getStatusCode() + ".");
-
                 }
-                if (client_curr->isChunked() == true)
-                {
-                        std::cout << "is chunked :D\n";
-                }
-                else
+                if (client_curr->isChunked() == false)
                 {
                     FD_CLR(client_curr->getSocket(), &this->write_backup);
                     client_curr->isValidRequest() = false;
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
                 }
                 break;
             }

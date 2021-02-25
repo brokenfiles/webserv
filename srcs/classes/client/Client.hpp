@@ -5,7 +5,6 @@
 #include "../../../includes/includes.h"
 #include "../queries/Request.hpp"
 #include "../config/ServerConfig.hpp"
-#include "../queries/Response.hpp"
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
@@ -15,7 +14,6 @@
 #include <cstring>
 #include <sstream>
 
-class Response;
 class Parser;
 
 class Client
@@ -34,7 +32,6 @@ class Client
 	    int &getSocket();
 
 	    Request& getObjRequest();
-        Response& getObjResponse();
 
 
 	    std::string &getIP();
@@ -51,22 +48,24 @@ class Client
 
 	    //setters
 
+	    std::string headerstring;
+	    std::string bodystring;
+
+
     private:
         Parser parser;
         Request request;
-        Response response;
 
         ServerConfig serverConfig;
 
 	    bool validRequest;
 	    bool connected;
 	    bool chunk_rep;
+        bool firstThrough;
 
         struct sockaddr_in client_addr;
         int socket;
         int listen;
-
-        bool firstThrough;
 
 	    int port;
 	    std::string ip;
