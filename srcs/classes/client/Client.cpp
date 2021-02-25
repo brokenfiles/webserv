@@ -55,42 +55,51 @@ int Client::read_request(void)
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno)))), -1);
     }
 
-    if (keeper.find("\r\n\r\n") != std::string::npos)
+
+    if (!this->request.isHeaderParsed() && keeper.find("\r\n\r\n") != std::string::npos)
     {
-//        std::cout << RED_TEXT << "------------ REQUEST BEFORE PARSING -----------" << COLOR_RESET << std::endl;
-//        std::cout << GREY_TEXT << keeper << COLOR_RESET << std::endl;
-//        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-        if (!this->request.isHeaderParsed())
+        std::cout << keeper << std::endl;
             this->parser.parseHeader(this->request, keeper);
+    }
 
-        std::map<std::string, std::string>::const_iterator it;
 
-        if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
+    std::map<std::string, std::string>::const_iterator it;
+    if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
+    {
+        if ((((it = this->request.getHeaders().find("Transfer-Encoding")) != this->request.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
         {
-            if ((((it = this->request.getHeaders().find("Transfer-Encoding")) != this->request.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
+            if (this->parser.fillChunk(keeper, this->getObjRequest()))
             {
-                if (this->parser.fillChunk(keeper))
-                    this->request.setBody(keeper);
+                this->request.setBody(this->request.getBody());
             }
-            else if ((it = this->request.getHeaders().find("Content-Length")) != this->request.getHeaders().end())
-            {
-                if (this->parser.fillContentSize(keeper, (*it).second))
-                    this->request.setBody(keeper);
-            }
-            else
+        }
+        else if ((it = this->request.getHeaders().find("Content-Length")) != this->request.getHeaders().end())
+        {
+            if (this->parser.fillContentSize(keeper, (*it).second))
                 this->request.setBody(keeper);
         }
-
-        if (this->request.isHeaderParsed() && this->request.isBodyParsed())
-        {
-            this->request.isBodyParsed() = false;
-            this->request.isHeaderParsed() = false;
-            this->isValidRequest() = true;
-            logger.success("[SERVER]: Client: " + logger.to_string(this->getSocket()) + " Request completed. Valid Request: " + logger.to_string(this->validRequest) + ". Total size: " + logger.to_string(this->request.getBody().size()) + ".");
-            this->_recvRequest_backup.clear();
-            return (0);
-        }
+        else
+            this->request.setBody(keeper);
     }
+
+
+
+
+    if (this->request.isHeaderParsed() && this->request.isBodyParsed())
+    {
+        this->request.isBodyParsed() = false;
+        this->request.isHeaderParsed() = false;
+        this->isValidRequest() = true;
+        logger.success("[SERVER]: Client: " + logger.to_string(this->getSocket()) + " Request completed. Valid Request: " + logger.to_string(this->validRequest) + ". Total size: " + logger.to_string(this->request.getBody().size()) + ".");
+        this->_recvRequest_backup.clear();
+        return (0);
+    }
+
+
+
+
+
+
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;
@@ -152,6 +161,10 @@ bool &Client::isChunked()
 bool &Client::isFirstThrough()
 {
     return (this->firstThrough);
+}
+Parser &Client::getObjParser()
+{
+    return (this->parser);
 }
 
 

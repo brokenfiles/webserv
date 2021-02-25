@@ -72,29 +72,29 @@ void Client_TCP::sendChunkedData()
     std::string chunk_str;
 
 
-//    chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
-//    chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
-//    chunks.push_back("YO JE SUIS UNE PUTE");
-//    chunks.push_back("YO JE SUIS UN HETEROEXUEL ASPIRANT HELICOPTERE D'ATTAQUE");
-//    chunks.push_back("YO JE SUIS UN louis ^^");
-//    chunks.push_back("YO JE SUIS UN tim ^^");
-//    chunks.push_back("YO");
+    chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
+    chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
+    chunks.push_back("YO JE SUIS UNE PUTE");
+    chunks.push_back("YO JE SUIS UN HETEROEXUEL ASPIRANT HELICOPTERE D'ATTAQUE");
+    chunks.push_back("YO JE SUIS UN louis ^^");
+    chunks.push_back("YO JE SUIS UN tim ^^");
+    chunks.push_back("YO");
 
-    std::string chunkzer;
-    size_t x = 8000;
-    while (x > 0)
-    {
-        chunkzer.append("x");
-        x--;
-    }
-
-    x = 5;
-    while (x > 0)
-    {
-        chunks.push_back(chunkzer);
-        x--;
-    }
-    chunks.push_back("WESH LA TEAM ZER CEST LE DERNIER CHUNK DONT PARLE MIEU");
+//    std::string chunkzer;
+//    size_t x = 8000;
+//    while (x > 0)
+//    {
+//        chunkzer.append("x");
+//        x--;
+//    }
+//
+//    x = 5;
+//    while (x > 0)
+//    {
+//        chunks.push_back(chunkzer);
+//        x--;
+//    }
+//    chunks.push_back("WESH LA TEAM ZER CEST LE DERNIER CHUNK DONT PARLE MIEU");
 
     std::list<std::string>::iterator it = chunks.begin();
     while (it != chunks.end())

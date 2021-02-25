@@ -40,6 +40,8 @@ public:
 	void setQueryString (const std::string &queryString);
 	static std::string getPathWithoutLocation (const std::string &rawPath, LocationConfig &location);
 	static std::string getPathWithIndex (const std::string &rawPath, LocationConfig &location);
+	void appendBody(const std::string &body);
+	void setBodyRaw(const std::string &body);
 };
 std::ostream &operator<< (std::ostream &o, const Request &q);
 
