@@ -11,6 +11,8 @@
 #include <stack>
 #include <map>
 
+#include <pthread.h>
+
 class ServerManager
 {
     public:
@@ -28,7 +30,7 @@ class ServerManager
         ServerConfig getBestServer(Client *client);
 
         void disconnectClient(Client *client);
-
+        int launchWorkers();
         std::list<Server*>& getServerList();
 
         class SetupSocketError : public std::exception

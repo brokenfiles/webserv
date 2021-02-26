@@ -44,9 +44,15 @@ void Parser::parseHeader(Request &req, std::string& keeper)
 
 int Parser::fillChunk(std::string &keeper, Request& request)
 {
+<<<<<<< HEAD
     std::string keeper_tmp;
     size_t x;
 
+=======
+    size_t x;
+//    sleep (1);
+    std::cout << "fillChunk !!!!!!!!!\n";
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
     while (1)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
@@ -58,6 +64,7 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 std::stringstream convert;
                 convert << std::hex << line;
                 convert >> size_chunk;
+<<<<<<< HEAD
 
                 if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
@@ -68,14 +75,55 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 }
 
                 if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
+=======
+//                std::cout << "before get chunk: size chunk:" << size_chunk << std::endl;
+//                std::cout << keeper << std::endl;
+                if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
+                {
+                    std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
+                    request.appendBody(keeper.substr(x + 2, size_chunk));
+                    keeper.erase(0, size_chunk + x + 4);
+                }
+                else if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) < (size_t) size_chunk + 2))
+                {
+                    std::cout << "chunk > 0 && keeper < chunk_size" << std::endl;
+                    return (0);
+                }
+                else if (size_chunk == 0 && keeper.find("\r\n\r\n") == std::string::npos)
+                {
+                    std::cout << "chunk == 0 && final pattern found" << std::endl;
+
+                    return (0);
+                }
+
+                if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
+                {
+                    std::cout << "GOOD !! fully filled\n";
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
                     return (1);
             }
 
+<<<<<<< HEAD
             if (keeper.find("\r\n\r\n") != std::string::npos)
                 continue;
             else
                 return (0);
 
+=======
+            if ((keeper.find("\r\n\r\n") != std::string::npos) || (keeper.find("\r\n") != std::string::npos))
+                continue;
+            else
+            {
+                std::cout << "no pattern found (\"\\r\\n, \r\n\r\n\")" << std::endl;
+                return (0);
+            }
+
+        }
+        else
+        {
+            std::cout << "no pattern found (\"\\r\\n\")" << std::endl;
+            return (0);
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
         }
         else
             return (0);
@@ -85,17 +133,30 @@ int Parser::fillChunk(std::string &keeper, Request& request)
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
+<<<<<<< HEAD
     if (keeper.find("\r\n\r\n") != std::string::npos)
     {
         std::stringstream convert;
         unsigned long size;
+=======
+    std::cout << "fillContentSize !!!!!!!!\n";
+    std::stringstream convert;
+    unsigned long size;
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
 
         convert << strsize;
         convert >> size;
 
+<<<<<<< HEAD
         if (keeper.size() == size)
             return (1);
     }
+=======
+    std::cout << keeper << " : " << size << std::endl;
+    if (keeper.size() == size)
+            return (1);
+
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
     return (0);
 }
 

@@ -57,12 +57,24 @@ int Client::read_request(void)
 
     if (!this->request.isHeaderParsed() && keeper.find("\r\n\r\n") != std::string::npos)
     {
+<<<<<<< HEAD
         this->parser.parseHeader(this->request, keeper);
     }
 
 
     if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
     {
+=======
+//        std::cout << keeper << std::endl;
+        std::cout << "PARSING HEADER\n";
+        this->parser.parseHeader(this->request, keeper);
+    }
+
+    if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
+    {
+//        std::cout << "-" << keeper << "-" << std::endl;
+        std::cout << "PARSING BODY" << std::endl;
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
         this->parser.parseBody(this->request, keeper);
     }
 
@@ -78,7 +90,7 @@ int Client::read_request(void)
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;
-    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
+    logger.warning("[SERVER]: Client: " + logger.to_string(this->getSocket()) + " Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
     return (0);
 }
 
@@ -165,8 +177,13 @@ void Client::encode_chunk(Response &rep, std::string &response)
         std::string finalchunk;
         size_t size = 0;
 
+<<<<<<< HEAD
         if (this->bodystring.size() >= 8000)
             size = 8000;
+=======
+        if (this->bodystring.size() >= 1000001)
+            size = 1000001;
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
         else
             size = this->bodystring.size();
 
@@ -177,7 +194,11 @@ void Client::encode_chunk(Response &rep, std::string &response)
         finalchunk += (size_hex + "\r\n");
         finalchunk += (this->bodystring.substr(0, size) + "\r\n");
 
+<<<<<<< HEAD
         if (this->bodystring.size() < 8000)
+=======
+        if (this->bodystring.size() <= 1000001)
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
         {
             finalchunk += "0\r\n\r\n";
             this->isChunked() = false;
@@ -185,6 +206,7 @@ void Client::encode_chunk(Response &rep, std::string &response)
         this->bodystring = this->bodystring.erase(0, size);
         if (this->bodystring.empty())
             this->isChunked() = false;
+<<<<<<< HEAD
         logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(this->bodystring.size()));
 
         response = finalchunk;
@@ -217,6 +239,41 @@ void Client::printswagresponse(std::string &str)
         std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
     }
 }
+=======
+        logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(
+                this->bodystring.size()));
+
+        response = finalchunk;
+    }
+}
+void Client::clear_state()
+{
+    this->isValidRequest() = false;
+    this->isFirstThrough() = true;
+    this->bodystring.clear();
+    this->headerstring.clear();
+    this->getObjRequest().setBodyRaw("");
+}
+void Client::checkIfIsChunked()
+{
+    std::map<std::string, std::string>::const_iterator it_h;
+    if ((!(this->isChunked()) && (((it_h = this->getObjRequest().getHeaders().find("Transfer-Encoding")) != this->getObjRequest().getHeaders().end())
+                                         && (it_h->second.compare(0, 7, "chunked") == 0))))
+    {
+        this->isChunked() = true;
+    }
+}
+
+void Client::printswagresponse(std::string &str)
+{
+    if (!logger.isSilent())
+    {
+        std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+        std::cout << GREY_TEXT << str << COLOR_RESET << std::endl;
+        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+    }
+}
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
 int Client::send_response(std::string &response)
 {
     int send_ret;

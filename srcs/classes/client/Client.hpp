@@ -17,6 +17,10 @@
 
 class Parser;
 class Response;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 479475ae46ffb08235f40618fb3bc21f2589b157
 class Client
 {
     public:
