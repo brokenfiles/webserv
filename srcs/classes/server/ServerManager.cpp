@@ -241,8 +241,8 @@ int ServerManager::run_servers()
                             std::string finalchunk;
                             size_t size = 0;
 
-                            if (client_curr->bodystring.size() >= 32768)
-                                size = 32768;
+                            if (client_curr->bodystring.size() >= 1000001)
+                                size = 1000001;
                             else
                                 size = client_curr->bodystring.size();
 
@@ -254,7 +254,7 @@ int ServerManager::run_servers()
                             finalchunk += (size_hex + "\r\n");
                             finalchunk += (client_curr->bodystring.substr(0, size) + "\r\n");
 
-                            if (client_curr->bodystring.size() < 32768)
+                            if (client_curr->bodystring.size() < 1000001)
                             {
                                 finalchunk += "0\r\n\r\n";
                                 client_curr->isChunked() = false;
@@ -290,7 +290,10 @@ int ServerManager::run_servers()
                         if (send_ret == -1)
                             return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
                         if (send_ret == 0)
+                        {
+                            std::cout << "ICIIIIIIIIIII\n";
                             client_curr->isConnected() = false;
+                        }
                     }
 
                     if (!client_curr->isConnected())
