@@ -82,18 +82,19 @@ int ServerManager::setup_fd()
         if (FD_ISSET(*it, &this->read_backup))
         {
             FD_SET(*it, &this->read_pool);
-            read_stack.push_back(*it);
+//            read_stack.push_back(*it);
         }
 
         if (FD_ISSET(*it, &this->write_backup))
         {
             FD_SET(*it, &this->write_pool);
-            write_stack.push_back(*it);
+//            write_stack.push_back(*it);
         }
         if (*it > higher_fd)
             higher_fd = *it;
     }
 
+    /*
     stream << "FD SERVER SOCKET [";
     for (it_t serv = servers.begin(); serv != servers.end(); serv++)
     {
@@ -128,7 +129,7 @@ int ServerManager::setup_fd()
             stream << write_stack[i];
     }
     logger.notice(stream.str() + "]");
-
+*/
     return (higher_fd);
 }
 
@@ -166,9 +167,9 @@ int ServerManager::run_servers()
                 }
                 else
                     FD_SET(newClient->getSocket(), &this->read_backup);
-                fd_av.push_back(newClient->getSocket());
 
-                clients.push_front(newClient);
+                fd_av.push_back(newClient->getSocket());
+                clients.push_back(newClient);
                 logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
         }
@@ -179,8 +180,6 @@ int ServerManager::run_servers()
 
             if (FD_ISSET(client_curr->getSocket(), &this->read_pool))
             {
-                std::cout << "GETTING READ\n";
-
                 if (client_curr->read_request() < 0)
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
@@ -205,95 +204,22 @@ int ServerManager::run_servers()
             {
                 if (client_curr->isValidRequest())
                 {
-                    std::cout << "GETTING WRITE\n";
                     Response rep;
                     std::string response;
                     std::map<std::string, std::string>::const_iterator it_h;
 
-                    if ((!(client_curr->isChunked()) && (((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
-                         && (it_h->second.compare(0, 7, "chunked") == 0))))
-                    {
-                        client_curr->isChunked() = true;
-                    }
+                    client_curr->checkIfIsChunked();
 
-
-                    if (client_curr->isChunked() == true)
-                    {
-                        logger.warning("PERFORMING CHUNKED RESPONSE");
-                        if (client_curr->isFirstThrough() == true)
-                        {
-                            rep.sendResponse(client_curr);
-                            rep.setHeader("Transfer-Encoding", "chunked");
-                            rep.removeHeader("Content-Length");
-                            client_curr->headerstring = rep.stringifyHeaders();
-                            client_curr->bodystring = rep.getBody();
-
-                            response = client_curr->headerstring;
-                            client_curr->isFirstThrough() = false;
-                            if (client_curr->bodystring.empty())
-                            {
-                                response += "0\r\n\r\n";
-                                client_curr->isChunked() = false;
-                            }
-                        }
-                        else
-                        {
-                            std::string finalchunk;
-                            size_t size = 0;
-
-                            if (client_curr->bodystring.size() >= 1000001)
-                                size = 1000001;
-                            else
-                                size = client_curr->bodystring.size();
-
-                            std::stringstream convert;
-//                            convert << size;
-                            convert << std::hex << size;
-                            std::string size_hex = convert.str();
-
-                            finalchunk += (size_hex + "\r\n");
-                            finalchunk += (client_curr->bodystring.substr(0, size) + "\r\n");
-
-                            if (client_curr->bodystring.size() < 1000001)
-                            {
-                                finalchunk += "0\r\n\r\n";
-                                client_curr->isChunked() = false;
-                            }
-                            client_curr->bodystring = client_curr->bodystring.erase(0, size);
-                            if (client_curr->bodystring.empty())
-                            {
-//                                finalchunk += "0\r\n\r\n";
-                                client_curr->isChunked() = false;
-                            }
-                            logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(client_curr->bodystring.size()));
-
-                            response = finalchunk;
-                        }
-                    }
+                    if (client_curr->isChunked())
+                        client_curr->encode_chunk(rep, response);
                     else
-                    {
                         response = rep.sendResponse(client_curr);
-                        logger.warning("PERFORMING CONTENT-LENGTH RESPONSE");
 
-                    }
+                    client_curr->printswagresponse(response);
 
-//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-//
-//
-//                    std::cout << response << std::endl;
-
-                    int send_ret = 0;
-                    if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+                    if (client_curr->send_response(response) < 0)
                     {
-                        if (send_ret == -1)
-                            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
-                        if (send_ret == 0)
-                        {
-                            std::cout << "ICIIIIIIIIIII\n";
-                            client_curr->isConnected() = false;
-                        }
+                        std::cout << "do something\n";
                     }
 
                     if (!client_curr->isConnected())
@@ -311,14 +237,9 @@ int ServerManager::run_servers()
                 if (client_curr->isChunked() == false)
                 {
                     FD_CLR(client_curr->getSocket(), &this->write_backup);
-                    client_curr->isValidRequest() = false;
-                    client_curr->isFirstThrough() = true;
-                    client_curr->bodystring.clear();
-                    client_curr->headerstring.clear();
-                    client_curr->getObjRequest().setBodyRaw("");
+                    client_curr->clear_state();
                     logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
                 }
-
                 break;
             }
             else

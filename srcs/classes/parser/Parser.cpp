@@ -47,14 +47,11 @@ int Parser::fillChunk(std::string &keeper, Request& request)
     std::string keeper_tmp;
     size_t x;
 
-    std::cout << "fillChunk\n";
-
     while (1)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
         {
             std::string line = keeper.substr(0, x);
-//            std::cout << line << std::endl;
             if (!line.empty())
             {
                 int size_chunk = 0;
@@ -66,7 +63,6 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 {
                     std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
                     keeper.erase(0, x + 2);
-//                    std::cout << keeper.substr(0, size_chunk) << std::endl;
                     request.appendBody(keeper.substr(0, size_chunk));
                     keeper.erase(0, size_chunk + 2);
                 }
@@ -196,4 +192,21 @@ void Parser::fillQueryString(Request &req)
         req.setQueryString("");
     }
 
+}
+
+void Parser::parseBody(Request &req, std::string &keeper)
+{
+    std::map<std::string, std::string>::const_iterator it;
+    if ((((it = req.getHeaders().find("Transfer-Encoding")) != req.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
+    {
+        if (this->fillChunk(keeper, req))
+            req.setBody(req.getBody());
+    }
+    else if ((it = req.getHeaders().find("Content-Length")) != req.getHeaders().end())
+    {
+        if (this->fillContentSize(keeper, (*it).second))
+            req.setBody(keeper);
+    }
+    else
+        req.setBody(keeper);
 }
