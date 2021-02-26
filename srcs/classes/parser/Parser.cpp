@@ -74,16 +74,12 @@ int Parser::fillChunk(std::string &keeper, Request& request)
 
             if (keeper.find("\r\n\r\n") != std::string::npos)
                 continue;
-            else {
-				std::cout << "fillChunk returned 0" << std::endl;
-				return (0);
-			}
+            else
+                return (0);
 
         }
-        else {
-			std::cout << "fillChunk returned 0" << std::endl;
-			return (0);
-		}
+        else
+            return (0);
     }
     return (0);
 }
@@ -204,8 +200,10 @@ void Parser::parseBody(Request &req, std::string &keeper)
     std::map<std::string, std::string>::const_iterator it;
     if ((((it = req.getHeaders().find("Transfer-Encoding")) != req.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
     {
-        if (this->fillChunk(keeper, req))
+    	int ret;
+        if ((ret = this->fillChunk(keeper, req)))
             req.setBody(req.getBody());
+        std::cout << "fillchunk returned " << ret << std::endl;
     }
     else if ((it = req.getHeaders().find("Content-Length")) != req.getHeaders().end())
     {
