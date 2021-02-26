@@ -62,6 +62,7 @@ int Client::read_request(void)
 
     if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
     {
+    	std::cout << "Calling Parse Body" << std::endl;
         this->parser.parseBody(this->request, keeper);
     }
 

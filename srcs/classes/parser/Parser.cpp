@@ -205,6 +205,7 @@ void Parser::parseBody(Request &req, std::string &keeper)
     std::map<std::string, std::string>::const_iterator it;
     if ((((it = req.getHeaders().find("Transfer-Encoding")) != req.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
     {
+    	std::cout << "Calling fillchunk" << std::endl;
     	int ret;
         if ((ret = this->fillChunk(keeper, req)))
             req.setBody(req.getBody());
