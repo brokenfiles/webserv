@@ -76,6 +76,8 @@ void	Cgi::execute(Response &response)
 		dup2(this->_var.input_fd, STDIN_FILENO);
 		dup2(this->_var.output_fd, STDOUT_FILENO);
 
+		close(this->_var.input_fd);
+		close(this->_var.output_fd);
 		//on execute le CGI
 		execve(this->_var.argv[0], this->_var.argv, this->_var.metaVarArray);
 	}
@@ -285,7 +287,7 @@ bool Cgi::isCGI (Request request, LocationConfig location)
 			/* on check si le cgibin existe */
 			std::ifstream file(cgiBin.c_str(), std::ifstream::in);
 			if (file.good() && file.is_open())
-				return (extension.compare(0, 4, cgiExtension) == 0);
+				return (extension.compare(0, cgiExtension.length(), cgiExtension) == 0);
 		}
 	}
 	return (false);
