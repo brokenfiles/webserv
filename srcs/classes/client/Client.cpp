@@ -57,12 +57,14 @@ int Client::read_request(void)
 
     if (!this->request.isHeaderParsed() && keeper.find("\r\n\r\n") != std::string::npos)
     {
+        std::cout << keeper << std::endl;
         std::cout << "PARSING HEADER\n";
         this->parser.parseHeader(this->request, keeper);
     }
 
     if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
     {
+        std::cout << "-" << keeper << "-" << std::endl;
         std::cout << "PARSING BODY" << std::endl;
         this->parser.parseBody(this->request, keeper);
     }
