@@ -63,6 +63,7 @@ public:
     };
 
 	void parseHeader(Request& req, std::string& keeper);
+	void parseBody(Request& req, std::string& keeper);
 	int fillChunk(std::string &keeper, Request& parser);
 	int fillContentSize(std::string &keeper, std::string strsize);
 
