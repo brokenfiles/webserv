@@ -60,7 +60,6 @@ int Client::read_request(void)
         this->parser.parseHeader(this->request, keeper);
     }
 
-
     if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
     {
         this->parser.parseBody(this->request, keeper);

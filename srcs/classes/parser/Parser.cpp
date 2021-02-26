@@ -58,6 +58,7 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 std::stringstream convert;
                 convert << std::hex << line;
                 convert >> size_chunk;
+                std::cout << "le chunk fait : " << size_chunk << std::endl;
 
                 if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
