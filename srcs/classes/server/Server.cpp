@@ -67,7 +67,7 @@ int Server::create_socket()
     if (bind(this->getServerSocket(), (const struct sockaddr *) &this->getServerAddr(), sizeof(this->getServerAddr())) < 0)
         return (logger.error("[SERVER]: bind: " + std::string(strerror(errno)), -1));
 
-    if (listen(this->getServerSocket(), 20) < 0)
+    if (listen(this->getServerSocket(), 900) < 0)
         return (logger.error("[SERVER]: listen" + std::string(strerror(errno)), -1));
     return (0);
 }
