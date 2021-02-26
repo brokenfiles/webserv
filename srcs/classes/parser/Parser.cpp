@@ -74,12 +74,16 @@ int Parser::fillChunk(std::string &keeper, Request& request)
 
             if (keeper.find("\r\n\r\n") != std::string::npos)
                 continue;
-            else
-                return (0);
+            else {
+				std::cout << "fillChunk returned 0" << std::endl;
+				return (0);
+			}
 
         }
-        else
-            return (0);
+        else {
+			std::cout << "fillChunk returned 0" << std::endl;
+			return (0);
+		}
     }
     return (0);
 }
