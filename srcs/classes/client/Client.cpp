@@ -210,9 +210,12 @@ void Client::checkIfIsChunked()
 
 void Client::printswagresponse(std::string &str)
 {
-    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-    std::cout << GREY_TEXT << str << COLOR_RESET << std::endl;
-    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+    if (!logger.isSilent())
+    {
+        std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+        std::cout << GREY_TEXT << str << COLOR_RESET << std::endl;
+        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+    }
 }
 int Client::send_response(std::string &response)
 {
