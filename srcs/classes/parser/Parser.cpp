@@ -44,7 +44,6 @@ void Parser::parseHeader(Request &req, std::string& keeper)
 
 int Parser::fillChunk(std::string &keeper, Request& request)
 {
-    std::string keeper_tmp;
     size_t x;
 
     while (1)
@@ -58,6 +57,12 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 std::stringstream convert;
                 convert << std::hex << line;
                 convert >> size_chunk;
+                std::cout << "keeper size : " << keeper.size() << std::endl;
+                std::cout << "line size : " << line.size() << std::endl;
+                std::cout << "(keeper.size() - (line.size() + 2) : " << keeper.size() - line.size() + 2 << std::endl;
+                std::cout << "condition : " << ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2) << std::endl;
+                std::cout << "size_chunk : " << size_chunk << std::endl;
+                std::cout << "size_chunk + 2 : " << size_chunk + 2 << std::endl;
 //                std::cout << "le chunk fait : " << size_chunk << std::endl;
 
                 if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
