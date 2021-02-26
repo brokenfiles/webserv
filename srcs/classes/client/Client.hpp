@@ -16,7 +16,7 @@
 #include <sstream>
 
 class Parser;
-
+class Response;
 class Client
 {
     public:
@@ -26,11 +26,16 @@ class Client
 	    Client &operator=(const Client &copy);
 
 	    int read_request(void);
+	    int send_response(std::string &response);
 	    void close_socket();
 	    void encode_chunk(Response &, std::string &response);
         void clear_state();
+        void checkIfIsChunked();
+
+        void printswagresponse(std::string &str);
 
 	    //getters
+
 	    struct sockaddr_in &getAddr();
 
 	    Request& getObjRequest();

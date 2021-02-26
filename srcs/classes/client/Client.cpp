@@ -185,7 +185,7 @@ void Client::encode_chunk(Response &rep, std::string &response)
         this->bodystring = this->bodystring.erase(0, size);
         if (this->bodystring.empty())
             this->isChunked() = false;
-        logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(client_curr->bodystring.size()));
+        logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(this->bodystring.size()));
 
         response = finalchunk;
     }
@@ -197,6 +197,34 @@ void Client::clear_state()
     this->bodystring.clear();
     this->headerstring.clear();
     this->getObjRequest().setBodyRaw("");
+}
+void Client::checkIfIsChunked()
+{
+    std::map<std::string, std::string>::const_iterator it_h;
+    if ((!(this->isChunked()) && (((it_h = this->getObjRequest().getHeaders().find("Transfer-Encoding")) != this->getObjRequest().getHeaders().end())
+                                         && (it_h->second.compare(0, 7, "chunked") == 0))))
+    {
+        this->isChunked() = true;
+    }
+}
+
+void Client::printswagresponse(std::string &str)
+{
+    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
+    std::cout << GREY_TEXT << str << COLOR_RESET << std::endl;
+    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+}
+int Client::send_response(std::string &response)
+{
+    int send_ret;
+    if ((send_ret = send(this->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+    {
+        if (send_ret == -1)
+            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
+        if (send_ret == 0)
+            this->isConnected() = false;
+    }
+    return (1);
 }
 
 

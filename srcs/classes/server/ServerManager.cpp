@@ -169,7 +169,7 @@ int ServerManager::run_servers()
                     FD_SET(newClient->getSocket(), &this->read_backup);
 
                 fd_av.push_back(newClient->getSocket());
-                clients.push_front(newClient);
+                clients.push_back(newClient);
                 logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
         }
@@ -207,28 +207,18 @@ int ServerManager::run_servers()
                     std::string response;
                     std::map<std::string, std::string>::const_iterator it_h;
 
-                    if ((!(client_curr->isChunked()) && (((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
-                         && (it_h->second.compare(0, 7, "chunked") == 0))))
-                    {
-                        client_curr->isChunked() = true;
-                    }
+                    client_curr->checkIfIsChunked();
 
                     if (client_curr->isChunked())
                         client_curr->encode_chunk(rep, response);
                     else
                         response = rep.sendResponse(client_curr);
 
-//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+                    client_curr->printswagresponse(response);
 
-                    int send_ret = 0;
-                    if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+                    if (client_curr->send_response(response) < 0)
                     {
-                        if (send_ret == -1)
-                            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
-                        if (send_ret == 0)
-                            client_curr->isConnected() = false;
+                        std::cout << "do something\n";
                     }
 
                     if (!client_curr->isConnected())
