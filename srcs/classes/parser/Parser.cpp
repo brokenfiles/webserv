@@ -45,7 +45,8 @@ void Parser::parseHeader(Request &req, std::string& keeper)
 int Parser::fillChunk(std::string &keeper, Request& request)
 {
     size_t x;
-
+//    sleep (1);
+    std::cout << "fillChunk !!!!!!!!!\n";
     while (1)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
@@ -57,32 +58,54 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 std::stringstream convert;
                 convert << std::hex << line;
                 convert >> size_chunk;
-
+//                std::cout << "before get chunk: size chunk:" << size_chunk << std::endl;
+//                std::cout << keeper << std::endl;
                 if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
                     std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
                     request.appendBody(keeper.substr(x + 2, size_chunk));
                     keeper.erase(0, size_chunk + x + 4);
                 }
+                else if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) < (size_t) size_chunk + 2))
+                {
+                    std::cout << "chunk > 0 && keeper < chunk_size" << std::endl;
+                    return (0);
+                }
+                else if (size_chunk == 0 && keeper.find("\r\n\r\n") == std::string::npos)
+                {
+                    std::cout << "chunk == 0 && final pattern found" << std::endl;
+
+                    return (0);
+                }
 
                 if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
+                {
+                    std::cout << "GOOD !! fully filled\n";
                     return (1);
+                }
             }
 
-            if (keeper.find("\r\n\r\n") != std::string::npos)
+            if ((keeper.find("\r\n\r\n") != std::string::npos) || (keeper.find("\r\n") != std::string::npos))
                 continue;
             else
+            {
+                std::cout << "no pattern found (\"\\r\\n, \r\n\r\n\")" << std::endl;
                 return (0);
+            }
 
         }
         else
+        {
+            std::cout << "no pattern found (\"\\r\\n\")" << std::endl;
             return (0);
+        }
     }
     return (0);
 }
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
+    std::cout << "fillContentSize !!!!!!!!\n";
     if (keeper.find("\r\n\r\n") != std::string::npos)
     {
         std::stringstream convert;

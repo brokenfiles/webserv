@@ -57,11 +57,13 @@ int Client::read_request(void)
 
     if (!this->request.isHeaderParsed() && keeper.find("\r\n\r\n") != std::string::npos)
     {
+        std::cout << "PARSING HEADER\n";
         this->parser.parseHeader(this->request, keeper);
     }
 
     if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
     {
+        std::cout << "PARSING BODY" << std::endl;
         this->parser.parseBody(this->request, keeper);
     }
 
@@ -77,7 +79,7 @@ int Client::read_request(void)
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;
-    logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
+    logger.warning("[SERVER]: Client: " + logger.to_string(this->getSocket()) + " Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
     return (0);
 }
 
@@ -176,7 +178,7 @@ void Client::encode_chunk(Response &rep, std::string &response)
         finalchunk += (size_hex + "\r\n");
         finalchunk += (this->bodystring.substr(0, size) + "\r\n");
 
-        if (this->bodystring.size() < 1000001)
+        if (this->bodystring.size() <= 1000001)
         {
             finalchunk += "0\r\n\r\n";
             this->isChunked() = false;

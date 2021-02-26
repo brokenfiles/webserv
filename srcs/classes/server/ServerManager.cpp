@@ -169,7 +169,7 @@ int ServerManager::run_servers()
                     FD_SET(newClient->getSocket(), &this->read_backup);
 
                 fd_av.push_back(newClient->getSocket());
-                clients.push_back(newClient);
+                clients.push_front(newClient);
                 logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
         }
