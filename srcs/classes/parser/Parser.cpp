@@ -64,7 +64,8 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 {
                     std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
                     request.appendBody(keeper.substr(x + 2, size_chunk));
-                    keeper.erase(0, size_chunk + 2);
+                    keeper.erase(0, size_chunk + x + 4);
+                    continue;
                 }
 
                 if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
@@ -202,8 +203,8 @@ void Parser::parseBody(Request &req, std::string &keeper)
     	int ret;
         if ((ret = this->fillChunk(keeper, req)))
             req.setBody(req.getBody());
-		(void)ret;
-//        std::cout << "fillchunk returned " << ret << std::endl;
+//		(void)ret;
+        std::cout << "fillchunk returned " << ret << std::endl;
     }
     else if ((it = req.getHeaders().find("Content-Length")) != req.getHeaders().end())
     {
