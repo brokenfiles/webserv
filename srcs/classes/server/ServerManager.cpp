@@ -82,18 +82,19 @@ int ServerManager::setup_fd()
         if (FD_ISSET(*it, &this->read_backup))
         {
             FD_SET(*it, &this->read_pool);
-            read_stack.push_back(*it);
+//            read_stack.push_back(*it);
         }
 
         if (FD_ISSET(*it, &this->write_backup))
         {
             FD_SET(*it, &this->write_pool);
-            write_stack.push_back(*it);
+//            write_stack.push_back(*it);
         }
         if (*it > higher_fd)
             higher_fd = *it;
     }
 
+    /*
     stream << "FD SERVER SOCKET [";
     for (it_t serv = servers.begin(); serv != servers.end(); serv++)
     {
@@ -128,7 +129,7 @@ int ServerManager::setup_fd()
             stream << write_stack[i];
     }
     logger.notice(stream.str() + "]");
-
+*/
     return (higher_fd);
 }
 
@@ -166,8 +167,8 @@ int ServerManager::run_servers()
                 }
                 else
                     FD_SET(newClient->getSocket(), &this->read_backup);
-                fd_av.push_back(newClient->getSocket());
 
+                fd_av.push_back(newClient->getSocket());
                 clients.push_front(newClient);
                 logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
@@ -203,7 +204,19 @@ int ServerManager::run_servers()
                 if (client_curr->isValidRequest())
                 {
                     Response rep;
-                    std::string response = rep.sendResponse(client_curr);
+                    std::string response;
+                    std::map<std::string, std::string>::const_iterator it_h;
+
+                    if ((!(client_curr->isChunked()) && (((it_h = client_curr->getObjRequest().getHeaders().find("Transfer-Encoding")) != client_curr->getObjRequest().getHeaders().end())
+                         && (it_h->second.compare(0, 7, "chunked") == 0))))
+                    {
+                        client_curr->isChunked() = true;
+                    }
+
+                    if (client_curr->isChunked())
+                        client_curr->encode_chunk(rep, response);
+                    else
+                        response = rep.sendResponse(client_curr);
 
 //                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
 //                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
@@ -227,11 +240,14 @@ int ServerManager::run_servers()
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                         break;
                     }
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
-
                 }
-                client_curr->isValidRequest() = false;
-                FD_CLR(client_curr->getSocket(), &this->write_backup);
+
+                if (client_curr->isChunked() == false)
+                {
+                    FD_CLR(client_curr->getSocket(), &this->write_backup);
+                    client_curr->clear_state();
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
+                }
                 break;
             }
             else

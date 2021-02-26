@@ -5,6 +5,8 @@ Client::Client() : request(), socket(-1), port(-1), ip(), _recvRequest_backup()
     memset(&this->client_addr, 0, sizeof(client_addr));
     this->validRequest = false;
     this->connected = true;
+    this->chunk_rep = false;
+    this->firstThrough = true;
 }
 
 Client::~Client()
@@ -38,7 +40,7 @@ int Client::read_request(void)
 
     memset((void*)buffer, 0, BUFFER);
 
-    while ((read = recv(this->getSocket(), buffer, BUFFER, 0)) > 0)
+    while ((read = recv(this->getSocket(), buffer, BUFFER - 1, 0)) > 0)
     {
         buffer[read] = '\0';
         keeper += buffer;
@@ -53,63 +55,31 @@ int Client::read_request(void)
             return (logger.warning(std::string("[SERVER]: recv: -1: " + std::string(strerror(errno)))), -1);
     }
 
-    if (keeper.find("\r\n\r\n") != std::string::npos)
+    if (!this->request.isHeaderParsed() && keeper.find("\r\n\r\n") != std::string::npos)
     {
-        if (!this->request.isHeaderParsed())
-            this->parser.parseHeader(this->request, keeper);
+        this->parser.parseHeader(this->request, keeper);
+    }
 
-        std::map<std::string, std::string>::const_iterator it;
 
-        if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
-        {
-            if ((((it = this->request.getHeaders().find("Transfer-Encoding")) != this->request.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
-            {
-                if (this->parser.fillChunk(keeper))
-                    this->request.setBody(keeper);
-            }
-            else if ((it = this->request.getHeaders().find("Content-Length")) != this->request.getHeaders().end())
-            {
-                if (this->parser.fillContentSize(keeper, (*it).second))
-                    this->request.setBody(keeper);
-            }
-            else
-                this->request.setBody(keeper);
-        }
+    if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
+    {
+        this->parser.parseBody(this->request, keeper);
+    }
 
-        if (this->request.isHeaderParsed() && this->request.isBodyParsed())
-        {
-            this->request.isBodyParsed() = false;
-            this->request.isHeaderParsed() = false;
-            this->isValidRequest() = true;
-            logger.success("[SERVER]: Client : " + logger.to_string(this->getSocket()) + ". Data received. Valid request: " + logger.to_string(this->validRequest) + ".");
-            this->_recvRequest_backup.clear();
-
-            std::vector<std::string>::iterator  it_header;
-            return (0);
-        }
+    if (this->request.isHeaderParsed() && this->request.isBodyParsed())
+    {
+        this->request.isBodyParsed() = false;
+        this->request.isHeaderParsed() = false;
+        this->isValidRequest() = true;
+        logger.success("[SERVER]: Client: " + logger.to_string(this->getSocket()) + " Request completed. Valid Request: " + logger.to_string(this->validRequest) + ". Total size: " + logger.to_string(this->request.getBody().size()) + ".");
+        this->_recvRequest_backup.clear();
+        return (0);
     }
 
     //Si pas de CRLF, on continue de read sur le socket jusqu'à une fin de patern
     this->_recvRequest_backup = keeper;
     logger.warning("[SERVER]: Client: Request non completed. Valid Request: " + logger.to_string(this->validRequest) + ". backup size: " + logger.to_string(this->_recvRequest_backup.size()) + ".");
     return (0);
-}
-
-int Client::send_response(const std::string &req)
-{
-    if (send(this->socket, req.c_str(), req.length(), 0) != (int) req.length())
-        return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
-    return (0);
-}
-
-void Client::printRequest(void)
-{
-//    if (!logger.isSilent())
-//    {
-//        std::cout << RED_TEXT << "------------ REQUEST ------------" << COLOR_RESET << std::endl;
-//        std::cout << GREY_TEXT << getStringRequest() << COLOR_RESET << std::endl;
-//        std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
-//    }
 }
 
 void Client::close_socket()
@@ -154,14 +124,82 @@ bool &Client::isConnected()
 {
     return (this->connected);
 }
-Parser &Client::getObjParser()
-{
-    return (this->parser);
-}
+
 int &Client::getListener()
 {
     return (this->listen);
 }
+bool &Client::isChunked()
+{
+    return (this->chunk_rep);
+}
+bool &Client::isFirstThrough()
+{
+    return (this->firstThrough);
+}
+Parser &Client::getObjParser()
+{
+    return (this->parser);
+}
+void Client::encode_chunk(Response &rep, std::string &response)
+{
+    logger.warning("PERFORMING CHUNKED RESPONSE");
+    if (this->isFirstThrough())
+    {
+        rep.sendResponse(this);
+        rep.setHeader("Transfer-Encoding", "chunked");
+        rep.removeHeader("Content-Length");
+        this->headerstring = rep.stringifyHeaders();
+        this->bodystring = rep.getBody();
+
+        response = this->headerstring;
+        this->isFirstThrough() = false;
+        if (this->bodystring.empty())
+        {
+            response += "0\r\n\r\n";
+            this->isChunked() = false;
+        }
+    }
+    else
+    {
+        std::string finalchunk;
+        size_t size = 0;
+
+        if (this->bodystring.size() >= 8000)
+            size = 8000;
+        else
+            size = this->bodystring.size();
+
+        std::stringstream convert;
+        convert << std::hex << size;
+        std::string size_hex = convert.str();
+
+        finalchunk += (size_hex + "\r\n");
+        finalchunk += (this->bodystring.substr(0, size) + "\r\n");
+
+        if (this->bodystring.size() < 8000)
+        {
+            finalchunk += "0\r\n\r\n";
+            this->isChunked() = false;
+        }
+        this->bodystring = this->bodystring.erase(0, size);
+        if (this->bodystring.empty())
+            this->isChunked() = false;
+        logger.warning("[SERVER]: Sending single chunk with size of: " + Logger::to_string(size) + ", size left: " + Logger::to_string(client_curr->bodystring.size()));
+
+        response = finalchunk;
+    }
+}
+void Client::clear_state()
+{
+    this->isValidRequest() = false;
+    this->isFirstThrough() = true;
+    this->bodystring.clear();
+    this->headerstring.clear();
+    this->getObjRequest().setBodyRaw("");
+}
+
+
 
 
 

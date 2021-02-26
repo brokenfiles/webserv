@@ -42,14 +42,12 @@ void Parser::parseHeader(Request &req, std::string& keeper)
 }
 
 
-int Parser::fillChunk(std::string &keeper)
+int Parser::fillChunk(std::string &keeper, Request& request)
 {
     std::string keeper_tmp;
-    size_t closed;
     size_t x;
 
-    closed = keeper.find("\r\n\r\n") != std::string::npos;
-    while (closed)
+    while (1)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
         {
@@ -61,34 +59,43 @@ int Parser::fillChunk(std::string &keeper)
                 convert << std::hex << line;
                 convert >> size_chunk;
 
-                keeper.erase(0, x + 2);
-                if (size_chunk > 0)
+                if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
-                    keeper_tmp += keeper.substr(0,size_chunk);
-                    keeper.erase(0 ,size_chunk + 2);
+                    std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
+                    keeper.erase(0, x + 2);
+                    request.appendBody(keeper.substr(0, size_chunk));
+                    keeper.erase(0, size_chunk + 2);
                 }
-                if (size_chunk == 0 && keeper == "\r\n")
-                {
-                    keeper = keeper_tmp;
+
+                if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
                     return (1);
-                }
             }
-//            throw Parser::BadChunkedBody();
+
+            if (keeper.find("\r\n\r\n") != std::string::npos)
+                continue;
+            else
+                return (0);
+
         }
+        else
+            return (0);
     }
     return (0);
 }
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
-    std::stringstream convert;
-    unsigned long size;
+    if (keeper.find("\r\n\r\n") != std::string::npos)
+    {
+        std::stringstream convert;
+        unsigned long size;
 
-    convert << strsize;
-    convert >> size;
+        convert << strsize;
+        convert >> size;
 
-    if (keeper.size() == size)
-        return (1);
+        if (keeper.size() == size)
+            return (1);
+    }
     return (0);
 }
 
@@ -185,4 +192,21 @@ void Parser::fillQueryString(Request &req)
         req.setQueryString("");
     }
 
+}
+
+void Parser::parseBody(Request &req, std::string &keeper)
+{
+    std::map<std::string, std::string>::const_iterator it;
+    if ((((it = req.getHeaders().find("Transfer-Encoding")) != req.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
+    {
+        if (this->fillChunk(keeper, req))
+            req.setBody(req.getBody());
+    }
+    else if ((it = req.getHeaders().find("Content-Length")) != req.getHeaders().end())
+    {
+        if (this->fillContentSize(keeper, (*it).second))
+            req.setBody(keeper);
+    }
+    else
+        req.setBody(keeper);
 }

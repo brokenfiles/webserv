@@ -7,6 +7,9 @@
 #include "../config/LocationConfig.hpp"
 #include "../config/ServerConfig.hpp"
 #include "../cgi/Cgi.hpp"
+#include "../../../includes/utils.hpp"
+
+
 
 class Response : public Query
 {
@@ -34,6 +37,7 @@ public:
 	std::string sendResponse (Client *client);
 	LocationConfig find_location (Client *client);
 	std::string stringify () const;
+	std::string stringifyHeaders () const;
 	std::string currentDate ();
 	std::string toLower (std::string string);
 	void setDefaultHeaders (Client *client, ServerConfig &server);
@@ -72,6 +76,8 @@ public:
 	void setMessageCode (int code, const std::string& message);
 	void addError (int code, const std::string &message);
 	void setStatusCode(const std::string &statusCode);
+	void setHeader (const std::string &key, const std::string &value);
+	void removeHeader (const std::string &key);
 	/*
 	 * Exceptions
 	 */

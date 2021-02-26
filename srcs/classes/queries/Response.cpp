@@ -1,13 +1,10 @@
+#include "Response.hpp"
 #include <algorithm>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
-#include "Response.hpp"
-#include "../../../includes/utils.hpp"
-#include "../config/LocationConfig.hpp"
-#include "../config/ServerConfig.hpp"
 
 Response::Response()
 {
@@ -513,6 +510,22 @@ std::string Response::getFilesInDirectory(const std::string &path, Client *clien
 }
 
 /**
+ * Stringify les headers
+ * @return les headers stringifiés
+ */
+std::string	Response::stringifyHeaders() const
+{
+	std::string headers;
+
+	headers = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
+	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
+		headers += it->first + ": " + it->second + "\r\n";
+	headers += getCookies();
+	headers += "\r\n";
+	return headers;
+}
+
+/**
  * Used to stringify the response.cpp class
  * Stringify the function is needed for send it to the client
  * @return stringified response
@@ -521,11 +534,7 @@ std::string 	Response::stringify() const
 {
 	std::string string;
 
-	string = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
-	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
-		string += it->first + ": " + it->second + "\r\n";
-	string += getCookies();
-	string += "\r\n";
+	string += this->stringifyHeaders();
 	string += this->getBody();
 
 	return (string);
@@ -745,6 +754,18 @@ void Response::displayErrors ()
 const std::string &Response::getStatusCode () const
 {
 	return _statusCode;
+}
+
+void Response::setHeader(const std::string &key, const std::string &value)
+{
+	this->_headers[key] = value;
+}
+
+void Response::removeHeader(const std::string &key)
+{
+	if (this->_headers.find(key) != this->_headers.end()) {
+		this->_headers.erase(key);
+	}
 }
 
 void Response::setDefaultStatusCodes()
