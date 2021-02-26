@@ -280,12 +280,12 @@ bool Cgi::isCGI (Request request, LocationConfig location)
 		size_t dotIndex = path.rfind('.');
 		if (dotIndex != std::string::npos) {
 			std::string extension = path.substr(dotIndex, path.size() - dotIndex);
-			if (extension == ".bla" && request.getMethod() == "GET")
+			if (extension.compare(0, 4, ".bla") == 0 && request.getMethod() == "GET")
 				return (false);
 			/* on check si le cgibin existe */
 			std::ifstream file(cgiBin.c_str(), std::ifstream::in);
 			if (file.good() && file.is_open())
-				return (cgiExtension == extension);
+				return (extension.compare(0, 4, cgiExtension) == 0);
 		}
 	}
 	return (false);
