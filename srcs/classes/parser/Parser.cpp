@@ -57,13 +57,6 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                 std::stringstream convert;
                 convert << std::hex << line;
                 convert >> size_chunk;
-                std::cout << "keeper size : " << keeper.size() << std::endl;
-                std::cout << "line size : " << line.size() << std::endl;
-                std::cout << "(keeper.size() - (line.size() + 2) : " << keeper.size() - line.size() + 2 << std::endl;
-                std::cout << "condition : " << ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2) << std::endl;
-                std::cout << "size_chunk : " << size_chunk << std::endl;
-                std::cout << "size_chunk + 2 : " << size_chunk + 2 << std::endl;
-//                std::cout << "le chunk fait : " << size_chunk << std::endl;
 
                 if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
@@ -204,12 +197,8 @@ void Parser::parseBody(Request &req, std::string &keeper)
     std::map<std::string, std::string>::const_iterator it;
     if ((((it = req.getHeaders().find("Transfer-Encoding")) != req.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
     {
-    	std::cout << "Calling fillchunk" << std::endl;
-    	int ret;
-        if ((ret = this->fillChunk(keeper, req)))
+        if (this->fillChunk(keeper, req))
             req.setBody(req.getBody());
-//		(void)ret;
-        std::cout << "fillchunk returned " << ret << std::endl;
     }
     else if ((it = req.getHeaders().find("Content-Length")) != req.getHeaders().end())
     {

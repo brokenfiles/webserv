@@ -180,7 +180,6 @@ int ServerManager::run_servers()
 
             if (FD_ISSET(client_curr->getSocket(), &this->read_pool))
             {
-            	std::cout << "Calling Read request" << std::endl;
                 if (client_curr->read_request() < 0)
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
