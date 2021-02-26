@@ -106,17 +106,16 @@ int Parser::fillChunk(std::string &keeper, Request& request)
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
     std::cout << "fillContentSize !!!!!!!!\n";
-    if (keeper.find("\r\n\r\n") != std::string::npos)
-    {
-        std::stringstream convert;
-        unsigned long size;
+    std::stringstream convert;
+    unsigned long size;
 
-        convert << strsize;
-        convert >> size;
+    convert << strsize;
+    convert >> size;
 
-        if (keeper.size() == size)
+    std::cout << keeper << " : " << size << std::endl;
+    if (keeper.size() == size)
             return (1);
-    }
+
     return (0);
 }
 
