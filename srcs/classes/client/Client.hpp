@@ -5,6 +5,7 @@
 #include "../../../includes/includes.h"
 #include "../queries/Request.hpp"
 #include "../config/ServerConfig.hpp"
+#include "../queries/Response.hpp"
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
@@ -15,6 +16,7 @@
 #include <sstream>
 
 class Parser;
+class Response;
 
 class Client
 {
@@ -25,22 +27,26 @@ class Client
 	    Client &operator=(const Client &copy);
 
 	    int read_request(void);
+	    int send_response(std::string &response);
 	    void close_socket();
+	    void encode_chunk(Response &, std::string &response);
+        void clear_state();
+        void checkIfIsChunked();
+
+        void printswagresponse(std::string &str);
 
 	    //getters
+
 	    struct sockaddr_in &getAddr();
-	    int &getSocket();
 
 	    Request& getObjRequest();
+        ServerConfig &getServerConfig();
 	    Parser& getObjParser();
 
-
-	    std::string &getIP();
-	    int &getPort();
-
+        std::string &getIP();
+        int &getPort();
+        int &getSocket();
 	    int &getListener();
-
-	    ServerConfig &getServerConfig();
 
 	    bool &isValidRequest();
 	    bool &isConnected();
