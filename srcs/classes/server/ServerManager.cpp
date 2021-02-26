@@ -169,7 +169,7 @@ int ServerManager::run_servers()
                     FD_SET(newClient->getSocket(), &this->read_backup);
 
                 fd_av.push_back(newClient->getSocket());
-                clients.push_back(newClient);
+                clients.push_front(newClient);
                 logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
         }
@@ -184,6 +184,7 @@ int ServerManager::run_servers()
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
+//                    delete client_curr;
                     this->disconnectClient(client_curr);
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
@@ -225,6 +226,7 @@ int ServerManager::run_servers()
                     {
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
+//                        delete client_curr;
                         this->disconnectClient(client_curr);
                         clients.erase(it);
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
