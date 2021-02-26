@@ -165,8 +165,8 @@ void Client::encode_chunk(Response &rep, std::string &response)
         std::string finalchunk;
         size_t size = 0;
 
-        if (this->bodystring.size() >= 8000)
-            size = 8000;
+        if (this->bodystring.size() >= 1000001)
+            size = 1000001;
         else
             size = this->bodystring.size();
 
@@ -177,7 +177,7 @@ void Client::encode_chunk(Response &rep, std::string &response)
         finalchunk += (size_hex + "\r\n");
         finalchunk += (this->bodystring.substr(0, size) + "\r\n");
 
-        if (this->bodystring.size() < 8000)
+        if (this->bodystring.size() < 1000001)
         {
             finalchunk += "0\r\n\r\n";
             this->isChunked() = false;
