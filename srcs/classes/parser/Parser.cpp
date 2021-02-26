@@ -70,7 +70,6 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                     std::cout << "PARSER: fillChunk perform chunk : " << size_chunk << std::endl;
                     request.appendBody(keeper.substr(x + 2, size_chunk));
                     keeper.erase(0, size_chunk + x + 4);
-                    continue;
                 }
 
                 if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
