@@ -14,5 +14,6 @@
 #include <algorithm>
 
 #define BUFFER 8192
+#define DEFAULT_CONF_FILE "conf/default.conf"
 
 #endif

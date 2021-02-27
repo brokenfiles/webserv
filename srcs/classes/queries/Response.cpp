@@ -118,6 +118,10 @@ std::string Response::handleResponse(Client *client)
 		this->displayErrors();
 	}
 
+	// on supprime le body de head
+	if (method == "head")
+		this->setBody("");
+
 	return (this->stringify());
 }
 

@@ -54,6 +54,18 @@ public:
 		this->strongSilent = logger.strongSilent;
 	}
 
+	void requestSilentMode ()
+	{
+		if (!this->isStrongSilent()) {
+			std::string input;
+			this->warning("Run Webserv in silent mode? : [y\\n]");
+			std::getline(std::cin, input);
+			bool state = !(input == "n" || input == "N");
+			this->notice("SILENT MODE: " + Logger::to_string(state) );
+			this->silence_mode(state);
+		}
+	}
+
 	void silence_mode (bool x)
 	{
 		silent = x;
@@ -106,7 +118,7 @@ public:
 
 	int message (LogType type, const std::string &message, int return_value = DEFAULT_RETURN)
 	{
-		if (this->strongSilent && type != SUCCESS)
+		if (this->strongSilent && type != SUCCESS && type != ERROR)
 			return return_value;
 
 		if (this->silent && type == NOTICE)

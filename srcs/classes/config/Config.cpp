@@ -65,15 +65,9 @@ void Config::parseConfig(const std::string &filename)
 				}
 			}
 		}
-//		example : print the config
-//		std::vector<ServerConfig>::iterator begin = servers.begin();
-//		while(begin != servers.end()) {
-//			std::cout << *begin << std::endl;
-//			begin++;
-//		}
 	} else {
 		// il y a eu une erreur, throw une exception
-		throw std::exception();
+		throw ConfigCantBeOpenedException();
 	}
 }
 
@@ -278,6 +272,11 @@ ServerConfig &Config::getServer(Request request)
 {
 	(void)request;
 	return (this->getServers()[0]);
+}
+
+const char *Config::ConfigCantBeOpenedException::what() const throw()
+{
+	return "Cette configuration n'est pas valide";
 }
 
 const char *Config::NoSemicolonException::what() const throw()
