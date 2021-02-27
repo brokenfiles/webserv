@@ -6,6 +6,13 @@
 #include <ios>
 
 Logger logger;
+Utils::server_state_t server_state;
+
+void handleStopServer(int signal)
+{
+	(void)signal;
+	server_state.running = false;
+}
 
 void parseArguments (int ac, char **av, std::string &config)
 {
@@ -45,10 +52,13 @@ int main (int ac, char **av)
 		exit(1);
 	}
 
+	server_state.running = true;
+	signal(SIGINT, handleStopServer);
+
 	try
 	{
 		serverManager.setup_sockets(config);
-		serverManager.run_servers();
+		serverManager.run_servers(server_state);
 	}
 	catch (const std::exception &exception)
 	{

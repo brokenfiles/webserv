@@ -69,3 +69,9 @@ std::ostream &operator<<(std::ostream &os, ServerConfig &server)
 	}
 	return os;
 }
+
+void ServerConfig::clear ()
+{
+	this->locations.clear();
+	this->configuration.clear();
+}

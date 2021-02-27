@@ -4,7 +4,9 @@ Server::Server()
 {}
 
 Server::~Server()
-{}
+{
+	this->serverConfig.clear();
+}
 
 Server::Server(const Server &copy)
 {

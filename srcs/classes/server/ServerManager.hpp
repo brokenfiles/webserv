@@ -25,7 +25,7 @@ class ServerManager
 
         int setup_sockets(Config &conf);
         int setup_fd();
-        int run_servers();
+        int run_servers(Utils::server_state_t serverState);
         void set_global_config(Config &conf);
         ServerConfig getBestServer(Client *client);
 

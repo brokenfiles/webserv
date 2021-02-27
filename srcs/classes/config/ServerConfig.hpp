@@ -27,6 +27,8 @@ public:
 
 	int getPort();
 
+	void clear ();
+
 	friend std::ostream &operator<<(std::ostream &os, ServerConfig &config);
 
 	std::string getServerName();

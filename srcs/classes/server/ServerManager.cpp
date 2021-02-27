@@ -82,11 +82,11 @@ int ServerManager::setup_fd()
     return (higher_fd);
 }
 
-int ServerManager::run_servers()
+int ServerManager::run_servers(Utils::server_state_t serverState)
 {
     int higher_fd;
 
-    while (1)
+    while (serverState.running)
     {
         higher_fd = this->setup_fd();
 
@@ -192,6 +192,7 @@ int ServerManager::run_servers()
                 logger.notice(std::string("[SERVER]: Client Loop: FD_ISSET - write_pool: socket " + logger.to_string(client_curr->getSocket()) + " is not set"));
         }
     }
+    return (0);
 }
 
 void ServerManager::disconnectClient(Client *client)
