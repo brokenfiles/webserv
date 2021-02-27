@@ -107,6 +107,8 @@ void	Cgi::execute(Response &response)
 		//on remet STDIN et STDOUT sur leurs fd respectifs
 		dup2(this->_var.save_in, STDIN_FILENO);
 		dup2(this->_var.save_out, STDOUT_FILENO);
+		close(this->_var.save_in);
+		close(this->_var.save_out);
 
 		//on free l'array de variables d'environement
 		for (size_t i = 0; i < this->_metaVarMap.size(); ++i) {
