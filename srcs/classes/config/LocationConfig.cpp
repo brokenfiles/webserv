@@ -15,6 +15,7 @@ LocationConfig::LocationConfig (const LocationConfig &copy)
 
 LocationConfig &LocationConfig::operator= (const LocationConfig &copy)
 {
+	this->configuration.clear();
 	this->configuration = copy.configuration;
 	return (*this);
 }

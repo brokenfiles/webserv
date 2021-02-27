@@ -225,6 +225,8 @@ std::vector<std::string> Config::explode(const std::string& s, const char& c)
 
 void Config::checkConfig() {
 	std::list<std::string> serversComb;
+	if (this->servers.size() == 0)
+		throw NoServerException();
 	//check if root field exists
 	std::vector<ServerConfig>::iterator begin = this->servers.begin();
 	while (begin != this->servers.end()) {
@@ -301,4 +303,9 @@ const char *Config::TwoSameServersException::what() const throw()
 const char *Config::MissingLocationException::what() const throw()
 {
 	return "Il faut au moins une location par serveur";
+}
+
+const char *Config::NoServerException::what() const throw()
+{
+	return "Il faut au moins un serveur dans la configuration";
 }

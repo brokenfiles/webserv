@@ -70,6 +70,11 @@ public:
 	{
 		virtual const char *what() const throw();
 	};
+
+	class NoServerException : public std::exception
+	{
+		virtual const char *what() const throw();
+	};
 };
 
 #endif
