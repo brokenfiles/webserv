@@ -184,7 +184,7 @@ int ServerManager::run_servers(Utils::server_state_t serverState)
                 {
                     FD_CLR(client_curr->getSocket(), &this->write_backup);
                     client_curr->clear_state();
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: Path: " + client_curr->getObjRequest().getPath());
+                    logger.success("[SERVER]: Client: " + logger.to_string(client_curr->getSocket()) + ". Response send: Path: " + client_curr->getObjRequest().getPath());
                 }
                 break;
             }

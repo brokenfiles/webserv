@@ -104,26 +104,29 @@ std::string LocationConfig::getPath ()
 
 std::vector<std::string> LocationConfig::explode(const std::string& s, const std::string& charset, bool uppercase = false)
 {
-	std::string buff = "";
+	std::string buff;
 	std::vector<std::string> v;
 
-	for(size_t i = 0; i < s.size(); i++)
+	for (size_t i = 0; i < s.size(); i++)
 	{
-		char n = s.at(i);
+		char n = s[i];
 		if(charset.find(n) == std::string::npos)
-			buff+=n;
-		else
-		if(charset.find(n) != std::string::npos && !buff.empty()) {
-			if (uppercase) {
-				v.push_back(Utils::toUppercase(buff));
+			buff += n;
+		else {
+			if(charset.find(n) != std::string::npos && !buff.empty()) {
+				if (uppercase) {
+					v.push_back(Utils::toUppercase(buff));
+				} else {
+					v.push_back(buff);
+				}
+				buff = "";
 			}
-			buff = "";
 		}
 	}
-	if(buff != "")
+	if(!buff.empty())
 		v.push_back(buff);
 
-	return v;
+	return (v);
 }
 
 std::map<std::string, std::string> &LocationConfig::getConfiguration ()

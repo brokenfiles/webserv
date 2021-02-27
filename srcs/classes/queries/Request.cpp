@@ -39,7 +39,8 @@ std::string Request::getDefaultPath(LocationConfig &location)
 	std::string rawPath = getPathWithoutLocation(_path, location);
 
 	std::string path = rootDir + rawPath;
-	struct stat path_stat;
+
+	struct stat path_stat = { .st_dev = 0 };;
 
 	stat(path.c_str(), &path_stat);
 	if (S_ISDIR(path_stat.st_mode)) {
