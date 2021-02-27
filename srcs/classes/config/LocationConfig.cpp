@@ -3,6 +3,7 @@
 //
 
 #include "LocationConfig.hpp"
+#include "../queries/Response.hpp"
 
 LocationConfig::LocationConfig ()
 {}
@@ -21,9 +22,9 @@ LocationConfig &LocationConfig::operator= (const LocationConfig &copy)
 std::vector<std::string> LocationConfig::getMethods()
 {
 	if (this->configuration.find("methods") != this->configuration.end()) {
-		return (explode(this->configuration["methods"], ", "));
+		return (explode(this->configuration["methods"], ", ", true));
 	}
-	return (explode("GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH", ", "));
+	return (explode("GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH", ", ", true));
 }
 
 std::string LocationConfig::getRawMethods()
@@ -99,7 +100,7 @@ std::string LocationConfig::getPath ()
 	return ("/");
 }
 
-std::vector<std::string> LocationConfig::explode(const std::string& s, const std::string& charset)
+std::vector<std::string> LocationConfig::explode(const std::string& s, const std::string& charset, bool uppercase = false)
 {
 	std::string buff = "";
 	std::vector<std::string> v;
@@ -110,8 +111,10 @@ std::vector<std::string> LocationConfig::explode(const std::string& s, const std
 		if(charset.find(n) == std::string::npos)
 			buff+=n;
 		else
-		if(charset.find(n) != std::string::npos && buff != "") {
-			v.push_back(buff);
+		if(charset.find(n) != std::string::npos && !buff.empty()) {
+			if (uppercase) {
+				v.push_back(Utils::toUppercase(buff));
+			}
 			buff = "";
 		}
 	}

@@ -27,7 +27,7 @@ public:
 
 	std::vector<std::string> getMethods();
 
-	std::vector<std::string> explode(const std::string &s, const std::string &charset);
+	std::vector<std::string> explode(const std::string &s, const std::string &charset, bool uppercase);
 
 	std::string getRootDir();
 

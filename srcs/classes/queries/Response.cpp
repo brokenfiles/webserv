@@ -605,7 +605,9 @@ LocationConfig Response::find_location(Client *client)
 	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
 	{
 		if (this->getPathWithSlash((*it).getPath()) == this->getPathWithSlash(getDirName(client->getObjRequest().getPath()))) {
-			matchedLocations.push_back(*it);
+			if (std::find(it->getMethods().begin(), it->getMethods().end(), Utils::toUppercase(client->getObjRequest().getMethod())) != it->getMethods().end()) {
+				matchedLocations.push_back(*it);
+			}
 		}
 	}
 	if (matchedLocations.empty()) {
