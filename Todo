@@ -1,4 +1,0 @@
-TODO : Faire webserv
-
-
-TODO : logger.info etc etc return un int et prend un code d'erreur pour pouvoir return et gagner des lignes ?

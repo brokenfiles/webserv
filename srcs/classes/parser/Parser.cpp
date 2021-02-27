@@ -14,6 +14,9 @@ Parser::~Parser(void)
 
 void Parser::parseHeader(Request &req, std::string& keeper)
 {
+    //std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
+    //std::cout << keeper << std::endl;
+    //std::cout << "-------------------------------------------------------\n";
     std::string frontLine = keeper.substr(0, keeper.find('\n'));
     try
     {
@@ -33,18 +36,16 @@ void Parser::parseHeader(Request &req, std::string& keeper)
         keeper.clear();
         logger.error("[SERVER]: " + logger.to_string(e.what()), -1);
     }
-
+    //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
+    //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
+    //            std::cout << "-------------------------------------------------------\n";
 }
 
 
-int Parser::fillChunk(std::string &keeper)
+int Parser::fillChunk(std::string &keeper, Request& request)
 {
-    std::string keeper_tmp;
-    size_t closed;
     size_t x;
-
-    closed = keeper.find("\r\n\r\n") != std::string::npos;
-    while (closed)
+    while (1)
     {
         if ((x = keeper.find("\r\n")) != std::string::npos)
         {
@@ -56,34 +57,46 @@ int Parser::fillChunk(std::string &keeper)
                 convert << std::hex << line;
                 convert >> size_chunk;
 
-                keeper.erase(0, x + 2);
-                if (size_chunk > 0)
+                if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) >= (size_t) size_chunk + 2))
                 {
-                    keeper_tmp += keeper.substr(0,size_chunk);
-                    keeper.erase(0 ,size_chunk + 2);
+                    request.appendBody(keeper.substr(x + 2, size_chunk));
+                    keeper.erase(0, size_chunk + x + 4);
                 }
-                if (size_chunk == 0 && keeper == "\r\n")
+                else if (size_chunk > 0 && ((keeper.size() - (line.size() + 2)) < (size_t) size_chunk + 2))
+                    return (0);
+                else if (size_chunk == 0 && keeper.find("\r\n\r\n") == std::string::npos)
+                    return (0);
+
+                if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
                 {
-                    keeper = keeper_tmp;
+//                    std::cout << "GOOD !! fully filled\n";
                     return (1);
                 }
             }
-//            throw Parser::BadChunkedBody();
+
+            if ((keeper.find("\r\n\r\n") != std::string::npos) || (keeper.find("\r\n") != std::string::npos))
+                continue;
+            else
+                return (0);
         }
+        else
+            return (0);
     }
-    return (0);
 }
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
+    std::cout << "fillContentSize !!!!!!!!\n";
     std::stringstream convert;
     unsigned long size;
 
     convert << strsize;
     convert >> size;
 
+    std::cout << keeper << " : " << size << std::endl;
     if (keeper.size() == size)
-        return (1);
+            return (1);
+
     return (0);
 }
 
@@ -140,8 +153,6 @@ void Parser::fillHeader(Request& req, std::string& keeper)
             break;
         }
         std::string line = keeper.substr(0, x);
-//        if (line.at(line.size() - 1) == '\r')
-//        	line.erase(line.size() - 1);
 		if (line.find(':') != std::string::npos)
         {
 			if (line.substr(0, line.find(':')) == "Set-Cookie") {
@@ -180,4 +191,21 @@ void Parser::fillQueryString(Request &req)
         req.setQueryString("");
     }
 
+}
+
+void Parser::parseBody(Request &req, std::string &keeper)
+{
+    std::map<std::string, std::string>::const_iterator it;
+    if ((((it = req.getHeaders().find("Transfer-Encoding")) != req.getHeaders().end()) && (it->second.compare(0, 7, "chunked") == 0)))
+    {
+        if (this->fillChunk(keeper, req))
+            req.setBody(req.getBody());
+    }
+    else if ((it = req.getHeaders().find("Content-Length")) != req.getHeaders().end())
+    {
+        if (this->fillContentSize(keeper, (*it).second))
+            req.setBody(keeper);
+    }
+    else
+        req.setBody(keeper);
 }

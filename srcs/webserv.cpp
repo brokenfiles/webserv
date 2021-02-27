@@ -2,43 +2,58 @@
 #include "../includes/includes.h"
 #include "../srcs/classes/logger/Logger.hpp"
 #include "../srcs/classes/server/ServerManager.hpp"
-#include "../srcs/classes/parser/Parser.hpp"
-#include "../srcs/classes/queries/Request.hpp"
-#include "../srcs/classes/client/Client.hpp"
-#include "classes/config/Config.hpp"
 
-#include <limits>
 #include <ios>
 
 Logger logger;
+
+int setSilentsModes(int ac, char **argv, std::string &configFile)
+{
+//    int i = 0;
+    if (ac > 2 && ac <= 3)
+    {
+        if (std::strcmp(argv[1], "--silent") == 0)
+        {
+            logger.warning("SILENT MODE: STRONG");
+            logger.strong_silence_mode(true);
+        }
+        if (argv[2])
+            configFile = argv[2];
+    }
+
+    if (ac == 2 || !logger.isStrongSilent())
+    {
+        std::string input;
+        logger.warning("Run Webserv in silent mode? : [y\\n]");
+        std::getline(std::cin, input);
+        bool state = !(input == "n" || input == "N");
+        logger.notice("SILENT MODE: " + logger.to_string(state) );
+        logger.silence_mode(state);
+        if (ac == 2)
+            configFile = argv[1];
+    }
+    else if (ac < 2)
+        configFile = "conf/default.conf";
+    return (0);
+}
 
 int main (int ac, char **av)
 {
 	Config        config;
     std::string configFile;
     ServerManager serverManager;
-    std::string input;
 
-	if (ac == 2)
-        configFile = av[1];
-	else
-	    configFile = "conf/max.conf";
-
-	logger.warning("Run Webserv in silent mode? : [y\\n]");
-    std::getline(std::cin, input);
-    bool state = !(input == "n" || input == "N");
-    logger.notice("SILENT MODE: " + logger.to_string(state) );
-    logger.notice("Loading configuration: " + configFile );
-    logger.silence_mode(state);
+    setSilentsModes(ac, av, configFile);
 
 	try
 	{
 		config.parseConfig(configFile);
 		config.checkConfig();
-	}
+        logger.success("Loading configuration: " + configFile);
+    }
 	catch (const std::exception &exception)
 	{
-		std::cerr << exception.what() << std::endl;
+	    logger.error("[SERVER]: Config check: " + std::string(exception.what()) + ".");
 		exit(1);
 	}
 

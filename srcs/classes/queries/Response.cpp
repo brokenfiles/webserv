@@ -1,13 +1,10 @@
+#include "Response.hpp"
 #include <algorithm>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
-#include "Response.hpp"
-#include "../../../includes/utils.hpp"
-#include "../config/LocationConfig.hpp"
-#include "../config/ServerConfig.hpp"
 
 Response::Response()
 {
@@ -36,23 +33,29 @@ Response &Response::operator= (const Response &copy)
 }
 
 /**
- *
+ * Cette fonction gère la requête du client et établie la réponse
+ * Elle renvoie en plus de ça la réponse stringifiée
  * @param client
  * @return
  */
-std::string Response::sendResponse(Client *client)
+std::string Response::handleResponse(Client *client)
 {
 	const std::string method = this->toLower(client->getObjRequest().getMethod());
-	this->_location = this->find_location(client);
+	bool foundLocation = false;
+	try {
+		this->_location = this->find_location(client);
+		foundLocation = true;
+	} catch (const std::exception &exception) {
+		logger.warning("La location n'a pas été trouvée pour cette requête");
+	}
 
 	/* On définie les headers par défaut */
 	this->setDefaultHeaders(client, client->getServerConfig());
 
 	/* Gère si le serveur est unavailable */
-    if (!client->isConnected())
-    {
-        this->handleServerUnavailable(client);
-    }
+	if (!client->isConnected() || !foundLocation)
+		this->handleServerUnavailable(client);
+
 	/* On check si la méthode est gérée par la location */
 	else if (!this->isMethodValid(method)) {
 		/* la méthode est invalide */
@@ -124,7 +127,7 @@ std::string Response::sendResponse(Client *client)
  */
 void Response::handleServerUnavailable (Client *client)
 {
-	if (client->isConnected()) {
+	if (!client->isConnected()) {
 		this->_statusCode = getMessageCode(503);
 		this->_headers["Retry-After"] = "120";
 	}
@@ -132,6 +135,7 @@ void Response::handleServerUnavailable (Client *client)
 
 /**
  * Fonction qui gère les reauêtes GET
+ * Cette méthode affiche le contenu de fichiers requêtés
  * @param client
  */
 void Response::getHandler(Client *client)
@@ -175,6 +179,10 @@ void Response::getHandler(Client *client)
 	}
 }
 
+/**
+ * Put prend un fichier, l'ouvre et écrit dans ce fichier le body de la requête
+ * @param client
+ */
 void Response::putHandler(Client *client)
 {
 	std::string requestFile = Request::getPathWithIndex(this->_location.getUploadDir() + client->getObjRequest().getPath(), this->_location);
@@ -193,8 +201,9 @@ void Response::putHandler(Client *client)
 		this->_headers["Content-Location"] = requestFile;
 		this->_headers["Last-Modified"] = getLastModified(requestFile);
 	} else {
-		// il n'exite pas on retourne une erreur 403
-		this->_statusCode = getMessageCode(403);
+		logger.error("The directory '" + this->_location.getUploadDir() + "' can't be opened. Be sure that the directory exists and has the right permissions");
+		// il n'exite pas on retourne une erreur 500
+		this->_statusCode = getMessageCode(500);
 	}
 }
 
@@ -207,6 +216,10 @@ void Response::optionsHandler()
 	this->_headers["Allow"] = this->_location.getRawMethods();
 }
 
+/**
+ * La méthode trace renvoie la réponse dans le body (uniquement les headers)
+ * @param client
+ */
 void Response::traceHandler(Client *client)
 {
 	std::string headers;
@@ -452,6 +465,14 @@ void Response::handleAcceptCharset(Client *client)
 	logger.error("Client accept-charset is invalid (the charset in not handled by server)");
 }
 
+/**
+ * Cette fonction essaie d'afficher le directory listing si :
+ *   La requête pointe sur un dossier,
+ *   que l'index de la location n'existe pas,
+ *   et que l'auto index n'est pas désactivé
+ * @param path
+ * @param client
+ */
 void Response::tryDirectoryListing (const std::string &path, Client *client) {
 	try {
 		std::string files = this->getFilesInDirectory(path, client);
@@ -508,6 +529,22 @@ std::string Response::getFilesInDirectory(const std::string &path, Client *clien
 }
 
 /**
+ * Stringify les headers
+ * @return les headers stringifiés
+ */
+std::string	Response::stringifyHeaders() const
+{
+	std::string headers;
+
+	headers = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
+	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
+		headers += it->first + ": " + it->second + "\r\n";
+	headers += getCookies();
+	headers += "\r\n";
+	return headers;
+}
+
+/**
  * Used to stringify the response.cpp class
  * Stringify the function is needed for send it to the client
  * @return stringified response
@@ -516,11 +553,7 @@ std::string 	Response::stringify() const
 {
 	std::string string;
 
-	string = "HTTP/1.1 " + Logger::to_string(this->getStatusCode()) + "\r\n";
-	for (std::map<std::string, std::string>::const_iterator it = this->getHeaders().begin(); it != this->getHeaders().end(); it++)
-		string += it->first + ": " + it->second + "\r\n";
-	string += getCookies();
-	string += "\r\n";
+	string += this->stringifyHeaders();
 	string += this->getBody();
 
 	return (string);
@@ -572,7 +605,9 @@ LocationConfig Response::find_location(Client *client)
 	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
 	{
 		if (this->getPathWithSlash((*it).getPath()) == this->getPathWithSlash(getDirName(client->getObjRequest().getPath()))) {
-			matchedLocations.push_back(*it);
+			if (std::find(it->getMethods().begin(), it->getMethods().end(), Utils::toUppercase(client->getObjRequest().getMethod())) != it->getMethods().end()) {
+				matchedLocations.push_back(*it);
+			}
 		}
 	}
 	if (matchedLocations.empty()) {
@@ -590,7 +625,7 @@ LocationConfig Response::find_location(Client *client)
 		std::list<LocationConfig>::iterator matchedLocationsIterator = matchedLocations.begin();
 		while (matchedLocationsIterator != matchedLocations.end()) {
 			if (matchedLocationsIterator->getCgiExtension() == reqExtension) {
-				logger.info("Found best location for extension " + reqExtension);
+				logger.info("Found best location for extension " + reqExtension + " (location path : " + matchedLocationsIterator->getPath() + ", cgiExtension : " + matchedLocationsIterator->getCgiExtension() + ")");
 				return *matchedLocationsIterator;
 			}
 			matchedLocationsIterator ++;
@@ -740,6 +775,18 @@ void Response::displayErrors ()
 const std::string &Response::getStatusCode () const
 {
 	return _statusCode;
+}
+
+void Response::setHeader(const std::string &key, const std::string &value)
+{
+	this->_headers[key] = value;
+}
+
+void Response::removeHeader(const std::string &key)
+{
+	if (this->_headers.find(key) != this->_headers.end()) {
+		this->_headers.erase(key);
+	}
 }
 
 void Response::setDefaultStatusCodes()

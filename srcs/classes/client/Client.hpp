@@ -3,10 +3,9 @@
 
 #include "../logger/Logger.hpp"
 #include "../../../includes/includes.h"
-#include "../queries/Response.hpp"
 #include "../queries/Request.hpp"
-//#include "../parser/Parser.hpp"
 #include "../config/ServerConfig.hpp"
+#include "../queries/Response.hpp"
 #include <errno.h>
 #include <unistd.h>
 #include <iostream>
@@ -17,6 +16,7 @@
 #include <sstream>
 
 class Parser;
+class Response;
 
 class Client
 {
@@ -26,37 +26,53 @@ class Client
 	    Client(const Client &copy);
 	    Client &operator=(const Client &copy);
 
-	    int send_response(const std::string &req);
 	    int read_request(void);
+	    int send_response(std::string &response);
 	    void close_socket();
-	    void printRequest(void);
+	    void encode_chunk(Response &, std::string &response);
+        void clear_state();
+        void checkIfIsChunked();
+
+        void printswagresponse(std::string &str);
 
 	    //getters
+
 	    struct sockaddr_in &getAddr();
-	    int &getSocket();
 
 	    Request& getObjRequest();
+        ServerConfig &getServerConfig();
+	    Parser& getObjParser();
 
-	    std::string &getIP();
-	    int &getPort();
-
-	    ServerConfig &getServerConfig();
+        std::string &getIP();
+        int &getPort();
+        int &getSocket();
+	    int &getListener();
 
 	    bool &isValidRequest();
 	    bool &isConnected();
+	    bool &isChunked();
+	    bool &isFirstThrough();
 
 	    //setters
+
+	    std::string headerstring;
+	    std::string bodystring;
+
 
     private:
         Parser parser;
         Request request;
+
         ServerConfig serverConfig;
 
 	    bool validRequest;
 	    bool connected;
+	    bool chunk_rep;
+        bool firstThrough;
 
-	    struct sockaddr_in client_addr;
-	    int socket;
+        struct sockaddr_in client_addr;
+        int socket;
+        int listen;
 
 	    int port;
 	    std::string ip;

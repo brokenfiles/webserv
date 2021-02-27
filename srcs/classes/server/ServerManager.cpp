@@ -40,19 +40,28 @@ ServerManager &ServerManager::operator=(const ServerManager &copy)
 int ServerManager::setup_sockets(Config &conf)
 {
     std::list<Server*>::iterator it_serv = servers.begin();
+    std::vector<int> port_listening;
+
+    this->set_global_config(conf);
 
     for (std::vector<ServerConfig>::iterator it_conf = conf.getServers().begin(); it_conf != conf.getServers().end(); it_conf++)
     {
-        it_serv = servers.insert(it_serv, new Server());
-        Server* server_curr = (*it_serv);
+        std::vector<int>::iterator it_ip = std::find(port_listening.begin(), port_listening.end(), (*it_conf).getPort());
+        if (it_ip == port_listening.end())
+        {
+            port_listening.push_back((*it_conf).getPort());
+            it_serv = servers.insert(it_serv, new Server());
+            Server *server_curr = (*it_serv);
 
-        server_curr->setServerConfig((*it_conf));
-        if (server_curr->create_socket() < 0)
-            throw SetupSocketError();
+            server_curr->setServerConfig((*it_conf));
+            if (server_curr->create_socket() < 0)
+                throw SetupSocketError();
 
-        logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() +" listen on port " + logger.to_string(server_curr->getServerConfig().getPort()) + ".");
-        FD_SET(server_curr->getServerSocket(), &this->read_backup);
-        fd_av.push_back(server_curr->getServerSocket());
+            logger.info("[SERVER]: " + server_curr->getServerConfig().getHost() + " listen on port " +
+                        logger.to_string(server_curr->getServerConfig().getPort()) + ".");
+            FD_SET(server_curr->getServerSocket(), &this->read_backup);
+            fd_av.push_back(server_curr->getServerSocket());
+        }
     }
     std::cout << "\n";
     return (0);
@@ -63,28 +72,29 @@ int ServerManager::setup_fd()
     int higher_fd = -1;
     FD_ZERO(&this->read_pool);
     FD_ZERO(&this->write_pool);
-    std::vector<int> read_stack;
-    std::vector<int> write_stack;
+//    std::vector<int> read_stack;
+//    std::vector<int> write_stack;
 
-    std::stringstream stream;
+//    std::stringstream stream;
 
     for (std::list<int>::iterator it = fd_av.begin(); it != fd_av.end(); it++)
     {
         if (FD_ISSET(*it, &this->read_backup))
         {
             FD_SET(*it, &this->read_pool);
-            read_stack.push_back(*it);
+//            read_stack.push_back(*it);
         }
 
         if (FD_ISSET(*it, &this->write_backup))
         {
             FD_SET(*it, &this->write_pool);
-            write_stack.push_back(*it);
+//            write_stack.push_back(*it);
         }
         if (*it > higher_fd)
             higher_fd = *it;
     }
 
+    /*
     stream << "FD SERVER SOCKET [";
     for (it_t serv = servers.begin(); serv != servers.end(); serv++)
     {
@@ -119,7 +129,7 @@ int ServerManager::setup_fd()
             stream << write_stack[i];
     }
     logger.notice(stream.str() + "]");
-
+*/
     return (higher_fd);
 }
 
@@ -127,6 +137,10 @@ int ServerManager::run_servers()
 {
     int higher_fd = -1;
     fd_set fd_pool;
+
+    std::list<int> workers;
+
+    this->launchWorkers(&workers);
 
     while (1)
     {
@@ -143,7 +157,7 @@ int ServerManager::run_servers()
             {
                 Client *newClient = new Client();
 
-                newClient->getServerConfig() = server_curr->getServerConfig();
+                newClient->getListener() = server_curr->getServerConfig().getPort();
 
                 if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
                     throw AcceptClientError();
@@ -151,14 +165,14 @@ int ServerManager::run_servers()
                 if (this->fd_av.size() > 916)
                 {
                     newClient->isConnected() = false;
+                    newClient->isValidRequest() = true;
                     FD_SET(newClient->getSocket(), &this->write_backup);
                     logger.warning("Client " + Logger::to_string(newClient->getSocket()) + " retry-after");
-                    break;
                 }
                 else
                     FD_SET(newClient->getSocket(), &this->read_backup);
-                fd_av.push_back(newClient->getSocket());
 
+                fd_av.push_back(newClient->getSocket());
                 clients.push_front(newClient);
                 logger.connect("[SERVER]: New Client: " + logger.to_string(newClient->getSocket()) + ". Server: " + server_curr->getServerConfig().getHost() + ":" + logger.to_string(server_curr->getServerConfig().getPort()));
             }
@@ -174,12 +188,14 @@ int ServerManager::run_servers()
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
+                    delete client_curr;
                     this->disconnectClient(client_curr);
-//                    delete client_curr;
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                     continue;
                 }
+
+                client_curr->getServerConfig() = this->getBestServer(client_curr);
 
                 if (client_curr->isValidRequest())
                     FD_SET(client_curr->getSocket(), &this->write_backup);
@@ -193,36 +209,41 @@ int ServerManager::run_servers()
                 if (client_curr->isValidRequest())
                 {
                     Response rep;
-                    std::string response = rep.sendResponse(client_curr);
+                    std::string response;
+                    std::map<std::string, std::string>::const_iterator it_h;
 
-//                    std::cout << RED_TEXT << "------------ RESPONSE -----------" << COLOR_RESET << std::endl;
-//                    std::cout << GREY_TEXT << response << COLOR_RESET << std::endl;
-//                    std::cout << RED_TEXT << "-------------- END --------------" << COLOR_RESET << std::endl;
+                    client_curr->checkIfIsChunked();
 
-                    int send_ret = 0;
-                    if ((send_ret = send(client_curr->getSocket(), response.c_str(), response.length(), 0)) != (int) response.length())
+                    if (client_curr->isChunked())
+                        client_curr->encode_chunk(rep, response);
+                    else
+                        response = rep.handleResponse(client_curr);
+
+                    client_curr->printswagresponse(response);
+
+                    if (client_curr->send_response(response) < 0)
                     {
-                        if (send_ret == -1)
-                            return (logger.error("[SERVER]: send: " + std::string(strerror(errno)), -1));
-                        if (send_ret == 0)
-                            client_curr->isConnected() = false;
-
+                        std::cout << "do something\n";
                     }
 
                     if (!client_curr->isConnected())
                     {
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
+                        delete client_curr;
                         this->disconnectClient(client_curr);
                         clients.erase(it);
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
                         break;
                     }
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath() + ". code: " + rep.getStatusCode() + ".");
-
                 }
-                client_curr->isValidRequest() = false;
-                FD_CLR(client_curr->getSocket(), &this->write_backup);
+
+                if (client_curr->isChunked() == false)
+                {
+                    FD_CLR(client_curr->getSocket(), &this->write_backup);
+                    client_curr->clear_state();
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
+                }
                 break;
             }
             else
@@ -240,3 +261,46 @@ void ServerManager::disconnectClient(Client *client)
     fd_av.remove(client->getSocket());
     client->close_socket();
 }
+
+void ServerManager::set_global_config(Config &conf)
+{
+    this->configGeneral = conf;
+}
+
+ServerConfig ServerManager::getBestServer(Client *client)
+{
+    std::vector<ServerConfig> tmp_conf;
+
+    for (std::vector<ServerConfig>::iterator it = this->configGeneral.getServers().begin(); it != this->configGeneral.getServers().end(); it++)
+    {
+        if ((*it).getPort() == client->getListener())
+            tmp_conf.push_back(*it);
+    }
+
+    std::map<std::string, std::string>::const_iterator header = client->getObjRequest().getHeaders().find("Host");
+    for (std::vector<ServerConfig>::iterator it = tmp_conf.begin(); it != tmp_conf.end(); it++)
+    {
+        std::string host;
+
+        if (header != client->getObjRequest().getHeaders().end())
+        {
+            if ((*header).second.find(it->getServerName()) != std::string::npos)
+                host = (*header).second.substr(0, (*it).getServerName().size());
+
+            if (header != client->getObjRequest().getHeaders().end())
+            {
+                if ((*it).getServerName() == host)
+                    return ((*it));
+            }
+        }
+    }
+
+    return (tmp_conf.front());
+}
+int ServerManager::launchWorkers(std::list<int> *xd)
+{
+	(void)xd;
+    return 0;
+}
+
+

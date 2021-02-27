@@ -29,12 +29,14 @@ class Logger
 
 private:
 	bool silent;
+	bool strongSilent;
 
 public:
 
-	Logger (bool silent = false)
+	Logger (bool silentx = false, bool strongSilentx = false)
 	{
-		this->silent = silent;
+		this->silent = silentx;
+		this->strongSilent = strongSilentx;
 	}
 
 	~Logger ()
@@ -49,6 +51,7 @@ public:
 	Logger (const Logger &logger)
 	{
 		this->silent = logger.silent;
+		this->strongSilent = logger.strongSilent;
 	}
 
 	void silence_mode (bool x)
@@ -56,9 +59,19 @@ public:
 		silent = x;
 	}
 
+	void strong_silence_mode (bool x)
+	{
+		strongSilent = x;
+	}
+
 	bool isSilent ()
 	{
 		return (silent);
+	}
+
+	bool isStrongSilent ()
+	{
+		return (strongSilent);
 	}
 
 	int info (const std::string &message, int return_value = DEFAULT_RETURN)
@@ -93,6 +106,9 @@ public:
 
 	int message (LogType type, const std::string &message, int return_value = DEFAULT_RETURN)
 	{
+		if (this->strongSilent && type != SUCCESS)
+			return return_value;
+
 		if (this->silent && type == NOTICE)
 			return return_value;
 

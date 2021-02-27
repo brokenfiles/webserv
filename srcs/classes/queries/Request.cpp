@@ -116,6 +116,18 @@ bool &Request::isBodyParsed()
 {
 	return (bodyFilled);
 }
+
+void Request::appendBody(const std::string &body)
+{
+    this->_body += body;
+}
+
+void Request::setBodyRaw(const std::string &body)
+{
+	this->_body = body;
+}
+
+
 void Request::setBody(const std::string &body)
 {
 //    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
