@@ -72,25 +72,25 @@ void Client_TCP::sendChunkedData()
     std::string chunk_str;
 
 
-//    chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
-//    chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
-//    chunks.push_back("YO JE SUIS UNE PUTE");
-//    chunks.push_back("YO JE SUIS UN HETEROEXUEL ASPIRANT HELICOPTERE D'ATTAQUE");
-//    chunks.push_back("YO JE SUIS UN louis ^^");
-//    chunks.push_back("YO JE SUIS UN tim ^^");
-//    chunks.push_back("YO");
+    chunks.push_back("YO JE SUIS UN PREMIER CHUNK");
+    chunks.push_back("YO JE SUIS UN DEUXIEME CHUNK");
+    chunks.push_back("YO JE SUIS UNE PUTE");
+    chunks.push_back("YO JE SUIS UN HETEROEXUEL ASPIRANT HELICOPTERE D'ATTAQUE");
+    chunks.push_back("YO JE SUIS UN louis ^^");
+    chunks.push_back("YO JE SUIS UN tim ^^");
+    chunks.push_back("YO");
 
     size_t i = 8000;
     std::string chunk_tmp;
 
-    while (i > 0)
-    {
-        chunk_tmp.append("X");
-        i--;
-    }
-
-    for (i = 0; i < 100; i++)
-        chunks.push_back(chunk_tmp);
+//    while (i > 0)
+//    {
+//        chunk_tmp.append("X");
+//        i--;
+//    }
+//
+//    for (i = 0; i < 100; i++)
+//        chunks.push_back(chunk_tmp);
 
     std::list<std::string>::iterator it = chunks.begin();
     while (it != chunks.end())
@@ -106,7 +106,6 @@ void Client_TCP::sendChunkedData()
         it++;
         if (it == chunks.end())
             chunk_str += "0\r\n\r\n";
-        usleep(100000);
 //        chunk_str.clear();
     }
     send(this->clientList.begin().operator*()->socket, chunk_str.c_str(), chunk_str.size(), 0);
@@ -119,18 +118,18 @@ int main()
     Client_TCP client;
     std::string host_ip = "127.0.0.1";
     int port = 5000;
-    int nb_client = 1;
+    int nb_client = 950;
 
     while (nb_client--)
     {
         client.connectToServer(host_ip, port);
-        usleep(1);
+        usleep(100000);
     }
 
     client.sendHeader();
     client.sendChunkedData();
 
-    sleep(20);
+//    sleep(20);
 
     char buffer[100000] = { 0 };
     int valread = read(client.clientList.begin().operator*()->socket , buffer, 100000);
