@@ -33,11 +33,11 @@ int main (int ac, char **av)
 	parseArguments(ac, av, configFile);
 	logger.requestSilentMode();
 
+	logger.success("Loading configuration: " + configFile);
 	try
 	{
 		config.parseConfig(configFile);
 		config.checkConfig();
-		logger.success("Loading configuration: " + configFile);
 	}
 	catch (const std::exception &exception)
 	{

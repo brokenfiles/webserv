@@ -82,7 +82,7 @@ void Config::parseConfig(const std::string &filename)
 void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::string>::iterator end) {
 	ServerConfig server;
 	int scopeLevel = 0;
-	LocationConfig currentLocation = LocationConfig();
+	LocationConfig currentLocation;
 
 	// on parse ligne par ligne le serveur
 	while (begin != end) {
@@ -124,7 +124,7 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 						// on l'ajoute donc à la liste
 						server.addLocation(currentLocation);
 						// on remet à zéro la location pour la suite sur parsing
-						currentLocation = LocationConfig();
+						currentLocation.clear();
 					}
 				}
 			} else if (scopeLevel == 1 || scopeLevel == 2) {

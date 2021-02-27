@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 
-Response::Response()
+Response::Response() : Query()
 {
 	this->setDefaultStatusCodes();
 	this->setDefaultExtensions();
@@ -17,7 +17,7 @@ Response::~Response()
 
 }
 
-Response::Response(const Response &copy)
+Response::Response(const Response &copy) : Query()
 {
     *this = copy;
 }

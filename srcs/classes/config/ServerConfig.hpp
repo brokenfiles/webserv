@@ -21,6 +21,8 @@ public:
 	std::list<LocationConfig> locations;
 	std::map<std::string, std::string> configuration;
 
+	ServerConfig &operator=(const ServerConfig &copy);
+
 	void addLocation(const LocationConfig& config);
 
 	int getPort();
