@@ -49,6 +49,8 @@ public:
 
 	int getMaxBodySize ();
 
+	void clear ();
+
 	std::map<std::string, std::string> &getConfiguration ();
 };
 

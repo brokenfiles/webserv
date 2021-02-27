@@ -6,19 +6,22 @@
 #include "../queries/Response.hpp"
 
 LocationConfig::LocationConfig ()
-{}
+{
+	std::cout << "koukou je susi le constructeur" << std::endl;
+}
 
 LocationConfig::LocationConfig (const LocationConfig &copy)
 {
-    std::cout << "WESH ALORS\n";
-	*this = copy;
+
+	std::cout << "koukou je suis le constructeur par copie" << std::endl;
+	if (&copy != this) {
+		*this = copy;
+	}
 }
 
 LocationConfig &LocationConfig::operator= (const LocationConfig &copy)
 {
-    std::cout << "WESH ALORS!!!!\n";
-
-    this->configuration.clear();
+	std::cout << "koukou je suis l'opérateur égal" << std::endl;
 	this->configuration = copy.configuration;
 	return (*this);
 }
@@ -142,4 +145,9 @@ std::ostream &operator<<(std::ostream &os, LocationConfig &location)
 		begin++;
 	}
 	return os;
+}
+
+void LocationConfig::clear ()
+{
+	this->configuration.clear();
 }

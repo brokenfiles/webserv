@@ -9,6 +9,15 @@ void ServerConfig::addLocation(const LocationConfig& location)
 	this->locations.push_back(location);
 }
 
+ServerConfig &ServerConfig::operator= (const ServerConfig &copy)
+{
+	this->configuration.clear();
+	this->locations.clear();
+	this->configuration = copy.configuration;
+	this->locations = copy.locations;
+	return (*this);
+}
+
 int ServerConfig::getPort()
 {
 	if (this->configuration.find("listen") != this->configuration.end()) {
