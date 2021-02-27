@@ -605,12 +605,50 @@ void Response::setContentType(Client *client)
 	}
 }
 
+LocationConfig Response::find_location (Client *client)
+{
+	std::list<LocationConfig> matchedLocations;
+	std::list<LocationConfig> locations = client->getServerConfig().getLocations();
+	std::list<LocationConfig>::iterator it = locations.begin();
+	while (it != locations.end()) {
+		if (this->getPathWithSlash(it->getPath()) == this->getPathWithSlash(this->getDirName(client->getObjRequest().getPath())))
+			if (it->getRawMethods().find(client->getObjRequest().getMethod()) != std::string::npos)
+				matchedLocations.push_back(*it);
+		it ++;
+	}
+	if (matchedLocations.empty()) {
+		it = locations.begin();
+		while (it != locations.end()) {
+			if (it->getPath() == "/")
+				return (*it);
+			it ++;
+		}
+	} else {
+		std::string path = client->getObjRequest().getDefaultPath(this->_location);
+		size_t index = path.rfind('.');
+		if (index == std::string::npos)
+			return (matchedLocations.front());
+		std::string reqExtension = path.substr(index, path.size() - path.rfind('.'));
+		std::list<LocationConfig>::iterator matchedLocationsIterator = matchedLocations.begin();
+		while (matchedLocationsIterator != matchedLocations.end()) {
+			if (matchedLocationsIterator->getCgiExtension() == reqExtension) {
+				logger.info("Found best location for extension " + reqExtension + " (location path : " + matchedLocationsIterator->getPath() + ", cgiExtension : " + matchedLocationsIterator->getCgiExtension() + ")");
+				return *matchedLocationsIterator;
+			}
+			matchedLocationsIterator ++;
+		}
+		return (matchedLocations.front());
+	}
+	throw NoLocationException();
+}
+
 /**
  * Récupérer la meilleure location dans le serveur
  * @param client le client
  * @return la meilleure location
  */
-LocationConfig Response::find_location(Client *client)
+ /*
+LocationConfig Response::find_locations(Client *client)
 {
 	std::list<LocationConfig> matchedLocations;
 	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
@@ -644,7 +682,7 @@ LocationConfig Response::find_location(Client *client)
 		return (matchedLocations.front());
 	}
 	throw NoLocationException();
-}
+}*/
 
 /**
  * On check si la méthode est bien autorisée dans la location

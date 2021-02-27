@@ -23,7 +23,9 @@ private:
 	/** l'extension du langage s'il y en a un spéficié */
 	std::string _extLanguage;
 	/** la location de la requête dans le serveur */
-	LocationConfig _location;
+	LocationConfig                        _location;
+	/** les locations déjà calculées */
+	std::map<std::string, LocationConfig> _savedLocations;
 
 	std::string getDirName(const std::string& file);
 	void removeDir (const std::string &path, Client *client);
