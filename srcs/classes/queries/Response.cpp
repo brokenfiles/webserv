@@ -123,8 +123,7 @@ std::string Response::handleResponse(Client *client)
 		this->setBody("");
 
 	// on affiche la taille du body si le logger n'est pas en strong silent
-	if (!logger.isStrongSilent())
-		logger.success("Body returned size : " + Logger::to_string(this->_body.size()));
+	logger.success("Body returned size : " + Logger::to_string(this->_body.size()));
 
 	return (this->stringify());
 }
