@@ -115,7 +115,7 @@ void	Cgi::execute(Response &response)
 			free(this->_var.metaVarArray[i]);
 		}
 		free(this->_var.metaVarArray);
-
+        delete[] this->_var.argv;
 		close(this->_var.input_fd);
 		close(this->_var.output_fd);
 		remove(fileNameInput.c_str());
