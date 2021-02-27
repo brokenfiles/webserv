@@ -132,11 +132,11 @@ int ServerManager::run_servers()
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
-                    delete client_curr;
                     this->disconnectClient(client_curr);
-                    it = clients.erase(it);
-                    logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
-                    continue;
+					it = clients.erase(it);
+					logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
+					delete client_curr;
+					continue;
                 }
 
                 client_curr->getServerConfig() = this->getBestServer(client_curr);
@@ -172,11 +172,11 @@ int ServerManager::run_servers()
                     {
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
-                        delete client_curr;
                         this->disconnectClient(client_curr);
-                        clients.erase(it);
-                        logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
-                        break;
+						clients.erase(it);
+						logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
+						delete client_curr;
+						break;
                     }
                 }
 
