@@ -149,7 +149,7 @@ void Client::encode_chunk(Response &rep, std::string &response)
     logger.warning("PERFORMING CHUNKED RESPONSE");
     if (this->isFirstThrough())
     {
-        rep.sendResponse(this);
+		rep.handleResponse(this);
         rep.setHeader("Transfer-Encoding", "chunked");
         rep.removeHeader("Content-Length");
         this->headerstring = rep.stringifyHeaders();

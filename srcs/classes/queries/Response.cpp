@@ -33,11 +33,12 @@ Response &Response::operator= (const Response &copy)
 }
 
 /**
- *
+ * Cette fonction gère la requête du client et établie la réponse
+ * Elle renvoie en plus de ça la réponse stringifiée
  * @param client
  * @return
  */
-std::string Response::sendResponse(Client *client)
+std::string Response::handleResponse(Client *client)
 {
 	const std::string method = this->toLower(client->getObjRequest().getMethod());
 	bool foundLocation = false;
@@ -134,6 +135,7 @@ void Response::handleServerUnavailable (Client *client)
 
 /**
  * Fonction qui gère les reauêtes GET
+ * Cette méthode affiche le contenu de fichiers requêtés
  * @param client
  */
 void Response::getHandler(Client *client)
@@ -177,6 +179,10 @@ void Response::getHandler(Client *client)
 	}
 }
 
+/**
+ * Put prend un fichier, l'ouvre et écrit dans ce fichier le body de la requête
+ * @param client
+ */
 void Response::putHandler(Client *client)
 {
 	std::string requestFile = Request::getPathWithIndex(this->_location.getUploadDir() + client->getObjRequest().getPath(), this->_location);
@@ -195,8 +201,9 @@ void Response::putHandler(Client *client)
 		this->_headers["Content-Location"] = requestFile;
 		this->_headers["Last-Modified"] = getLastModified(requestFile);
 	} else {
-		// il n'exite pas on retourne une erreur 403
-		this->_statusCode = getMessageCode(403);
+		logger.error("The directory '" + this->_location.getUploadDir() + "' can't be opened. Be sure that the directory exists and has the right permissions");
+		// il n'exite pas on retourne une erreur 500
+		this->_statusCode = getMessageCode(500);
 	}
 }
 
@@ -209,6 +216,10 @@ void Response::optionsHandler()
 	this->_headers["Allow"] = this->_location.getRawMethods();
 }
 
+/**
+ * La méthode trace renvoie la réponse dans le body (uniquement les headers)
+ * @param client
+ */
 void Response::traceHandler(Client *client)
 {
 	std::string headers;
@@ -454,6 +465,14 @@ void Response::handleAcceptCharset(Client *client)
 	logger.error("Client accept-charset is invalid (the charset in not handled by server)");
 }
 
+/**
+ * Cette fonction essaie d'afficher le directory listing si :
+ *   La requête pointe sur un dossier,
+ *   que l'index de la location n'existe pas,
+ *   et que l'auto index n'est pas désactivé
+ * @param path
+ * @param client
+ */
 void Response::tryDirectoryListing (const std::string &path, Client *client) {
 	try {
 		std::string files = this->getFilesInDirectory(path, client);
@@ -604,7 +623,7 @@ LocationConfig Response::find_location(Client *client)
 		std::list<LocationConfig>::iterator matchedLocationsIterator = matchedLocations.begin();
 		while (matchedLocationsIterator != matchedLocations.end()) {
 			if (matchedLocationsIterator->getCgiExtension() == reqExtension) {
-				logger.info("Found best location for extension " + reqExtension);
+				logger.info("Found best location for extension " + reqExtension + " (location path : " + matchedLocationsIterator->getPath() + ", cgiExtension : " + matchedLocationsIterator->getCgiExtension() + ")");
 				return *matchedLocationsIterator;
 			}
 			matchedLocationsIterator ++;

@@ -34,7 +34,7 @@ public:
 	Response (const Response &copy);
 	Response &operator= (const Response &copy);
 
-	std::string sendResponse (Client *client);
+	std::string handleResponse (Client *client);
 	LocationConfig find_location (Client *client);
 	std::string stringify () const;
 	std::string stringifyHeaders () const;

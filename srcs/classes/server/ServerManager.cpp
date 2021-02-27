@@ -217,7 +217,7 @@ int ServerManager::run_servers()
                     if (client_curr->isChunked())
                         client_curr->encode_chunk(rep, response);
                     else
-                        response = rep.sendResponse(client_curr);
+                        response = rep.handleResponse(client_curr);
 
                     client_curr->printswagresponse(response);
 
@@ -299,6 +299,7 @@ ServerConfig ServerManager::getBestServer(Client *client)
 }
 int ServerManager::launchWorkers(std::list<int> *xd)
 {
+	(void)xd;
     return 0;
 }
 

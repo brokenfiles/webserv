@@ -276,20 +276,33 @@ char    **Cgi::mapToArray(std::map<std::string, std::string> &map)
  */
 bool Cgi::isCGI (Request request, LocationConfig location)
 {
+	std::cout << "[CGI CALL] isCgi called" << std::endl;
 	std::string cgiBin = location.getCgiBin(), cgiExtension = location.getCgiExtension();
+	std::cout << "[CGI CALL] cgiBin : " << cgiBin << ", cgiExtension : " << cgiExtension << std::endl;
 	if (!cgiBin.empty() && !cgiExtension.empty()) {
+		std::cout << "[CGI CALL] Is in condition" << std::endl;
 		std::string path = request.getDefaultPath(location);
+		std::cout << "[CGI CALL] path : " << path << std::endl;
 		size_t dotIndex = path.rfind('.');
+		std::cout << "[CGI CALL] dotIndex : " << dotIndex << std::endl;
 		if (dotIndex != std::string::npos) {
+			std::cout << "[CGI CALL] Is in condition dotIndex != std::string::npos" << std::endl;
 			std::string extension = path.substr(dotIndex, path.size() - dotIndex);
-			if (extension.compare(0, 4, ".bla") == 0 && request.getMethod() == "GET")
+			std::cout << "[CGI CALL] Extension : " << extension << std::endl;
+			if (extension.compare(0, 4, ".bla") == 0 && request.getMethod() == "GET") {
+				std::cout << "[CGI CALL] Returned false" << std::endl;
 				return (false);
+			}
 			/* on check si le cgibin existe */
 			std::ifstream file(cgiBin.c_str(), std::ifstream::in);
-			if (file.good() && file.is_open())
+			std::cout << "[CGI CALL] File opened" << std::endl;
+			if (file.good() && file.is_open()) {
+				std::cout << "[CGI CALL] Returned " << (extension.compare(0, cgiExtension.length(), cgiExtension) == 0) << std::endl;
 				return (extension.compare(0, cgiExtension.length(), cgiExtension) == 0);
+			}
 		}
 	}
+	std::cout << "[CGI CALL] Returned false" << std::endl;
 	return (false);
 }
 
