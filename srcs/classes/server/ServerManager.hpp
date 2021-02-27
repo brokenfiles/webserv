@@ -30,7 +30,7 @@ class ServerManager
         ServerConfig getBestServer(Client *client);
 
         void disconnectClient(Client *client);
-        int launchWorkers();
+        int launchWorkers(std::list<int>*);
         std::list<Server*>& getServerList();
 
         class SetupSocketError : public std::exception

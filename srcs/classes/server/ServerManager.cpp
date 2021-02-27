@@ -72,10 +72,10 @@ int ServerManager::setup_fd()
     int higher_fd = -1;
     FD_ZERO(&this->read_pool);
     FD_ZERO(&this->write_pool);
-    std::vector<int> read_stack;
-    std::vector<int> write_stack;
+//    std::vector<int> read_stack;
+//    std::vector<int> write_stack;
 
-    std::stringstream stream;
+//    std::stringstream stream;
 
     for (std::list<int>::iterator it = fd_av.begin(); it != fd_av.end(); it++)
     {
@@ -138,6 +138,10 @@ int ServerManager::run_servers()
     int higher_fd = -1;
     fd_set fd_pool;
 
+    std::list<int> workers;
+
+    this->launchWorkers(&workers);
+
     while (1)
     {
         higher_fd = this->setup_fd();
@@ -184,7 +188,7 @@ int ServerManager::run_servers()
                 {
                     FD_CLR(client_curr->getSocket(), &this->read_backup);
                     FD_CLR(client_curr->getSocket(), &this->read_pool);
-//                    delete client_curr;
+                    delete client_curr;
                     this->disconnectClient(client_curr);
                     it = clients.erase(it);
                     logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
@@ -226,7 +230,7 @@ int ServerManager::run_servers()
                     {
                         FD_CLR(client_curr->getSocket(), &this->write_backup);
                         FD_CLR(client_curr->getSocket(), &this->write_pool);
-//                        delete client_curr;
+                        delete client_curr;
                         this->disconnectClient(client_curr);
                         clients.erase(it);
                         logger.warning(std::string("[SERVER]: Disconnecting from client socket: ") + logger.to_string(client_curr->getSocket()));
@@ -293,4 +297,9 @@ ServerConfig ServerManager::getBestServer(Client *client)
 
     return (tmp_conf.front());
 }
+int ServerManager::launchWorkers(std::list<int> *xd)
+{
+    return 0;
+}
+
 
