@@ -1,33 +1,23 @@
 #include "Server.hpp"
 
 Server::Server()
-{
-
-}
+{}
 
 Server::~Server()
-{
-
-}
+{}
 
 Server::Server(const Server &copy)
 {
-
 	*this = copy;
 }
 
 Server &Server::operator=(const Server &copy)
 {
-	if (this != &copy)
-	{
-//        this->serverConfig = copy.serverConfig;
-//        this ->server_sock = copy.server_sock;
-//        this->serv_socket_in = copy.serv_socket_in;
-	}
+	(void)copy;
 	return (*this);
 }
 
-int &Server::getServerSocket(void)
+int &Server::getServerSocket()
 {
 	return (this->server_sock);
 }
@@ -42,7 +32,7 @@ void Server::setServerConfig(ServerConfig &conf)
 	serverConfig = conf;
 }
 
-ServerConfig &Server::getServerConfig(void)
+ServerConfig &Server::getServerConfig()
 {
 	return (this->serverConfig);
 }
@@ -72,11 +62,9 @@ int Server::create_socket()
     return (0);
 }
 
-int Server::accept_client(Client *client, fd_set &fd_pool, int &higher_fd)
+int Server::accept_client(Client *client)
 {
     int size = sizeof(client->getAddr());
-    (void)higher_fd;
-    (void)fd_pool;
 
     if ((client->getSocket() = accept(this->getServerSocket(), (struct sockaddr *) &client->getAddr(), (socklen_t *) &size)) < 0)
         return (logger.error("[SERVER]: accept: " + std::string(strerror(errno)), -1));
@@ -88,14 +76,4 @@ int Server::accept_client(Client *client, fd_set &fd_pool, int &higher_fd)
         return (logger.error("[SERVER]: fcntl: " + std::string(strerror(errno)), -1));
     }
     return (0);
-}
-
-void Server::getRightConfig(Config &config)
-{
-    (void)config;
-//    for (std::vector<ServerConfig>::iterator it = config.getServers().begin(); it != config.getServers().end(); it++)
-//    {
-//
-//    }
-//    return (ServerConfig());
 }

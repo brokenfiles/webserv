@@ -13,7 +13,6 @@
 #include "../queries/Request.hpp"
 #include "../logger/Logger.hpp"
 #include "../client/Client.hpp"
-#define META_VARIABLES_NB 17
 
 class Client;
 class Response;
@@ -52,9 +51,6 @@ private:
         //le fichier à executer
         std::string                         _requestFile;
 
-        //le binaire à utiliser pour l'execution
-        std::string                         _cgiBin;
-
         //les variables necessaire pour le execve
         t_execCGI							_var;
 
@@ -71,8 +67,6 @@ public:
 		//getters and setters
 		const std::string                       &getRequestFile() const;
         void                                    setRequestFile(const std::string &requestFile);
-        void                                    setCgiBin(const std::string &cgiBin);
-        const std::string                       &getCgiBin() const;
         static bool                             isCGI(Request request, LocationConfig location);
 
 		//meta var functions
@@ -84,7 +78,5 @@ public:
 		void	getCGIReturn(Response &response);
 
 };
-
-char		*ft_strdup(const char *str);
 
 #endif //WEBSERV_CGI_HPP

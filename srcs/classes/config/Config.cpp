@@ -268,12 +268,6 @@ std::vector<ServerConfig> &Config::getServers(void)
 	return this->servers;
 }
 
-ServerConfig &Config::getServer(Request request)
-{
-	(void)request;
-	return (this->getServers()[0]);
-}
-
 const char *Config::ConfigCantBeOpenedException::what() const throw()
 {
 	return "Cette configuration n'est pas valide";

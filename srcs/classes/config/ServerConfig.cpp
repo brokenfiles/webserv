@@ -4,16 +4,6 @@
 
 #include "ServerConfig.hpp"
 
-const std::map<std::string, std::string> &ServerConfig::getConfiguration() const
-{
-	return configuration;
-}
-
-void ServerConfig::setConfiguration(const std::map<std::string, std::string> &config)
-{
-	ServerConfig::configuration = config;
-}
-
 void ServerConfig::addLocation(const LocationConfig& location)
 {
 	this->locations.push_back(location);
@@ -37,18 +27,10 @@ std::string ServerConfig::getServerName()
 
 std::string ServerConfig::getErrorFile()
 {
-	if (this->configuration.find("error") != this->configuration.end()) {
-		return (this->configuration["error"]);
+	if (this->configuration.find("error_template") != this->configuration.end()) {
+		return (this->configuration["error_template"]);
 	}
 	return (DEFAULT_ERROR_FILE);
-}
-
-std::string ServerConfig::getRootDir()
-{
-	if (this->configuration.find("root") != this->configuration.end()) {
-		return (this->configuration["root"]);
-	}
-	return ("");
 }
 
 std::string ServerConfig::getHost()

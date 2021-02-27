@@ -30,8 +30,6 @@ class ServerManager
         ServerConfig getBestServer(Client *client);
 
         void disconnectClient(Client *client);
-        int launchWorkers(std::list<int>*);
-        std::list<Server*>& getServerList();
 
         class SetupSocketError : public std::exception
         {
@@ -48,24 +46,6 @@ class ServerManager
                 virtual const char* what() const throw()
                 {
                     return ("Error encountered while accepting clients connexion");
-                }
-        };
-
-        class ReadClientSocket : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return ("Error encountered while reading data from client socket");
-                }
-        };
-
-        class SendClientSocket : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return ("Error encountered while sending data to client socket");
                 }
         };
 

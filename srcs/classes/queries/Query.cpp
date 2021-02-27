@@ -2,9 +2,7 @@
 #include "../logger/Logger.hpp"
 
 Query::Query ()
-{
-
-}
+{}
 
 Query::Query (const Query &query)
 {
@@ -12,9 +10,7 @@ Query::Query (const Query &query)
 }
 
 Query::~Query ()
-{
-
-}
+{}
 
 Query &Query::operator= (const Query &q)
 {

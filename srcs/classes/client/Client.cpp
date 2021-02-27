@@ -57,15 +57,11 @@ int Client::read_request(void)
 
     if (!this->request.isHeaderParsed() && keeper.find("\r\n\r\n") != std::string::npos)
     {
-//        std::cout << keeper << std::endl;
-//        std::cout << "PARSING HEADER\n";
         this->parser.parseHeader(this->request, keeper);
     }
 
     if (this->request.isHeaderParsed() && !this->request.isBodyParsed())
     {
-//        std::cout << "-" << keeper << "-" << std::endl;
-//        std::cout << "PARSING BODY" << std::endl;
         this->parser.parseBody(this->request, keeper);
     }
 
@@ -140,10 +136,7 @@ bool &Client::isFirstThrough()
 {
     return (this->firstThrough);
 }
-Parser &Client::getObjParser()
-{
-    return (this->parser);
-}
+
 void Client::encode_chunk(Response &rep, std::string &response)
 {
     logger.warning("PERFORMING CHUNKED RESPONSE");
@@ -206,13 +199,11 @@ void Client::checkIfIsChunked()
 {
     std::map<std::string, std::string>::const_iterator it_h;
     if ((!(this->isChunked()) && (((it_h = this->getObjRequest().getHeaders().find("Transfer-Encoding")) != this->getObjRequest().getHeaders().end())
-                                         && (it_h->second.compare(0, 7, "chunked") == 0))))
-    {
+       && (it_h->second.compare(0, 7, "chunked") == 0))) && Utils::toUppercase(this->getObjRequest().getMethod()) != "HEAD")
         this->isChunked() = true;
-    }
 }
 
-void Client::printswagresponse(std::string &str)
+void Client::printDecoratedResponse(std::string &str)
 {
     if (!logger.isSilent() && !logger.isStrongSilent())
     {

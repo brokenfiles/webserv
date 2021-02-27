@@ -1,22 +1,15 @@
 #include <algorithm>
 #include "Parser.hpp"
 
-Parser::Parser(void)
-{
+Parser::Parser()
+{}
 
-}
-
-Parser::~Parser(void)
-{
-
-}
+Parser::~Parser()
+{}
 
 
 void Parser::parseHeader(Request &req, std::string& keeper)
 {
-    //std::cout << "-------------- REQUEST BEFORE PARSING -----------------" << std::endl;
-    //std::cout << keeper << std::endl;
-    //std::cout << "-------------------------------------------------------\n";
     std::string frontLine = keeper.substr(0, keeper.find('\n'));
     try
     {
@@ -36,9 +29,6 @@ void Parser::parseHeader(Request &req, std::string& keeper)
         keeper.clear();
         logger.error("[SERVER]: " + logger.to_string(e.what()), -1);
     }
-    //            std::cout << "-------------- REQUEST AFTER PARSING ------------------" << std::endl;
-    //            std::cout << ">" << keeper << "< size:" << keeper.size() << std::endl;
-    //            std::cout << "-------------------------------------------------------\n";
 }
 
 
@@ -66,12 +56,8 @@ int Parser::fillChunk(std::string &keeper, Request& request)
                     return (0);
                 else if (size_chunk == 0 && keeper.find("\r\n\r\n") == std::string::npos)
                     return (0);
-
                 if (size_chunk == 0 && keeper.find("\r\n\r\n") != std::string::npos)
-                {
-//                    std::cout << "GOOD !! fully filled\n";
                     return (1);
-                }
             }
 
             if ((keeper.find("\r\n\r\n") != std::string::npos) || (keeper.find("\r\n") != std::string::npos))
@@ -86,37 +72,32 @@ int Parser::fillChunk(std::string &keeper, Request& request)
 
 int Parser::fillContentSize(std::string &keeper, std::string strsize)
 {
-    std::cout << "fillContentSize !!!!!!!!\n";
     std::stringstream convert;
     unsigned long size;
 
     convert << strsize;
     convert >> size;
 
-    std::cout << keeper << " : " << size << std::endl;
     if (keeper.size() == size)
-            return (1);
+		return (1);
 
     return (0);
 }
 
 void Parser::fillMethod(Request &req, std::string &frontLine)
 {
-    std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
-    std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
+	std::string methods[] = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
+	std::string reqMethod = frontLine.substr(0, frontLine.find(' '));
 
-    //Check la reqMethod
-    for (size_t i = 0; i < 9; i++)
-    {
-        if (methods[i] == reqMethod)
-        {
-            req.setMethod(reqMethod);
-            break;
-        }
-    }
-
-//    if (req.getMethod().empty())
-//        throw BadRequestMethod();
+	//Check la reqMethod
+	for (size_t i = 0; i < 9; i++)
+	{
+		if (methods[i] == reqMethod)
+		{
+			req.setMethod(reqMethod);
+			break;
+		}
+	}
 }
 
 void Parser::fillPath(Request &req, std::string &frontLine)
@@ -162,17 +143,11 @@ void Parser::fillHeader(Request& req, std::string& keeper)
                 map[line.substr(0, line.find(':'))] = line.substr(line.find(':') + 2, x - 3 - line.find(':'));
             keeper.erase(0, x + 1);
         }
-        else {
+        else
 			break;
-		}
     }
     req.setHeaders(map);
     req.isHeaderParsed() = true;
-}
-
-void Parser::fillBody(Request& req, std::string& strRequest)
-{
-    req.setBody(strRequest);
 }
 
 void Parser::fillQueryString(Request &req)

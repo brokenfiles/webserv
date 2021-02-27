@@ -20,7 +20,6 @@ private:
 public:
 
 	Request ();
-	Request (std::string &req);
 	~Request ();
 	Request &operator= (const Request &copy);
 

@@ -170,33 +170,19 @@ private:
 	std::string get_prefix (LogType type)
 	{
 		if (type == INFO)
-		{
 			return "\033[33m[INFO]";
-		}
 		else if (type == WARNING)
-		{
 			return "\033[1m\033[33m[WARNING]";
-		}
 		else if (type == SUCCESS)
-		{
 			return "\033[32m[SUCCESS]";
-		}
 		else if (type == NOTICE)
-		{
 			return "\033[0;36m[NOTICE]";
-		}
 		else if (type == ERROR)
-		{
 			return "\033[31m[ERROR]";
-		}
 		else if (type == CONNECT)
-		{
 			return "\033[1;35m[CONNECT]";
-		}
 		else
-		{
 			return "";
-		}
 	}
 
 };

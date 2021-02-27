@@ -89,7 +89,7 @@ public:
 	{
 		virtual const char *what () const throw();
 	};
-	void displayErrors ();
+	void displayErrors (Client *client);
 	void tryDirectoryListing (const std::string &path, Client *client);
 	bool authenticate (Client *client);
 	void traceHandler (Client *client);

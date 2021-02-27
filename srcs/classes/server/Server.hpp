@@ -29,14 +29,12 @@ class Server
         Server &operator=(const Server &copy);
 
         int create_socket();
-        int accept_client(Client *client, fd_set &fd_pool, int &higher_fd);
+        int accept_client(Client *client);
 
-        void getRightConfig(Config &);
-
-        int &getServerSocket(void);
+        int &getServerSocket();
         struct sockaddr_in &getServerAddr();
         void setServerConfig(ServerConfig &);
-        ServerConfig& getServerConfig(void);
+        ServerConfig& getServerConfig();
 
     private:
         ServerConfig        serverConfig;

@@ -39,8 +39,6 @@ public:
 
 	std::string getUploadDir();
 
-	std::string getDefaultDir();
-
 	std::string getCgiExtension();
 
 	std::string getCgiBin();

@@ -30,10 +30,7 @@ ServerManager::ServerManager(const ServerManager &copy)
 
 ServerManager &ServerManager::operator=(const ServerManager &copy)
 {
-    if (this != &copy)
-    {
-
-    }
+    (void)copy;
     return (*this);
 }
 
@@ -72,75 +69,22 @@ int ServerManager::setup_fd()
     int higher_fd = -1;
     FD_ZERO(&this->read_pool);
     FD_ZERO(&this->write_pool);
-//    std::vector<int> read_stack;
-//    std::vector<int> write_stack;
-
-//    std::stringstream stream;
 
     for (std::list<int>::iterator it = fd_av.begin(); it != fd_av.end(); it++)
     {
         if (FD_ISSET(*it, &this->read_backup))
-        {
             FD_SET(*it, &this->read_pool);
-//            read_stack.push_back(*it);
-        }
-
         if (FD_ISSET(*it, &this->write_backup))
-        {
             FD_SET(*it, &this->write_pool);
-//            write_stack.push_back(*it);
-        }
         if (*it > higher_fd)
             higher_fd = *it;
     }
-
-    /*
-    stream << "FD SERVER SOCKET [";
-    for (it_t serv = servers.begin(); serv != servers.end(); serv++)
-    {
-		if (serv != servers.end()) {
-            stream << (*serv)->getServerSocket() << ", ";
-		} else {
-			stream << (*serv)->getServerSocket();
-		}
-    }
-    logger.notice(stream.str() + "]");
-
-    stream.str("");
-
-    stream << "FD CLIENT READ_POOL [";
-    for (size_t i = 0; i < read_stack.size(); i++)
-    {
-        if ((i + 1) != read_stack.size())
-            stream << read_stack[i] << ", ";
-        else
-            stream << read_stack[i];
-    }
-    logger.notice(stream.str() + "]");
-
-    stream.str("");
-
-    stream << "FD CLIENT WRITE_POOL [";
-    for (size_t i = 0; i < write_stack.size(); i++)
-    {
-        if ((i + 1) != write_stack.size())
-            stream << write_stack[i] << ", ";
-        else
-            stream << write_stack[i];
-    }
-    logger.notice(stream.str() + "]");
-*/
     return (higher_fd);
 }
 
 int ServerManager::run_servers()
 {
-    int higher_fd = -1;
-    fd_set fd_pool;
-
-    std::list<int> workers;
-
-    this->launchWorkers(&workers);
+    int higher_fd;
 
     while (1)
     {
@@ -159,7 +103,7 @@ int ServerManager::run_servers()
 
                 newClient->getListener() = server_curr->getServerConfig().getPort();
 
-                if (server_curr->accept_client(newClient, fd_pool, higher_fd) < 0)
+                if (server_curr->accept_client(newClient) < 0)
                     throw AcceptClientError();
 
                 if (this->fd_av.size() > 916)
@@ -219,12 +163,10 @@ int ServerManager::run_servers()
                     else
                         response = rep.handleResponse(client_curr);
 
-                    client_curr->printswagresponse(response);
+					client_curr->printDecoratedResponse(response);
 
                     if (client_curr->send_response(response) < 0)
-                    {
-                        std::cout << "do something\n";
-                    }
+                        client_curr->isConnected() = false;
 
                     if (!client_curr->isConnected())
                     {
@@ -238,11 +180,11 @@ int ServerManager::run_servers()
                     }
                 }
 
-                if (client_curr->isChunked() == false)
+                if (!client_curr->isChunked())
                 {
                     FD_CLR(client_curr->getSocket(), &this->write_backup);
                     client_curr->clear_state();
-                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: file: " + client_curr->getObjRequest().getPath());
+                    logger.success("[SERVER]: Client : " + logger.to_string(client_curr->getSocket()) + ". Response send: Path: " + client_curr->getObjRequest().getPath());
                 }
                 break;
             }
@@ -252,10 +194,6 @@ int ServerManager::run_servers()
     }
 }
 
-std::list<Server *> &ServerManager::getServerList()
-{
-    return (this->servers);
-}
 void ServerManager::disconnectClient(Client *client)
 {
     fd_av.remove(client->getSocket());
@@ -296,11 +234,6 @@ ServerConfig ServerManager::getBestServer(Client *client)
     }
 
     return (tmp_conf.front());
-}
-int ServerManager::launchWorkers(std::list<int> *xd)
-{
-	(void)xd;
-    return 0;
 }
 
 

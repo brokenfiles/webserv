@@ -115,7 +115,7 @@ std::string Response::handleResponse(Client *client)
 	// display error codes
 	// si le premier char de l'erreur n'est pas égal à 2, c'est une erreur : afficher l'erreur
 	if (this->_statusCode.find("200") == std::string::npos && this->getBody().empty()) {
-		this->displayErrors();
+		this->displayErrors(client);
 	}
 
 	// on supprime le body de head
@@ -199,6 +199,10 @@ void Response::putHandler(Client *client)
 		fileStream << client->getObjRequest().getBody();
 		// on retourne un 200 si le fichier existait avant sinon un 201
 		this->_statusCode = getMessageCode(fileExists ? 200 : 201);
+		if (!fileExists)
+			this->setBody("File created.");
+		else
+			this->setBody("File updated.");
 		fileStream.close();
 		if (!fileExists)
 			this->_headers["Location"] = client->getObjRequest().getPath();
@@ -742,14 +746,14 @@ std::string Response::getDirName (const std::string& file)
 /**
  * Cette fonction afficher les erreurs grâce à la map statusMessages et au statusCode
  */
-void Response::displayErrors ()
+void Response::displayErrors (Client *client)
 {
 	std::map<int, std::string>::iterator it = this->_statusMessages.begin();
 	while (it != this->_statusMessages.end())
 	{
 		if (Logger::to_string(it->first) + " " + it->second == this->_statusCode)
 		{
-			std::ifstream fileStream("www/server/ErrorTemplate.html", std::ifstream::in);
+			std::ifstream fileStream(client->getServerConfig().getErrorFile().c_str(), std::ifstream::in);
 			// on regarde si le fichier existe
 			if (fileStream.good())
 			{

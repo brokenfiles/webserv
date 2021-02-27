@@ -1,25 +1,11 @@
-#include "../../../includes/includes.h"
 #include "Request.hpp"
-#include "../config/LocationConfig.hpp"
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 Request::Request() : _path(), _method(), _queryString(), headerFilled(false), bodyFilled(false)
-{
-
-}
-
-
-Request::Request(std::string &req) : _path(), _method(), _queryString(), headerFilled(false), bodyFilled(false)
-{
-	(void)req;
-}
+{}
 
 Request::~Request()
-{
-
-}
+{}
 
 Request &Request::operator=(const Request& copy)
 {
@@ -130,9 +116,6 @@ void Request::setBodyRaw(const std::string &body)
 
 void Request::setBody(const std::string &body)
 {
-//    std::cout << "--------------------- REQUEST BODY --------------------" << std::endl;
-//    std::cout << ">" << body << "< size:" << body.size() << std::endl;
-//    std::cout << "-------------------------------------------------------\n";
     Query::setBody(body);
     this->isBodyParsed() = true;
 }

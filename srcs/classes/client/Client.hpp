@@ -33,7 +33,7 @@ class Client
         void clear_state();
         void checkIfIsChunked();
 
-        void printswagresponse(std::string &str);
+        void printDecoratedResponse(std::string &str);
 
 	    //getters
 
@@ -41,7 +41,6 @@ class Client
 
 	    Request& getObjRequest();
         ServerConfig &getServerConfig();
-	    Parser& getObjParser();
 
         std::string &getIP();
         int &getPort();

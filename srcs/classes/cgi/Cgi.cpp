@@ -302,11 +302,3 @@ const std::string &Cgi::getRequestFile() const {
 void Cgi::setRequestFile(const std::string &requestFile) {
     _requestFile = requestFile;
 }
-
-const std::string &Cgi::getCgiBin() const {
-    return _cgiBin;
-}
-
-void Cgi::setCgiBin(const std::string &cgiBin) {
-    _cgiBin = cgiBin;
-}
