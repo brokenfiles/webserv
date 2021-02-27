@@ -10,12 +10,15 @@ LocationConfig::LocationConfig ()
 
 LocationConfig::LocationConfig (const LocationConfig &copy)
 {
+    std::cout << "WESH ALORS\n";
 	*this = copy;
 }
 
 LocationConfig &LocationConfig::operator= (const LocationConfig &copy)
 {
-	this->configuration.clear();
+    std::cout << "WESH ALORS!!!!\n";
+
+    this->configuration.clear();
 	this->configuration = copy.configuration;
 	return (*this);
 }

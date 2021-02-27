@@ -122,9 +122,12 @@ void Config::parseServer(std::list<std::string>::iterator begin, std::list<std::
 					if (scopeLevel == 1) {
 						// si le scopeLevel est égal à 1 après un } ça veut dire qu'on a fini de parser la location
 						// on l'ajoute donc à la liste
+						std::cout << "BEFORE\n";
 						server.addLocation(currentLocation);
+						std::cout << "AFTER\n";
 						// on remet à zéro la location pour la suite sur parsing
 						currentLocation = LocationConfig();
+						std::cout << "WADAFAK MEK\n";
 					}
 				}
 			} else if (scopeLevel == 1 || scopeLevel == 2) {
