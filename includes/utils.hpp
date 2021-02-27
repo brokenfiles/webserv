@@ -2,6 +2,10 @@
 # define UTILS_HPP
 
 namespace Utils {
+	typedef struct server_state_s {
+		bool running;
+	} server_state_t;
+
 	std::vector<std::string> explode(const std::string& s, const std::string& charset);
 	std::string removeWhitespaces(const std::string &string);
 	std::string decodeBase64(const std::string &token);
