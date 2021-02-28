@@ -114,6 +114,7 @@ void	Cgi::execute(Response &response)
 		for (size_t i = 0; i < this->_metaVarMap.size(); ++i) {
 			free(this->_var.metaVarArray[i]);
 		}
+		delete [] this->_var.argv;
 		free(this->_var.metaVarArray);
 
 		close(this->_var.input_fd);

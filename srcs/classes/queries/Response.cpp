@@ -605,6 +605,11 @@ void Response::setContentType(Client *client)
 	}
 }
 
+/**
+ * Récupérer la meilleure location dans le serveur
+ * @param client le client
+ * @return la meilleure location
+ */
 LocationConfig Response::find_location (Client *client)
 {
 	std::list<LocationConfig> matchedLocations;
@@ -641,48 +646,6 @@ LocationConfig Response::find_location (Client *client)
 	}
 	throw NoLocationException();
 }
-
-/**
- * Récupérer la meilleure location dans le serveur
- * @param client le client
- * @return la meilleure location
- */
- /*
-LocationConfig Response::find_locations(Client *client)
-{
-	std::list<LocationConfig> matchedLocations;
-	for (std::list<LocationConfig>::iterator it = client->getServerConfig().getLocations().begin(); it != client->getServerConfig().getLocations().end(); it++)
-	{
-		if (this->getPathWithSlash((*it).getPath()) == this->getPathWithSlash(getDirName(client->getObjRequest().getPath()))) {
-			if (std::find(it->getMethods().begin(), it->getMethods().end(), Utils::toUppercase(client->getObjRequest().getMethod())) != it->getMethods().end()) {
-				matchedLocations.push_back(*it);
-			}
-		}
-	}
-	if (matchedLocations.empty()) {
-		for (std::list<LocationConfig>::iterator it1 = client->getServerConfig().getLocations().begin(); it1 != client->getServerConfig().getLocations().end(); it1++)
-		{
-			if ((*it1).getPath() == "/")
-				return ((*it1));
-		}
-	} else {
-		std::string path = client->getObjRequest().getDefaultPath(this->_location);
-		size_t index = path.rfind('.');
-		if (index == std::string::npos)
-			return (matchedLocations.front());
-		std::string reqExtension = path.substr(index, path.size() - path.rfind('.'));
-		std::list<LocationConfig>::iterator matchedLocationsIterator = matchedLocations.begin();
-		while (matchedLocationsIterator != matchedLocations.end()) {
-			if (matchedLocationsIterator->getCgiExtension() == reqExtension) {
-				logger.info("Found best location for extension " + reqExtension + " (location path : " + matchedLocationsIterator->getPath() + ", cgiExtension : " + matchedLocationsIterator->getCgiExtension() + ")");
-				return *matchedLocationsIterator;
-			}
-			matchedLocationsIterator ++;
-		}
-		return (matchedLocations.front());
-	}
-	throw NoLocationException();
-}*/
 
 /**
  * On check si la méthode est bien autorisée dans la location
